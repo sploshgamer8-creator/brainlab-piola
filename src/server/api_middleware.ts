@@ -702,6 +702,9 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
         ? Math.min(100, Math.round((trainedTokens / estimatedCloudTokens) * 100))
         : 100;
 
+      const keysEnv = process.env.GROQ_API_KEYS || '';
+      const poolKeyCount = keysEnv ? keysEnv.split(',').filter(k => k.trim().length > 0).length : 34;
+
       return res.writeHead(200).end(JSON.stringify({
         serverStatus: serverHarvesterState,
         cloudConnected: true,
@@ -718,6 +721,7 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
         trainedTokens: trainedTokens,
         absorptionRate: absorptionRate,
         recentSamples: recentSamples.slice(0, 10),
+        poolKeyCount,
         timestamp: new Date().toISOString()
       }));
     } catch (err: any) {

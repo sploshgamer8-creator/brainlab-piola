@@ -275,8 +275,8 @@ async function autoSeedJobsIfLow(pool: any) {
     const countRes = await pool.query("SELECT count(*) FROM teacher_pool_jobs WHERE status='queued'");
     const queuedCount = parseInt(countRes.rows[0].count, 10);
 
-    if (queuedCount < 8) {
-      const needed = 15 - queuedCount;
+    if (queuedCount < 12) {
+      const needed = 35 - queuedCount;
       console.log(`🌾 Auto-Seeder: Cola baja (${queuedCount} tareas). Inyectando ${needed} tareas nuevas al Córtex...`);
 
       for (let i = 0; i < needed; i++) {
@@ -347,8 +347,8 @@ async function run() {
         continue;
       }
 
-      // 3. Tomar tareas pendientes (hasta 5 tareas simultáneas)
-      const concurrency = Math.min(availableKeys.length, 5);
+      // 3. Tomar tareas pendientes (hasta 12 tareas simultáneas con pool multi-key)
+      const concurrency = Math.min(availableKeys.length, 12);
       const { rows } = await pool.query(
         `SELECT * FROM teacher_pool_jobs WHERE status='queued' ORDER BY created_at ASC LIMIT ${concurrency}`
       );

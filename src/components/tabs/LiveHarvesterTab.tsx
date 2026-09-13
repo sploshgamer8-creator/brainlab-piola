@@ -250,7 +250,7 @@ export const LiveHarvesterTab: React.FC<LiveHarvesterTabProps> = ({ onInjectSamp
             {totalTokens.toLocaleString()}
           </div>
           <div className="text-[11px] text-slate-400 flex items-center justify-between pt-1 border-t border-slate-800/80 font-mono">
-            <span>Pool Groq (5 Keys)</span>
+            <span>Pool Groq ({telemetry?.poolKeyCount || 34} Keys)</span>
             <span className="text-amber-400 font-bold">gpt-oss-20b</span>
           </div>
         </div>
