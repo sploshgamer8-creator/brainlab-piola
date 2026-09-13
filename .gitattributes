@@ -1,0 +1,12 @@
+# Git Large File Storage (LFS) configuration
+# Asegura que modelos de 100M a 7B parámetros (.safetensors, .bin, .sqlite, .gguf)
+# se almacenen mediante Git LFS en GitLab (brainlab-group/brainlab) sin exceder límites de archivo.
+
+*.safetensors filter=lfs diff=lfs merge=lfs -text
+*.brain filter=lfs diff=lfs merge=lfs -text
+*.bin filter=lfs diff=lfs merge=lfs -text
+*.gguf filter=lfs diff=lfs merge=lfs -text
+*.sqlite filter=lfs diff=lfs merge=lfs -text
+*.sqlite3 filter=lfs diff=lfs merge=lfs -text
+*.shard* filter=lfs diff=lfs merge=lfs -text
+*.jsonl filter=lfs diff=lfs merge=lfs -text

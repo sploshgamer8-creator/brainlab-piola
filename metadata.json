@@ -1,0 +1,8 @@
+{
+  "name": "Remix Local Brain Lab",
+  "description": "Laboratorio local para crear, entrenar, modificar, evaluar y ejecutar modelos conversacionales basados en la arquitectura nanoGPT de Andrej Karpathy de forma 100% offline.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
