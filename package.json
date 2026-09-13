@@ -9,16 +9,17 @@
   "main": "dist-electron/electron/main.js",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
+    "build": "vite build && tsx scripts/build_electron.ts",
+    "start": "node scripts/migrate.js && node dist-electron/src/server/express_app.js",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js dist-electron",
     "test": "tsx scripts/run_audit_tests.ts",
     "lint": "tsc --noEmit",
     "download:llama": "tsx scripts/download_llama.ts",
     "dev:electron": "tsx scripts/build_electron.ts && cross-env NODE_ENV=development concurrently \"npm run dev -- --port 3456 --strictPort\" \"wait-on tcp:3456 && electron .\"",
-    "build:electron": "npm run download:llama && npm run build && tsx scripts/build_electron.ts && electron-builder",
-    "build:railway": "npm run build && tsx scripts/build_electron.ts",
-    "start:railway": "node dist-electron/src/server/express_app.js"
+    "build:electron": "npm run download:llama && npm run build && electron-builder",
+    "build:railway": "npm run build",
+    "start:railway": "npm run start"
   },
   "build": {
     "appId": "com.brainlab.piola",
