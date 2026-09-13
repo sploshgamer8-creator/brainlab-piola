@@ -71,6 +71,11 @@ function markKeyCooldown(key: string, seconds = 60) {
   }
 }
 
+function getAvailableKeys(): string[] {
+  const now = Date.now();
+  return keyPool.filter(k => now >= k.cooldownUntil).map(k => k.key);
+}
+
 // ----------------------------------------------------
 // MATRIZ DE CONOCIMIENTO (100+ TÓPICOS AUTÓNOMOS)
 // ----------------------------------------------------
@@ -260,8 +265,8 @@ async function autoSeedJobsIfLow(pool: any) {
     const countRes = await pool.query("SELECT count(*) FROM teacher_pool_jobs WHERE status='queued'");
     const queuedCount = parseInt(countRes.rows[0].count, 10);
 
-    if (queuedCount < 5) {
-      const needed = 10 - queuedCount;
+    if (queuedCount < 8) {
+      const needed = 15 - queuedCount;
       console.log(`🌾 Auto-Seeder: Cola baja (${queuedCount} tareas). Inyectando ${needed} tareas nuevas al Córtex...`);
 
       for (let i = 0; i < needed; i++) {
@@ -282,11 +287,11 @@ async function autoSeedJobsIfLow(pool: any) {
 }
 
 // ----------------------------------------------------
-// BUCLE PRINCIPAL (DAEMON RESISTENTE)
+// BUCLE PRINCIPAL (DAEMON RESISTENTE MULTI-KEY ASÍNCRONO)
 // ----------------------------------------------------
 async function run() {
   console.log('='.repeat(65));
-  console.log(' 🛡️ ONEBRAIN: BULLETPROOF CORTEX HARVESTER (24/7 Mode)');
+  console.log(' 🛡️ ONEBRAIN: BULLETPROOF CORTEX HARVESTER (Multi-Key Pipeline 24/7)');
   console.log('='.repeat(65));
   console.log(`[*] Keys en Pool: ${GROQ_KEYS.length} API Keys activas.`);
   console.log(`[*] Tópicos en Catálogo: ${TOPIC_CATALOG.length} disciplinas.`);
@@ -314,30 +319,51 @@ async function run() {
     );
   `);
 
-  console.log('🟢 Córtex conectado a PostgreSQL. Iniciando farmeo continuo...\n');
+  console.log('🟢 Córtex conectado a PostgreSQL. Iniciando farmeo en pipeline concurrente...\n');
 
   let totalFarmedTokensSession = 0;
   let tasksCompletedSession = 0;
 
   while (true) {
     try {
-      // 1. Auto-seeding continuo para que nunca muera la cola
+      // 1. Auto-seeding continuo para que nunca muera la cola (mantiene 15 tareas)
       await autoSeedJobsIfLow(pool);
 
-      // 2. Tomar tareas pendientes
+      // 2. Comprobar keys disponibles
+      const availableKeys = getAvailableKeys();
+      if (availableKeys.length === 0) {
+        console.log('⏳ Todas las keys en cooldown temporal. Esperando 5s para reanudar...');
+        await new Promise(r => setTimeout(r, 5000));
+        continue;
+      }
+
+      // 3. Tomar tareas pendientes (hasta 5 tareas simultáneas)
+      const concurrency = Math.min(availableKeys.length, 5);
       const { rows } = await pool.query(
-        "SELECT * FROM teacher_pool_jobs WHERE status='queued' ORDER BY created_at ASC LIMIT 3"
+        `SELECT * FROM teacher_pool_jobs WHERE status='queued' ORDER BY created_at ASC LIMIT ${concurrency}`
       );
 
-      for (const job of rows) {
-        try {
-          await pool.query("UPDATE teacher_pool_jobs SET status=$1, updated_at=now() WHERE id=$2", ['running', job.id]);
-          console.log(`\n⚡ [Tarea #${job.id}] Cosechando: "${job.topic}" (${job.count} pares esperados)...`);
+      if (rows.length === 0) {
+        await new Promise(resolve => setTimeout(resolve, POLL_MS));
+        continue;
+      }
 
+      // Marcar todas las tareas asignadas como 'running'
+      const jobIds = rows.map(r => r.id);
+      await pool.query(
+        "UPDATE teacher_pool_jobs SET status='running', updated_at=now() WHERE id = ANY($1::int[])",
+        [jobIds]
+      );
+
+      console.log(`\n🚀 [Pipeline Concurrente] Ejecutando ${rows.length} tareas en paralelo a través de ${availableKeys.length} keys activas de Groq...`);
+
+      // 4. Ejecución paralela asíncrona (5 streams simultáneos)
+      await Promise.allSettled(rows.map(async (job) => {
+        try {
           // Llamar a Groq con reintentos y rotación
           const rawContent = await callGroqWithRetry(job.topic, job.count);
           
-          // Extraer y normalizar con parser seguro
+          // Extraer y normalizar con parser seguro y STM sanitizer
           const rawSamples = extractAndNormalizeSamples(rawContent);
 
           const samples = rawSamples.map((p) => ({
@@ -360,14 +386,14 @@ async function run() {
             ['completed', JSON.stringify(samples), job.id]
           );
 
-          console.log(`✅ [Tarea #${job.id} COMPLETADA] +${Math.round(approxTokens)} tokens útiles cosechados.`);
-          console.log(`📊 Total Sesión: ${tasksCompletedSession} tareas | ~${totalFarmedTokensSession.toLocaleString()} tokens generados.`);
-
+          console.log(`✅ [Tarea #${job.id} COMPLETADA EN PARALELO] +${Math.round(approxTokens)} tokens útiles cosechados.`);
         } catch (e: any) {
           console.error(`❌ [Tarea #${job.id} ERROR]:`, e.message);
           await pool.query("UPDATE teacher_pool_jobs SET status=$1, updated_at=now() WHERE id=$2", ['failed', job.id]);
         }
-      }
+      }));
+
+      console.log(`📊 Total Sesión: ${tasksCompletedSession} tareas | ~${totalFarmedTokensSession.toLocaleString()} tokens generados.`);
 
     } catch (err: any) {
       console.error('Cortex: Error en ciclo de polling:', err.message);

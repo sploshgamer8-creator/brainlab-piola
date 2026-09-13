@@ -83,7 +83,10 @@ async function runProfiler() {
   // Buscar un shard generado
   let shardPath = '';
   if (fs.existsSync(datasetsDir)) {
-    const generations = fs.readdirSync(datasetsDir);
+    const generations = fs.readdirSync(datasetsDir).filter(f => {
+      const full = path.join(datasetsDir, f);
+      return fs.existsSync(full) && fs.statSync(full).isDirectory();
+    });
     if (generations.length > 0) {
       const genPath = path.join(datasetsDir, generations[generations.length - 1]);
       const files = fs.readdirSync(genPath).filter(f => f.endsWith('.bin'));

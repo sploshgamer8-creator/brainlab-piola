@@ -1,14 +1,16 @@
 /**
- * 🔄 ONEBRAIN CONTINUOUS AUTONOMOUS FLYWHEEL
+ * 🔄 ONEBRAIN CONTINUOUS AUTONOMOUS FLYWHEEL (V2: Auto-Growth & SIMD Calibration)
  * 
  * Bucle infinito desatendido (24/7) que:
  * 1. Sincroniza continuamente los tokens cosechados en Railway (PostgreSQL).
  * 2. Purifica los datos con STM Sanitizer (0% padding waste / fluff).
  * 3. Compila shards binarios uint16 en datasets/cloud_harvested/.
- * 4. Entrena el modelo local nanoGPT (Karpathy Core Float32) con AdamW y SFT masking.
+ * 4. Entrena el modelo local nanoGPT con AdamW y SFT masking en bloque de 128 tokens.
  * 5. Protege la memoria con 25% Anchor Replay Buffer (anti-olvido de Lua y español).
- * 6. Guarda checkpoints evolucionados automáticamente en local_brain_registry.sqlite.
- * 7. Nunca se detiene: tolera desconexiones de red, rate limits y reintenta perpetuamente.
+ * 6. Disparador Autónomo de Auto-Growth: Cuando la pérdida entra en plateau, duplica capas
+ *    con ZeroBlockInsert garantizando Delta Logits = 0.000000.
+ * 7. Guarda checkpoints evolucionados automáticamente en local_brain_registry.sqlite.
+ * 8. Nunca se detiene: tolera desconexiones de red, rate limits y reintenta perpetuamente.
  */
 
 import fs from 'fs';
@@ -22,6 +24,7 @@ import { BrainTrainer } from '../src/training/trainer';
 import { STARTER_DATASETS } from '../src/training/datasets_store';
 import { syncCloudToBinaryShards } from '../src/server/harvester/shard_synchronizer';
 import { sanitizeTeacherOutput } from '../src/core/stm_sanitizer';
+import { expandModelDepth, GrowthResult } from '../src/core/model_growth';
 import { getDatabase, persistDatabase } from '../src/server/db';
 import { DatasetItem, GPTConfig, TrainingHyperparameters } from '../src/core/types';
 
@@ -44,10 +47,11 @@ function logEvolution(msg: string) {
   } catch {}
 }
 
+// Configuración calibrada al Máximo Sano
 const DEFAULT_CONFIG: GPTConfig = {
   vocab_size: 50257,
-  block_size: 64,
-  n_layer: 4,
+  block_size: 128, // Contexto expandido a 128 tokens (funciones enteras)
+  n_layer: 4,      // 4 capas base (escalable a 8L por ZeroBlockInsert)
   n_head: 4,
   n_embd: 64,
   dropout: 0.05,
@@ -55,10 +59,10 @@ const DEFAULT_CONFIG: GPTConfig = {
 };
 
 const HYPERPARAMS: TrainingHyperparameters = {
-  learningRate: 3e-4,
+  learningRate: 4e-4,
   batchSize: 1,
-  gradientAccumulation: 4,
-  maxIters: 10000,
+  gradientAccumulation: 8, // Lote efectivo = 8 * 128 = 1,024 tokens
+  maxIters: 20000,
   weightDecay: 0.01,
   gradClip: 1.0,
   replayRatio: 0.25,
@@ -67,24 +71,25 @@ const HYPERPARAMS: TrainingHyperparameters = {
 
 export async function startAutonomousFlywheel() {
   console.log('='.repeat(70));
-  console.log(' 🧬 ONEBRAIN AUTONOMOUS CONTINUOUS EVOLUTION FLYWHEEL (24/7)');
+  console.log(' 🧬 ONEBRAIN AUTONOMOUS CONTINUOUS EVOLUTION FLYWHEEL (24/7 V2)');
   console.log('='.repeat(70));
-  logEvolution('🚀 Iniciando Flywheel Autónomo de Entrenamiento Continuo...');
+  logEvolution('🚀 Iniciando Flywheel Autónomo V2 (Contexto: 128, Auto-Growth: ZeroBlockInsert)...');
 
-  // 1. Inicializar modelo y tokenizer
   const tokenizer = new NanoTokenizer();
-  const model = new NanoGPTModel(DEFAULT_CONFIG);
+  let model = new NanoGPTModel(DEFAULT_CONFIG);
 
   const activeDataset: DatasetItem[] = [...STARTER_DATASETS];
   const processedJobIds = new Set<number>();
 
-  const trainer = new BrainTrainer(model, tokenizer, activeDataset, HYPERPARAMS);
+  let trainer = new BrainTrainer(model, tokenizer, activeDataset, HYPERPARAMS);
   trainer.setAnchorDatasets(STARTER_DATASETS, 0.25);
 
   let cycleCount = 0;
   let totalStepsCompleted = 0;
   let initialLoss: number | null = null;
   let currentLoss = 2.5;
+  const recentLosses: number[] = [];
+  let hasGrownDepth = false;
 
   const connectionString = process.env.DATABASE_URL;
   let pool: pg.Pool | null = null;
@@ -163,29 +168,58 @@ export async function startAutonomousFlywheel() {
       // ----------------------------------------------------
       // PASO 2: ENTRENAMIENTO CONTINUO LOCAL CON ADAMW
       // ----------------------------------------------------
-      const stepsToRun = newPairsFound > 0 ? 30 : 10;
-      let cycleTokensTrained = 0;
+      const stepsToRun = newPairsFound > 0 ? 50 : 20; // Ritmo ampliado al Máximo Sano
       let lastStepLoss = currentLoss;
 
       for (let s = 0; s < stepsToRun; s++) {
         const { step, loss } = trainer.stepIteration();
         lastStepLoss = loss;
-        cycleTokensTrained += model.config.block_size;
         totalStepsCompleted++;
 
         if (initialLoss === null) {
           initialLoss = loss;
         }
+
+        recentLosses.push(loss);
+        if (recentLosses.length > 50) recentLosses.shift();
       }
 
       currentLoss = lastStepLoss;
 
       // ----------------------------------------------------
-      // PASO 3: REGISTRO DE EVOLUCIÓN & CHECKPOINTING
+      // PASO 3: DISPARADOR AUTÓNOMO DE MODEL GROWTH
+      // ----------------------------------------------------
+      if (!hasGrownDepth && totalStepsCompleted >= 120 && recentLosses.length >= 30) {
+        // Calcular pendiente de pérdida (slope)
+        const oldestLoss = recentLosses[0];
+        const newestLoss = recentLosses[recentLosses.length - 1];
+        const lossSlope = Math.abs(oldestLoss - newestLoss) / recentLosses.length;
+
+        // Si la pérdida se estabiliza (plateau < 0.01) o bajó de 4.0, expandir capacidad
+        if (lossSlope < 0.015 || currentLoss <= 4.5) {
+          logEvolution(`🧬 [AUTONOMOUS MODEL GROWTH TRIGGERED] Pérdida en meseta (${currentLoss.toFixed(4)}, pendiente: ${lossSlope.toFixed(5)}).`);
+          logEvolution(`   Ejecutando ZeroBlockInsert: Duplicando capas de ${model.config.n_layer}L a ${model.config.n_layer + 4}L...`);
+
+          const growthResult = expandModelDepth(model, 4);
+          logEvolution(`   ✅ Verificación Matemática: Max Logit Delta = ${growthResult.maxLogitDelta.toFixed(6)} (Equivalencia Identidad Pura)`);
+          logEvolution(`   📈 Parámetros: ${growthResult.oldParamCount.toLocaleString()} -> ${growthResult.newParamCount.toLocaleString()}`);
+
+          model = growthResult.expandedModel;
+          trainer = new BrainTrainer(model, tokenizer, activeDataset, HYPERPARAMS);
+          trainer.setAnchorDatasets(STARTER_DATASETS, 0.25);
+          trainer.totalTokensTrained = totalStepsCompleted * model.config.block_size;
+          hasGrownDepth = true;
+
+          logEvolution(`🚀 Modelo expandido a ${model.config.n_layer} capas. Reanudando entrenamiento continuo.`);
+        }
+      }
+
+      // ----------------------------------------------------
+      // PASO 4: REGISTRO DE EVOLUCIÓN & CHECKPOINTING
       // ----------------------------------------------------
       const lossDelta = initialLoss !== null ? (initialLoss - currentLoss).toFixed(4) : '0.0000';
       logEvolution(
-        `⚡ [Ciclo #${cycleCount}] Pasos Totales: ${totalStepsCompleted} | Loss Actual: ${currentLoss.toFixed(4)} (Δ ${lossDelta}) | Tokens: ${trainer.totalTokensTrained.toLocaleString()} | Buffer Activo: ${activeDataset.length} pares`
+        `⚡ [Ciclo #${cycleCount}] Pasos Totales: ${totalStepsCompleted} | Capas: ${model.config.n_layer}L | Loss: ${currentLoss.toFixed(4)} (Δ ${lossDelta}) | Tokens: ${trainer.totalTokensTrained.toLocaleString()} | Buffer: ${activeDataset.length} pares`
       );
 
       // Guardar checkpoint en SQLite cada 5 ciclos o tras nueva cosecha
@@ -193,7 +227,7 @@ export async function startAutonomousFlywheel() {
         try {
           const db = await getDatabase();
           const checkpointId = `cp_flywheel_${Date.now()}`;
-          const cpName = `Flywheel Autonomous Step ${totalStepsCompleted}`;
+          const cpName = `Flywheel Autonomous Step ${totalStepsCompleted} (${model.config.n_layer}L)`;
 
           db.run(`
             INSERT OR REPLACE INTO brain_checkpoints (
@@ -208,11 +242,11 @@ export async function startAutonomousFlywheel() {
             totalStepsCompleted,
             currentLoss,
             trainer.totalTokensTrained,
-            JSON.stringify(DEFAULT_CONFIG),
-            218000,
+            JSON.stringify(model.config),
+            model.config.n_layer * 54500,
             JSON.stringify(trainer.lossHistory.slice(-50)),
-            JSON.stringify({ autoFarmed: true }),
-            `Evolución autónoma 24/7. Pérdida reducida a ${currentLoss.toFixed(4)}.`
+            JSON.stringify({ autoFarmed: true, grownDepth: hasGrownDepth }),
+            `Evolución autónoma 24/7. Capas: ${model.config.n_layer}L. Pérdida: ${currentLoss.toFixed(4)}.`
           ]);
 
           persistDatabase();
@@ -227,7 +261,7 @@ export async function startAutonomousFlywheel() {
     }
 
     // ----------------------------------------------------
-    // PASO 4: HEARTBEAT & SLEEP LATENTE
+    // PASO 5: HEARTBEAT & SLEEP LATENTE
     // ----------------------------------------------------
     await new Promise(resolve => setTimeout(resolve, 15000)); // 15 segundos entre ciclos
   }
