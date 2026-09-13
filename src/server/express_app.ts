@@ -1,12 +1,12 @@
 import express from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { handleApiRoutes } from './api_middleware.js';
+import { initPostgres } from './db.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export async function startExpressServer(port?: number): Promise<void> {
+  // Inicializar y migrar PostgreSQL en Railway si está disponible
+  await initPostgres();
 
-export function startExpressServer(port?: number): Promise<void> {
   return new Promise((resolve) => {
     const app = express();
     
@@ -16,7 +16,7 @@ export function startExpressServer(port?: number): Promise<void> {
     });
 
     // Serve static files from dist/ in production (for Railway/Docker)
-    const distPath = path.join(__dirname, '..', '..', 'dist');
+    const distPath = path.resolve(process.cwd(), 'dist');
     app.use(express.static(distPath));
 
     // Fallback to index.html for SPA routing

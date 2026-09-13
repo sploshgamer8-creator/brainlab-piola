@@ -1,6 +1,37 @@
 import initSqlJs, { Database } from 'sql.js';
 import fs from 'fs';
 import path from 'path';
+import pg from 'pg';
+
+/**
+ * Inicializa PostgreSQL en Railway si está configurado
+ */
+export async function initPostgres(): Promise<void> {
+  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  if (!connectionString) {
+    console.log('[PostgreSQL] No DATABASE_URL or POSTGRES_URL configured.');
+    return;
+  }
+  console.log('[PostgreSQL] Connecting and verifying tables...');
+  const pool = new pg.Pool({
+    connectionString,
+    ssl: connectionString.includes('railway.internal') ? false : { rejectUnauthorized: false }
+  });
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS proyectos (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        creado_en TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    console.log('[PostgreSQL] Table "proyectos" verified and ready on Railway!');
+  } catch (err) {
+    console.error('[PostgreSQL] Error initializing table:', err);
+  } finally {
+    await pool.end();
+  }
+}
 
 let dbInstance: Database | null = null;
 const DB_FILE_PATH = path.resolve(process.cwd(), 'local_brain_registry.sqlite');
