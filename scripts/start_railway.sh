@@ -1,16 +1,15 @@
-#!/bin/bash
+[INFO] Actualizando start_railway.sh para ejecutar la migraci¢n.
+#!/usr/bin/env bash
+set -e
 
-# Start llama-server in the background
-echo "Starting llama-server (Linux)..."
-./bin/llama-server -m models/qwen2.5-0.5b.gguf --port 8080 --host 127.0.0.1 -c 2048 &
-LLAMA_PID=$!
+:: 1?? Levantar llama-server en background
+./bin/llama-server &
 
-# Wait a couple of seconds for it to bind
+:: 2?? Esperar a que el servidor arranque
 sleep 2
 
-# Start the Node.js Express server
-echo "Starting Node.js server on port $PORT..."
-npm run start:railway
+:: 3?? Ejecutar la migraci¢n (crea tabla proyectos
+psql $POSTGRES_URL -f scripts/migrations/001_create_proyectos.sql
 
-# If the node server dies, kill llama-server as well
-kill $LLAMA_PID
+:: 4?? Iniciar la aplicaci¢n Node/Express
+npm run start:railway
