@@ -82,6 +82,23 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const [inputPrompt, setInputPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [chatMode, setChatMode] = useState<'local' | 'onebrain_gpu' | 'duo' | 'gateway'>('onebrain_gpu');
+  const [gpuCheckpoint, setGpuCheckpoint] = useState<'checkpoints/onebrain_piolacraft.pt' | 'checkpoints/onebrain_best.pt'>('checkpoints/onebrain_piolacraft.pt');
+  const [inferWorkerStatus, setInferWorkerStatus] = useState<{ running: boolean; vram_allocated_mb?: number; device?: string } | null>(null);
+
+  useEffect(() => {
+    const checkWorker = async () => {
+      try {
+        const res = await fetch('/api/infer/status');
+        if (res.ok) {
+          const data = await res.json();
+          setInferWorkerStatus(data);
+        }
+      } catch {}
+    };
+    checkWorker();
+    const interval = setInterval(checkWorker, 8000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Generation Hyperparameters
   const [temperature, setTemperature] = useState(0.8);
@@ -405,7 +422,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             prompt: fullPrompt,
-            checkpoint: 'checkpoints/onebrain_piolacraft.pt',
+            checkpoint: gpuCheckpoint,
             maxTokens: maxNewTokens,
             temperature,
             topK,
@@ -416,13 +433,16 @@ export const ChatTab: React.FC<ChatTabProps> = ({
         const durationMs = performance.now() - startTime;
 
         if (data.success) {
+          const modelName = gpuCheckpoint.includes('piolacraft') ? 'PiolaCraft FT' : 'OneBrain Base';
+          const workerTag = data.worker === 'persistent' ? '⚡ Hot' : '❄️ Cold';
+          const tokSecTag = data.tokens_per_sec ? ` | ${data.tokens_per_sec} tok/s` : '';
           const assistantMsg: ChatMessage = {
             id: `asst_gpu_${Date.now()}`,
             role: 'assistant',
             content: data.response || data.full_text || '...',
             tokensCount: data.tokens_generated || maxNewTokens,
             durationMs: data.duration_ms || durationMs,
-            modelBadge: `OneBrain Modern GPT (${data.device?.toUpperCase() || 'CUDA'} - ${(data.params_count / 1e6 || 19.34).toFixed(1)}M)`,
+            modelBadge: `${modelName} (${data.device?.toUpperCase() || 'CUDA'} - ${workerTag}${tokSecTag})`,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           };
           setMessages(prev => [...prev, assistantMsg]);
@@ -900,6 +920,34 @@ export const ChatTab: React.FC<ChatTabProps> = ({
                   Maestro 100M
                 </button>
               </div>
+
+              {/* GPU Checkpoint & Worker Status */}
+              {chatMode === 'onebrain_gpu' && (
+                <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-lg border border-cyan-500/30 text-xs">
+                  <select
+                    value={gpuCheckpoint}
+                    onChange={e => setGpuCheckpoint(e.target.value as any)}
+                    className="bg-transparent text-cyan-300 text-xs font-mono font-bold focus:outline-none cursor-pointer"
+                  >
+                    <option value="checkpoints/onebrain_piolacraft.pt" className="bg-slate-900 text-white">
+                      🎮 PiolaCraft FT (Lucy)
+                    </option>
+                    <option value="checkpoints/onebrain_best.pt" className="bg-slate-900 text-white">
+                      🧠 Base 19M (TinyStories)
+                    </option>
+                  </select>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-semibold ${
+                      inferWorkerStatus?.running
+                        ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                        : 'bg-amber-950 text-amber-400 border border-amber-800'
+                    }`}
+                    title={inferWorkerStatus?.running ? `Worker persistente en memoria (${inferWorkerStatus.vram_allocated_mb || 75}MB VRAM)` : 'Worker apagado (Cold Spawn)'}
+                  >
+                    {inferWorkerStatus?.running ? '⚡ Hot VRAM' : '❄️ Spawn'}
+                  </span>
+                </div>
+              )}
 
               <button
                 onClick={() => setMessages([messages[0]])}

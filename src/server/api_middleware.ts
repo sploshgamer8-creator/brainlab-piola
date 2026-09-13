@@ -1636,6 +1636,23 @@ Reglas:
     return res.writeHead(200).end(JSON.stringify({ running: false, mode: 'cold_spawn_fallback' }));
   }
 
+  // Benchmark de Dominio PiolaCraft (GPU RTX 2060)
+  if (req.url === '/api/benchmarks/piolacraft' && req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json');
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const summaryFile = path.resolve(process.cwd(), 'infra', 'benchmarks', 'results', 'piolacraft_benchmark_summary.json');
+      if (fs.existsSync(summaryFile)) {
+        const content = fs.readFileSync(summaryFile, 'utf8');
+        return res.writeHead(200).end(content);
+      }
+      return res.writeHead(404).end(JSON.stringify({ error: 'Benchmark no encontrado. Ejecuta npm run eval:piolacraft' }));
+    } catch (err: any) {
+      return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+    }
+  }
+
   // Health check
   if (req.url === '/api/health') {
     res.setHeader('Content-Type', 'application/json');
