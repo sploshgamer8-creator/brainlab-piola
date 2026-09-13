@@ -11,6 +11,7 @@ import { ChatTab } from './components/tabs/ChatTab';
 import { MemoryTab } from './components/tabs/MemoryTab';
 import { ExportTab } from './components/tabs/ExportTab';
 import { ForgeTab } from './components/tabs/ForgeTab';
+import { LiveHarvesterTab } from './components/tabs/LiveHarvesterTab';
 import { OneBrainCopilot } from './components/OneBrainCopilot';
 
 import { BrainProject, DatasetItem, ExternalMemoryItem, PersonalityTraits, TrainingHyperparameters, CheckpointMetadata } from './core/types';
@@ -496,6 +497,12 @@ export default function App() {
             onLoadPretrainedWeights={handleLoadPretrainedWeights}
           />
         </div>
+
+        {activeTab === 'harvester' && (
+          <LiveHarvesterTab
+            onInjectSamples={(samples) => setDatasets(prev => [...samples, ...prev])}
+          />
+        )}
 
         {activeTab === 'evaluate' && modelRef.current && (
           <EvaluateTab

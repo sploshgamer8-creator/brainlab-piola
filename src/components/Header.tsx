@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cpu, ShieldCheck, Zap, Sparkles, FolderKanban, GitBranch, Menu, X, Check, Hammer } from 'lucide-react';
+import { Cpu, ShieldCheck, Zap, Sparkles, FolderKanban, GitBranch, Menu, X, Check, Hammer, Server, Flame } from 'lucide-react';
 import { BrainProject } from '../core/types';
 
 interface HeaderProps {
@@ -41,6 +41,13 @@ export const Header: React.FC<HeaderProps> = ({
       icon: Zap,
       category: 'Optimización',
       description: 'Entrenamiento con AdamW, backprop analítico y curva de loss en tiempo real.',
+    },
+    {
+      id: 'harvester',
+      label: 'Live Farmeo (Servidor)',
+      icon: Server,
+      category: 'Servidor 24/7',
+      description: 'Telemetría 100% en tiempo real del servidor, uso de tokens y control de farmeo.',
     },
     {
       id: 'model',
