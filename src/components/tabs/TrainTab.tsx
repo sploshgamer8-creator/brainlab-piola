@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, StepForward, Save, Zap, AlertCircle, TrendingDown, Gauge, Repeat, SlidersHorizontal, Sparkles, Copy } from 'lucide-react';
 import { BrainProject, CheckpointMetadata, DatasetItem, PersonalityTraits, TrainingHyperparameters } from '../../core/types';
 import { OmniDistillPanel } from '../OmniDistillPanel';
