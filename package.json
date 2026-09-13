@@ -21,6 +21,8 @@
     "flywheel": "tsx scripts/autonomous_flywheel.ts",
     "dev:electron": "tsx scripts/build_electron.ts && cross-env NODE_ENV=development concurrently \"npm run dev -- --port 3456 --strictPort\" \"wait-on tcp:3456 && electron .\"",
     "build:electron": "npm run download:llama && npm run build && electron-builder",
+    "infer:worker": "infra\\env313\\Scripts\\python.exe nanogpt/infer_server.py",
+    "eval:piolacraft": "infra\\env313\\Scripts\\python.exe scripts/piolacraft_eval.py",
     "build:railway": "npm run build",
     "start:railway": "npm run start"
   },

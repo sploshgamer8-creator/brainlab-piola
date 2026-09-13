@@ -1537,6 +1537,31 @@ Reglas:
           return res.writeHead(400).end(JSON.stringify({ success: false, error: 'Prompt requerido' }));
         }
 
+        // 1. Intentar worker persistente en localhost:5005 (latencia ultra baja <80ms)
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 12000);
+          const fastRes = await fetch('http://127.0.0.1:5005/infer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              prompt,
+              checkpoint,
+              maxTokens,
+              temperature,
+              topK,
+            }),
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+          if (fastRes.ok) {
+            const data = await fastRes.json();
+            return res.writeHead(200).end(JSON.stringify(data));
+          }
+        } catch {
+          // Fallback a spawn si el worker persistente no esta corriendo
+        }
+
         const { spawn } = await import('child_process');
         const path = await import('path');
         const fs = await import('fs');
@@ -1594,6 +1619,21 @@ Reglas:
       }
     });
     return;
+  }
+
+  // Estado del Worker Persistente de Inferencia
+  if (req.url === '/api/infer/status' && req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json');
+    try {
+      const ping = await fetch('http://127.0.0.1:5005/health', { signal: AbortSignal.timeout(1000) });
+      if (ping.ok) {
+        const data = await ping.json();
+        return res.writeHead(200).end(JSON.stringify({ running: true, ...data }));
+      }
+    } catch {
+      // Worker apagado
+    }
+    return res.writeHead(200).end(JSON.stringify({ running: false, mode: 'cold_spawn_fallback' }));
   }
 
   // Health check

@@ -116,33 +116,67 @@ def main():
     print("=" * 65)
 
     pairs = load_piolacraft_data()
-    print(f"\n[+] Total pares de conocimiento recolectados: {len(pairs):,}")
+    import hashlib
+    import random
+
+    # Fijar semilla para reproducibilidad científica
+    random.seed(42)
+    random.shuffle(pairs)
+
+    n_total = len(pairs)
+    n_val = max(50, int(n_total * 0.10))
+    val_pairs = pairs[:n_val]
+    train_pairs = pairs[n_val:]
+
+    print(f"\n[+] Partición de datos (90/10 reproducible):")
+    print(f"    - Train pairs: {len(train_pairs):,} ({100 * len(train_pairs) / n_total:.1f}%)")
+    print(f"    - Validation pairs (oculto): {len(val_pairs):,} ({100 * len(val_pairs) / n_total:.1f}%)")
 
     tokenizer = PythonNanoTokenizer()
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    all_tokens = []
-    for p in pairs:
-        doc = f"<|user|>{p['input']}<|endoftext|><|assistant|>{p['output']}<|endoftext|>\n"
-        tokens = tokenizer.encode(doc)
-        all_tokens.extend(tokens)
+    def encode_pairs(pair_list):
+        toks = []
+        for p in pair_list:
+            doc = f"<|user|>{p['input']}<|endoftext|><|assistant|>{p['output']}<|endoftext|>\n"
+            toks.extend(tokenizer.encode(doc))
+        return np.array(toks, dtype=np.uint16)
 
-    all_tokens_arr = np.array(all_tokens, dtype=np.uint16)
-    out_file = os.path.join(OUTPUT_DIR, "piolacraft_shard_0000.bin")
-    all_tokens_arr.tofile(out_file)
+    train_tokens = encode_pairs(train_pairs)
+    val_tokens = encode_pairs(val_pairs)
+
+    train_file = os.path.join(OUTPUT_DIR, "piolacraft_train.bin")
+    val_file = os.path.join(OUTPUT_DIR, "piolacraft_val.bin")
+    legacy_file = os.path.join(OUTPUT_DIR, "piolacraft_shard_0000.bin")
+
+    train_tokens.tofile(train_file)
+    val_tokens.tofile(val_file)
+    train_tokens.tofile(legacy_file) # Para retrocompatibilidad
+
+    train_hash = hashlib.sha256(train_tokens.tobytes()).hexdigest()
+    val_hash = hashlib.sha256(val_tokens.tobytes()).hexdigest()
 
     manifest = {
         "dataset_name": "piolacraft_lore_and_lua",
-        "total_pairs": len(pairs),
-        "total_tokens": len(all_tokens),
-        "dtype": "uint16",
-        "shard_path": out_file
+        "split_ratio": "90/10",
+        "train_pairs": len(train_pairs),
+        "train_tokens": len(train_tokens),
+        "train_sha256": train_hash,
+        "val_pairs": len(val_pairs),
+        "val_tokens": len(val_tokens),
+        "val_sha256": val_hash,
+        "total_pairs": n_total,
+        "total_tokens": len(train_tokens) + len(val_tokens),
+        "dtype": "uint16"
     }
-    with open(os.path.join(OUTPUT_DIR, "manifest.json"), "w", encoding="utf-8") as f:
+
+    manifest_path = os.path.join(OUTPUT_DIR, "manifest.json")
+    with open(manifest_path, "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2)
 
-    print(f"[OK] Shard binario generado: {out_file}")
-    print(f"[OK] Tokens compilados: {len(all_tokens):,} tokens uint16.")
+    print(f"[OK] Train shard: {train_file} ({len(train_tokens):,} tokens, SHA256: {train_hash[:12]}...)")
+    print(f"[OK] Val shard (oculto): {val_file} ({len(val_tokens):,} tokens, SHA256: {val_hash[:12]}...)")
+    print(f"[OK] Manifiesto registrado en: {manifest_path}")
 
 if __name__ == "__main__":
     main()

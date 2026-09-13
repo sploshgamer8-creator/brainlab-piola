@@ -1,0 +1,241 @@
+{
+  "base_model": {
+    "model_file": "onebrain_best.pt",
+    "total_tests": 13,
+    "overall_accuracy": "0.0%",
+    "category_accuracy": {
+      "voxelibre_crafting": "0.0%",
+      "game_mechanics": "0.0%",
+      "luanti_lua": "0.0%",
+      "lucy_identity": "0.0%"
+    },
+    "details": [
+      {
+        "prompt": "\u00bfQue es Pico de diamante en PiolaCraft?",
+        "category": "voxelibre_crafting",
+        "response": "the the following sentence is a list of",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfComo se usa Horno?",
+        "category": "voxelibre_crafting",
+        "response": "the describe the following sentence is a",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQue suelta Bloque de carbon?",
+        "category": "voxelibre_crafting",
+        "response": "the main are all the given sentence in t",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQue es Espada de hierro en PiolaCraft?",
+        "category": "voxelibre_crafting",
+        "response": "the story is a sentence in the store of",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQue pasa con caida?",
+        "category": "game_mechanics",
+        "response": "the provide a story of the content of a",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQue pasa con asfixia agua?",
+        "category": "game_mechanics",
+        "response": "the main in the sentence is a formal to",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQue pasa con lava?",
+        "category": "game_mechanics",
+        "response": "the first statement of the story of the",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfComo registro un bloque en Luanti?",
+        "category": "luanti_lua",
+        "response": "the impact of the product of the store i",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfComo obtengo la posicion del jugador?",
+        "category": "luanti_lua",
+        "response": "the start and seen the given sentence.<|user|>",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfComo envio un mensaje en el chat del servidor?",
+        "category": "luanti_lua",
+        "response": "the discribe and sentence is a content o",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQuien sos?",
+        "category": "lucy_identity",
+        "response": "the following sentence in the store of t",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "seguime",
+        "category": "lucy_identity",
+        "response": "the sentence is in the following sentenc",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "quedate aca",
+        "category": "lucy_identity",
+        "response": "a story in a sentence between the theme",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      }
+    ]
+  },
+  "piolacraft_model": {
+    "model_file": "onebrain_piolacraft.pt",
+    "total_tests": 13,
+    "overall_accuracy": "15.4%",
+    "category_accuracy": {
+      "voxelibre_crafting": "25.0%",
+      "game_mechanics": "0.0%",
+      "luanti_lua": "0.0%",
+      "lucy_identity": "33.3%"
+    },
+    "details": [
+      {
+        "prompt": "\u00bfQue es Pico de diamante en PiolaCraft?",
+        "category": "voxelibre_crafting",
+        "response": "escaleras de hormig\u00f3n verde: una para pr",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfComo se usa Horno?",
+        "category": "voxelibre_crafting",
+        "response": "simplemente col\u00f3quelo donde desea que ap",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQue suelta Bloque de carbon?",
+        "category": "voxelibre_crafting",
+        "response": "escaleras de hormig\u00f3n amarillo suelta: s",
+        "hits": [
+          "suelta"
+        ],
+        "score": 0.3333333333333333,
+        "pass": true
+      },
+      {
+        "prompt": "\u00bfQue es Espada de hierro en PiolaCraft?",
+        "category": "voxelibre_crafting",
+        "response": "escaleras de hormig\u00f3n amarillo: las esca",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQue pasa con caida?",
+        "category": "game_mechanics",
+        "response": "simplemente col\u00f3quelo donde desea que ap",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQue pasa con asfixia agua?",
+        "category": "game_mechanics",
+        "response": "sobre eso en piolacraft: como hago una l",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQue pasa con lava?",
+        "category": "game_mechanics",
+        "response": "sobre eso en piolacraft: como hago una m",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfComo registro un bloque en Luanti?",
+        "category": "luanti_lua",
+        "response": "madera de abeto suelta: concrete roca.",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfComo obtengo la posicion del jugador?",
+        "category": "luanti_lua",
+        "response": "losa de hormig\u00f3n magenta suelta: slab co",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfComo envio un mensaje en el chat del servidor?",
+        "category": "luanti_lua",
+        "response": "sobre eso en piolacraft: como hago una p",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "\u00bfQuien sos?",
+        "category": "lucy_identity",
+        "response": "sobre eso en piolacraft: como hago una m",
+        "hits": [
+          "piolacraft"
+        ],
+        "score": 0.25,
+        "pass": true
+      },
+      {
+        "prompt": "seguime",
+        "category": "lucy_identity",
+        "response": "sobre eso en piolacraft: te acordas cuan",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      },
+      {
+        "prompt": "quedate aca",
+        "category": "lucy_identity",
+        "response": "sobre eso en piolacraft: como hago una c",
+        "hits": [],
+        "score": 0.0,
+        "pass": false
+      }
+    ]
+  },
+  "timestamp": "2026-09-13T22:36:26Z"
+}
