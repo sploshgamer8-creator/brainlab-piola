@@ -154,19 +154,28 @@ export const TrainTab: React.FC<TrainTabProps> = ({
     onPauseTraining();
   };
 
-  // SVG Chart points calculation
+  // SVG Chart points calculation (Resistente a NaN)
   const chartHeight = 160;
   const chartWidth = 600;
-  const historySlice = lossHistory.slice(-60); // Last 60 points
+  const validHistory = lossHistory
+    .filter(h => h && typeof h.loss === 'number' && Number.isFinite(h.loss))
+    .slice(-60); // Last 60 valid points
 
-  const maxLoss = Math.max(5.0, ...historySlice.map(h => h.loss));
-  const minLoss = Math.max(0.1, Math.min(1.0, ...historySlice.map(h => h.loss)));
+  const rawMax = validHistory.length > 0 ? Math.max(...validHistory.map(h => h.loss)) : 5.0;
+  const rawMin = validHistory.length > 0 ? Math.min(...validHistory.map(h => h.loss)) : 0.1;
 
-  const points = historySlice.map((h, index) => {
-    const x = historySlice.length <= 1 ? 0 : (index / (historySlice.length - 1)) * chartWidth;
-    const norm = (h.loss - minLoss) / Math.max(1e-4, maxLoss - minLoss);
+  const maxLoss = Number.isFinite(rawMax) ? Math.max(5.0, rawMax) : 5.0;
+  const minLoss = Number.isFinite(rawMin) ? Math.max(0.1, Math.min(1.0, rawMin)) : 0.1;
+  const range = Math.max(1e-4, maxLoss - minLoss);
+
+  const points = validHistory.map((h, index) => {
+    const x = validHistory.length <= 1 ? 0 : (index / (validHistory.length - 1)) * chartWidth;
+    const safeLoss = Number.isFinite(h.loss) ? h.loss : minLoss;
+    const norm = Math.min(1, Math.max(0, (safeLoss - minLoss) / range));
     const y = chartHeight - norm * (chartHeight - 30) - 15;
-    return `${x},${y}`;
+    const safeX = Number.isFinite(x) ? x : 0;
+    const safeY = Number.isFinite(y) ? y : chartHeight / 2;
+    return `${safeX.toFixed(1)},${safeY.toFixed(1)}`;
   }).join(' ');
 
   return (
@@ -411,12 +420,12 @@ export const TrainTab: React.FC<TrainTabProps> = ({
               Curva de PÃ©rdida en Tiempo Real (Cross-Entropy Loss)
             </h3>
             <span className="text-xs font-mono text-slate-400">
-              Ãšltimos {historySlice.length} pasos
+              Últimos {validHistory.length} pasos
             </span>
           </div>
 
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 overflow-hidden">
-            {historySlice.length > 1 ? (
+            {validHistory.length > 1 && points.length > 0 ? (
               <div className="relative w-full h-44">
                 <svg
                   viewBox={`0 0 ${chartWidth} ${chartHeight}`}
