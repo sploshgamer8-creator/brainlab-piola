@@ -103,22 +103,48 @@ export const TrainTab: React.FC<TrainTabProps> = ({
     }
   };
 
-  const fetchBatchFromSource = async () => {
+  const fetchBatchFromSource = async (): Promise<DatasetItem[]> => {
     if (autoFarmingSource === 'railway') {
-      const CLOUD_URL = 'https://brainlab-production.up.railway.app';
-      const dispatchRes = await axios.post(`${CLOUD_URL}/api/cloud/teacher-pool/dispatch`, { topic: autoFarmingTopic, count: autoFarmingBatchSize, model: 'qwen7b' });
-      const jobId = dispatchRes.data.jobId;
-      
-      let jobStatus = 'queued';
-      while (jobStatus !== 'completed' && jobStatus !== 'failed' && autoFarmingRef.current) {
-        await new Promise(r => setTimeout(r, 2000));
-        const statusRes = await axios.get(`${CLOUD_URL}/api/cloud/teacher-pool/status/${jobId}`);
-        jobStatus = statusRes.data.status;
-        if (jobStatus === 'completed') {
-          return JSON.parse(statusRes.data.samples) as DatasetItem[];
+      try {
+        const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+        const CLOUD_URL = isLocal ? 'https://brainlab-production.up.railway.app' : '';
+        
+        const dispatchRes = await axios.post(`${CLOUD_URL}/api/cloud/teacher-pool/dispatch`, {
+          topic: autoFarmingTopic,
+          count: autoFarmingBatchSize,
+          model: 'llama-3.1-8b-instant'
+        }, { timeout: 6000 });
+
+        const jobId = dispatchRes.data?.jobId;
+        if (jobId) {
+          let jobStatus = 'queued';
+          let attempts = 0;
+          while (jobStatus !== 'completed' && jobStatus !== 'failed' && autoFarmingRef.current && attempts < 8) {
+            attempts++;
+            await new Promise(r => setTimeout(r, 1500));
+            const statusRes = await axios.get(`${CLOUD_URL}/api/cloud/teacher-pool/status/${jobId}`, { timeout: 5000 });
+            jobStatus = statusRes.data?.status;
+            if (jobStatus === 'completed' && statusRes.data?.samples) {
+              const parsed = typeof statusRes.data.samples === 'string' ? JSON.parse(statusRes.data.samples) : statusRes.data.samples;
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                return parsed as DatasetItem[];
+              }
+            }
+          }
         }
+      } catch (err: any) {
+        console.warn('Railway Teacher Pool en espera, activando destilador de alta velocidad:', err.message);
       }
-      return [];
+
+      // Fallback instantáneo a destilador garantizado si Railway tarda más de 12s
+      const distillRes = await fetchDistillationBatch({
+        topic: autoFarmingTopic,
+        category: 'spanish',
+        count: autoFarmingBatchSize,
+        traits,
+        complexity: 'conversational',
+      });
+      return distillRes.candidates || [];
     } else {
       const omniRouteUrl = localStorage.getItem('local_brain_omniroute_url') || '';
       const omniRouteApiKey = localStorage.getItem('local_brain_omniroute_key') || localStorage.getItem('local_brain_openai_key') || '';

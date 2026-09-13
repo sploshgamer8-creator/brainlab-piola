@@ -22,6 +22,17 @@ export async function handleApiRoutes(req: IncomingMessage, res: ServerResponse,
     return next();
   }
 
+  // Permissive CORS for local & production cross-origin clients
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
   // Cloud Status (PostgreSQL en Railway o SQLite local)
   if (req.url?.startsWith('/api/cloud/status') && req.method === 'GET') {
     res.setHeader('Content-Type', 'application/json');

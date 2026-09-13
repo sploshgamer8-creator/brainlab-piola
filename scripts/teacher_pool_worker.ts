@@ -204,7 +204,7 @@ function extractAndNormalizeSamples(rawText: string): Array<{ input: string, out
  * Llama a Groq con tolerancia a fallos y rotación de keys
  */
 async function callGroqWithRetry(topic: string, count: number, retries = 5): Promise<string> {
-  const model = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
+  const model = process.env.GROQ_MODEL || 'llama-3.1-8b-instant';
   const temp = 0.65 + Math.random() * 0.25; // 0.65 - 0.90 para diversidad
 
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -287,7 +287,7 @@ async function autoSeedJobsIfLow(pool: any) {
 
         await pool.query(
           "INSERT INTO teacher_pool_jobs (topic, count, model, status) VALUES ($1, $2, $3, 'queued')",
-          [uniqueTopic, count, 'llama3-8b-8192']
+          [uniqueTopic, count, 'llama-3.1-8b-instant']
         );
       }
     }
@@ -359,9 +359,9 @@ async function run() {
       }
 
       // Marcar todas las tareas asignadas como 'running'
-      const jobIds = rows.map(r => r.id);
+      const jobIds = rows.map(r => String(r.id));
       await pool.query(
-        "UPDATE teacher_pool_jobs SET status='running', updated_at=now() WHERE id = ANY($1::int[])",
+        "UPDATE teacher_pool_jobs SET status='running', updated_at=now() WHERE id::text = ANY($1)",
         [jobIds]
       );
 
