@@ -16,6 +16,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { performance } from 'perf_hooks';
 import dotenv from 'dotenv';
 import pg from 'pg';
 import { NanoGPTModel } from '../src/core/nanogpt_engine';
@@ -76,20 +77,43 @@ export async function startAutonomousFlywheel() {
   logEvolution('🚀 Iniciando Flywheel Autónomo V2 (Contexto: 128, Auto-Growth: ZeroBlockInsert)...');
 
   const tokenizer = new NanoTokenizer();
-  let model = new NanoGPTModel(DEFAULT_CONFIG);
+  const WEIGHTS_FILE = path.join(PROJECT_ROOT, 'models', 'flywheel_latest_weights.json');
+  const META_FILE = path.join(PROJECT_ROOT, 'models', 'flywheel_meta.json');
 
-  const activeDataset: DatasetItem[] = [...STARTER_DATASETS];
-  const processedJobIds = new Set<number>();
-
-  let trainer = new BrainTrainer(model, tokenizer, activeDataset, HYPERPARAMS);
-  trainer.setAnchorDatasets(STARTER_DATASETS, 0.25);
-
+  let modelConfig = DEFAULT_CONFIG;
   let cycleCount = 0;
   let totalStepsCompleted = 0;
   let initialLoss: number | null = null;
   let currentLoss = 2.5;
   const recentLosses: number[] = [];
   let hasGrownDepth = false;
+
+  if (fs.existsSync(META_FILE) && fs.existsSync(WEIGHTS_FILE)) {
+    try {
+      const meta = JSON.parse(fs.readFileSync(META_FILE, 'utf8'));
+      if (meta.config) modelConfig = meta.config;
+      if (meta.totalStepsCompleted) totalStepsCompleted = meta.totalStepsCompleted;
+      if (meta.cycleCount) cycleCount = meta.cycleCount;
+      if (meta.currentLoss) currentLoss = meta.currentLoss;
+      if (meta.hasGrownDepth !== undefined) hasGrownDepth = meta.hasGrownDepth;
+      logEvolution(`♻️ Reanudando desde estado guardado: Paso ${totalStepsCompleted}, Capas: ${modelConfig.n_layer}L, Loss: ${currentLoss.toFixed(4)}.`);
+    } catch {}
+  }
+
+  let model = new NanoGPTModel(modelConfig);
+  if (fs.existsSync(WEIGHTS_FILE)) {
+    try {
+      model.deserialize(fs.readFileSync(WEIGHTS_FILE, 'utf8'));
+      logEvolution(`✅ Pesos neuronales cargados exitosamente (${modelConfig.n_layer} capas).`);
+    } catch {}
+  }
+
+  const activeDataset: DatasetItem[] = [...STARTER_DATASETS];
+  const processedJobIds = new Set<number>();
+
+  let trainer = new BrainTrainer(model, tokenizer, activeDataset, HYPERPARAMS);
+  trainer.setAnchorDatasets(STARTER_DATASETS, 0.25);
+  trainer.totalTokensTrained = totalStepsCompleted * model.config.block_size;
 
   const connectionString = process.env.DATABASE_URL;
   let pool: pg.Pool | null = null;
@@ -251,6 +275,77 @@ export async function startAutonomousFlywheel() {
 
           persistDatabase();
           logEvolution(`💾 Checkpoint auto-guardado: "${cpName}" en local_brain_registry.sqlite`);
+
+          // Persistir pesos neuronales en models/flywheel_latest_weights.json
+          try {
+            if (!fs.existsSync(path.join(PROJECT_ROOT, 'models'))) {
+              fs.mkdirSync(path.join(PROJECT_ROOT, 'models'), { recursive: true });
+            }
+            fs.writeFileSync(WEIGHTS_FILE, model.serialize(), 'utf8');
+            fs.writeFileSync(META_FILE, JSON.stringify({
+              config: model.config,
+              totalStepsCompleted,
+              cycleCount,
+              currentLoss,
+              hasGrownDepth,
+              updatedAt: new Date().toISOString()
+            }, null, 2), 'utf8');
+            logEvolution(`💾 Pesos neuronales persistidos en models/flywheel_latest_weights.json`);
+          } catch (persistErr: any) {
+            console.warn('⚠️ [Weight Persist Warning]:', persistErr.message);
+          }
+
+          // Medición en vivo de inferencia y generación de muestra (Punto 3)
+          try {
+            const probePrompt = '<|user|>\nHola, ¿quién eres?\n<|assistant|>\n';
+            const promptTokens = tokenizer.encode(probePrompt);
+            const genT0 = performance.now();
+            const validVocabSize = tokenizer.vocabSize;
+            const generatedTokens = [...promptTokens];
+            const maxNewTokens = 25;
+
+            for (let s = 0; s < maxNewTokens; s++) {
+              const context = generatedTokens.length > model.config.block_size
+                ? generatedTokens.slice(generatedTokens.length - model.config.block_size)
+                : generatedTokens;
+
+              const { logits } = model.forward(context);
+              const lastTokenOffset = (context.length - 1) * model.config.vocab_size;
+
+              const candidates: { idx: number; val: number }[] = [];
+              for (let v = 0; v < validVocabSize; v++) {
+                candidates.push({ idx: v, val: logits[lastTokenOffset + v] / 0.7 });
+              }
+              candidates.sort((a, b) => b.val - a.val);
+              const topK = candidates.slice(0, 20);
+
+              const maxVal = topK[0].val;
+              let expSum = 0;
+              for (let i = 0; i < topK.length; i++) expSum += Math.exp(topK[i].val - maxVal);
+              const rand = Math.random() * expSum;
+              let acc = 0;
+              let nextToken = topK[0].idx;
+              for (let i = 0; i < topK.length; i++) {
+                acc += Math.exp(topK[i].val - maxVal);
+                if (rand <= acc) {
+                  nextToken = topK[i].idx;
+                  break;
+                }
+              }
+              generatedTokens.push(nextToken);
+            }
+            const genDuration = performance.now() - genT0;
+            const newToks = generatedTokens.length - promptTokens.length;
+            const msPerTok = genDuration / Math.max(1, newToks);
+            const tokPerSec = (newToks / (genDuration / 1000)).toFixed(1);
+            const sampleText = tokenizer.decode(generatedTokens.slice(promptTokens.length)).trim();
+
+            logEvolution(`🔬 [EVALUACIÓN EN VIVO - GENERACIÓN]:`);
+            logEvolution(`   • Muestra de Texto: "${sampleText || '...'}"`);
+            logEvolution(`   • Telemetría: ${newToks} tokens en ${genDuration.toFixed(1)}ms (${msPerTok.toFixed(1)} ms/tok | ${tokPerSec} tok/s)`);
+          } catch (probeErr: any) {
+            console.warn('⚠️ [Probe Warning]:', probeErr.message);
+          }
         } catch (sqliteErr: any) {
           console.warn('⚠️ [SQLite Warning]:', sqliteErr.message);
         }
