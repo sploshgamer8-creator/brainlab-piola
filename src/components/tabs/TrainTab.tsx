@@ -47,7 +47,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [isAutoFarming, setIsAutoFarming] = useState(false);
   const autoFarmingRef = useRef(false);
-  const [autoFarmingTopic, setAutoFarmingTopic] = useState('ConversaciÃ³n natural en espaÃ±ol y razonamiento lÃ³gico');
+  const [autoFarmingTopic, setAutoFarmingTopic] = useState('Stanford Alpaca: Instrucciones complejas, razonamiento formal y resolución analítica');
   const [autoFarmingRounds, setAutoFarmingRounds] = useState(0);
   const [autoFarmingStatus, setAutoFarmingStatus] = useState<string | null>(null);
   const [autoFarmingLogs, setAutoFarmingLogs] = useState<string[]>([]);
@@ -261,14 +261,47 @@ export const TrainTab: React.FC<TrainTabProps> = ({
               </select>
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-slate-400 mb-1">Tema / Dominio a Destilar:</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-slate-400">Tema / Dominio a Destilar:</label>
+                <span className="text-[10px] text-emerald-400 font-mono">Piso Mínimo de Frontera</span>
+              </div>
               <input
                 type="text"
                 value={autoFarmingTopic}
                 onChange={e => setAutoFarmingTopic(e.target.value)}
-                placeholder="Ej. DiÃ¡logos inteligentes en espaÃ±ol y lÃ³gica en Lua"
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs font-mono focus:outline-none focus:border-emerald-500"
+                placeholder="Ej. Stanford Alpaca o CodeAlpaca"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs font-mono focus:outline-none focus:border-emerald-500 mb-1.5"
               />
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setAutoFarmingTopic('Stanford Alpaca: Instrucciones complejas, razonamiento formal y resolución analítica')}
+                  className="text-[10px] bg-indigo-950/70 hover:bg-indigo-900 border border-indigo-700/60 text-indigo-300 px-2 py-0.5 rounded transition"
+                >
+                  🏛️ Stanford Alpaca (52k)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAutoFarmingTopic('CodeAlpaca: Algoritmos de alto rendimiento, optimización y estructuras de datos')}
+                  className="text-[10px] bg-blue-950/70 hover:bg-blue-900 border border-blue-700/60 text-blue-300 px-2 py-0.5 rounded transition"
+                >
+                  💻 CodeAlpaca (20k)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAutoFarmingTopic('Matemáticas: Optimización bajo restricciones múltiples KKT y derivadas analíticas')}
+                  className="text-[10px] bg-amber-950/70 hover:bg-amber-900 border border-amber-700/60 text-amber-300 px-2 py-0.5 rounded transition"
+                >
+                  📐 Lógica KKT
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAutoFarmingTopic('Rust: Concurrencia segura con Tokio, canales MPSC y bajo consumo de memoria')}
+                  className="text-[10px] bg-orange-950/70 hover:bg-orange-900 border border-orange-700/60 text-orange-300 px-2 py-0.5 rounded transition"
+                >
+                  ⚡ Rust Concurrente
+                </button>
+              </div>
             </div>
             <div>
               <label className="block text-slate-400 mb-1">Muestras (Pares/Ronda):</label>

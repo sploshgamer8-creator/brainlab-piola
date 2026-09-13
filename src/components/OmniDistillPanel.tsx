@@ -16,7 +16,7 @@ export const OmniDistillPanel: React.FC<OmniDistillPanelProps> = ({
   onInjectSamplesAndTrain,
   onLoadPretrainedWeights,
 }) => {
-  const [topic, setTopic] = useState('Diálogos frecuentes en español y comandos de ayuda');
+  const [topic, setTopic] = useState('Stanford Alpaca: Instrucciones de alta densidad, razonamiento formal y resolución lógica');
   const [category, setCategory] = useState<DatasetItem['category']>('spanish');
   const [targetScale, setTargetScale] = useState<'100M' | '1B' | '7B'>('100M');
   const [batchCount, setBatchCount] = useState(6);
@@ -339,14 +339,40 @@ export const OmniDistillPanel: React.FC<OmniDistillPanelProps> = ({
       {/* Inputs de destilación */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3 pt-2">
         <div className="md:col-span-2">
-          <label className="text-[11px] font-mono text-slate-400 block mb-1">TEMA A DESTILAR</label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="text-[11px] font-mono text-slate-400 block">TEMA A DESTILAR</label>
+            <span className="text-[10px] text-emerald-400 font-mono">Piso Mínimo de Frontera</span>
+          </div>
           <input
             type="text"
             value={topic}
             onChange={e => setTopic(e.target.value)}
-            placeholder="Ej: Saludos cordiales, manejo de errores en Lua, cortesía..."
-            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
+            placeholder="Ej: Stanford Alpaca, CodeAlpaca, Razonamiento..."
+            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono mb-1.5"
           />
+          <div className="flex flex-wrap gap-1">
+            <button
+              type="button"
+              onClick={() => setTopic('Stanford Alpaca: Instrucciones de alta densidad, razonamiento formal y resolución lógica')}
+              className="text-[9px] bg-indigo-950/70 hover:bg-indigo-900 border border-indigo-700/60 text-indigo-300 px-1.5 py-0.5 rounded transition"
+            >
+              🏛️ Stanford Alpaca
+            </button>
+            <button
+              type="button"
+              onClick={() => setTopic('CodeAlpaca: Algoritmos de alto rendimiento, optimización y estructuras de datos')}
+              className="text-[9px] bg-blue-950/70 hover:bg-blue-900 border border-blue-700/60 text-blue-300 px-1.5 py-0.5 rounded transition"
+            >
+              💻 CodeAlpaca
+            </button>
+            <button
+              type="button"
+              onClick={() => setTopic('Matemáticas: Optimización bajo restricciones múltiples KKT y derivadas analíticas')}
+              className="text-[9px] bg-amber-950/70 hover:bg-amber-900 border border-amber-700/60 text-amber-300 px-1.5 py-0.5 rounded transition"
+            >
+              📐 Lógica KKT
+            </button>
+          </div>
         </div>
 
         <div>
