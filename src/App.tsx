@@ -11,6 +11,7 @@ import { ChatTab } from './components/tabs/ChatTab';
 import { MemoryTab } from './components/tabs/MemoryTab';
 import { ExportTab } from './components/tabs/ExportTab';
 import { ForgeTab } from './components/tabs/ForgeTab';
+import { OneBrainCopilot } from './components/OneBrainCopilot';
 
 import { BrainProject, DatasetItem, ExternalMemoryItem, PersonalityTraits, TrainingHyperparameters, CheckpointMetadata } from './core/types';
 import { NanoGPTModel } from './core/nanogpt_engine';
@@ -536,6 +537,9 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* Floating Real-time Copilot & Navigator */}
+      <OneBrainCopilot activeTab={activeTab} onNavigate={setActiveTab} />
     </div>
   );
 }
