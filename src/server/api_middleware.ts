@@ -2,7 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { execSync } from 'child_process';
 import { getDatabase, persistDatabase, exportSqliteBuffer, getPgPool } from './db';
-import { fetchWithScraplingStealth, ingestWithAgentReach, runScrapeGraphPipeline } from './harvester';
+import { fetchWithScraplingStealth, ingestWithAgentReach, runScrapeGraphPipeline, runWithObscura, getObscuraStatus } from './harvester';
 
 let aiClient: GoogleGenAI | null = null;
 
@@ -515,8 +515,11 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
         } else if (userMsg.includes('scrapegraph') || userMsg.includes('sintetiz')) {
           navigationTarget = 'data';
           reply = '🧬 **ScrapeGraphAI Pipeline**: Activo en la pestaña **Datasets**. Convierte cualquier texto o documentación web en pares de entrenamiento estructurados {instruction, input, output} para NanoGPT.';
+        } else if (userMsg.includes('obscura') || userMsg.includes('rust browser') || userMsg.includes('cdp')) {
+          navigationTarget = 'data';
+          reply = '⚡ **Obscura (Rust Headless Browser)**: Activo en la pestaña **Datasets**. Consume sólo ~30MB de RAM, ejecuta JS con motor V8, soporta CDP en el puerto 9222 y volcado directo de texto, HTML y enlaces.';
         } else {
-          reply = `👋 ¡Hola! Soy tu asistente y copiloto de **OneBrain**. Puedo navegar a cualquier panel que me pidas (ej: *"llévame a la Forja"*, *"ir a entrenar"*, *"ver datasets"*), consultar cuántos tokens van farmeados en la nube en tiempo real, o activar los motores de Scrapling, Agent Reach y ScrapeGraphAI. ¿Qué deseas hacer?`;
+          reply = `👋 ¡Hola! Soy tu asistente y copiloto de **OneBrain**. Puedo navegar a cualquier panel que me pidas (ej: *"llévame a la Forja"*, *"ir a entrenar"*, *"ver datasets"*), consultar cuántos tokens van farmeados en la nube en tiempo real, o activar los motores de Scrapling, Agent Reach, ScrapeGraphAI y Obscura. ¿Qué deseas hacer?`;
         }
 
         return res.writeHead(200).end(JSON.stringify({
@@ -590,6 +593,41 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
           return res.writeHead(400).end(JSON.stringify({ error: 'rawContent es requerido' }));
         }
         const result = await runScrapeGraphPipeline({ rawContent, topic, count, category });
+        return res.writeHead(200).end(JSON.stringify(result));
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // 4. Obscura Engine Status
+  if (req.url === '/api/harvest/obscura/status' && req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json');
+    (async () => {
+      try {
+        const status = await getObscuraStatus();
+        return res.writeHead(200).end(JSON.stringify(status));
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+      }
+    })();
+    return;
+  }
+
+  // 5. Obscura Engine Web Execution
+  if (req.url === '/api/harvest/obscura' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      res.setHeader('Content-Type', 'application/json');
+      try {
+        const payload = JSON.parse(body || '{}');
+        const { url, evalScript, dump, stealth, timeoutSecs } = payload;
+        if (!url) {
+          return res.writeHead(400).end(JSON.stringify({ error: 'URL requerida' }));
+        }
+        const result = await runWithObscura({ url, evalScript, dump, stealth, timeoutSecs });
         return res.writeHead(200).end(JSON.stringify(result));
       } catch (err: any) {
         return res.writeHead(500).end(JSON.stringify({ error: err.message }));

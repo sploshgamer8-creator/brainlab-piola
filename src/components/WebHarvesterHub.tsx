@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Youtube, Github, MessageSquare, Rss, Sparkles, Shield, Cpu, ArrowRight, CheckCircle, RefreshCw, Layers } from 'lucide-react';
+import { Globe, Youtube, Github, MessageSquare, Rss, Sparkles, Shield, Cpu, ArrowRight, CheckCircle, RefreshCw, Layers, Zap } from 'lucide-react';
 import axios from 'axios';
 import { DatasetItem } from '../core/types';
 
@@ -8,7 +8,7 @@ interface WebHarvesterHubProps {
 }
 
 export const WebHarvesterHub: React.FC<WebHarvesterHubProps> = ({ onAddDatasetItems }) => {
-  const [activeEngine, setActiveEngine] = useState<'scrapling' | 'reach' | 'scrapegraph'>('scrapling');
+  const [activeEngine, setActiveEngine] = useState<'scrapling' | 'reach' | 'scrapegraph' | 'obscura'>('scrapling');
 
   // 1. Scrapling State
   const [scraplingUrl, setScraplingUrl] = useState('');
@@ -19,6 +19,14 @@ export const WebHarvesterHub: React.FC<WebHarvesterHubProps> = ({ onAddDatasetIt
   const [reachPlatform, setReachPlatform] = useState<'youtube' | 'github' | 'reddit' | 'rss'>('youtube');
   const [reachTarget, setReachTarget] = useState('');
   const [isReachLoading, setIsReachLoading] = useState(false);
+
+  // 3. Obscura (Rust Headless) State
+  const [obscuraUrl, setObscuraUrl] = useState('');
+  const [obscuraDump, setObscuraDump] = useState<'text' | 'html' | 'links'>('text');
+  const [obscuraEval, setObscuraEval] = useState('');
+  const [obscuraStealth, setObscuraStealth] = useState(true);
+  const [isObscuraLoading, setIsObscuraLoading] = useState(false);
+  const [obscuraEngineInfo, setObscuraEngineInfo] = useState<string | null>(null);
 
   // Shared Buffer / Extracted Content
   const [extractedTitle, setExtractedTitle] = useState('');
@@ -86,6 +94,37 @@ export const WebHarvesterHub: React.FC<WebHarvesterHubProps> = ({ onAddDatasetIt
       setStatusMsg(`❌ Error de conexión: ${err.message}`);
     } finally {
       setIsReachLoading(false);
+    }
+  };
+
+  // Execute Obscura Fetch (Rust Headless)
+  const handleObscuraFetch = async () => {
+    if (!obscuraUrl.trim()) return;
+    setIsObscuraLoading(true);
+    setStatusMsg('⚡ Obscura: Ejecutando en navegador headless Rust (V8 engine)...');
+    try {
+      const res = await axios.post('/api/harvest/obscura', {
+        url: obscuraUrl.trim(),
+        dump: obscuraDump,
+        evalScript: obscuraEval.trim() || undefined,
+        stealth: obscuraStealth
+      });
+      if (res.data.success) {
+        setExtractedTitle(`Obscura: ${obscuraUrl}`);
+        setExtractedContent(res.data.output);
+        setExtractedStats({
+          rawLength: res.data.output.length,
+          extractedLength: res.data.output.length
+        });
+        setObscuraEngineInfo(`${res.data.engine} (~${res.data.memoryEstimateMb}MB RAM, ${res.data.executionTimeMs}ms)`);
+        setStatusMsg(`✅ Obscura (${res.data.engine}): ${res.data.output.length.toLocaleString()} caracteres en ${res.data.executionTimeMs}ms.`);
+      } else {
+        setStatusMsg(`❌ Error Obscura: ${res.data.error || 'Fallo de extracción'}`);
+      }
+    } catch (err: any) {
+      setStatusMsg(`❌ Error de conexión: ${err.message}`);
+    } finally {
+      setIsObscuraLoading(false);
     }
   };
 
@@ -193,6 +232,17 @@ export const WebHarvesterHub: React.FC<WebHarvesterHubProps> = ({ onAddDatasetIt
           >
             <Sparkles className="w-3.5 h-3.5" />
             ScrapeGraph Síntesis
+          </button>
+          <button
+            onClick={() => setActiveEngine('obscura')}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activeEngine === 'obscura'
+                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Zap className="w-3.5 h-3.5" />
+            Obscura (Rust)
           </button>
         </div>
       </div>
@@ -344,6 +394,73 @@ export const WebHarvesterHub: React.FC<WebHarvesterHubProps> = ({ onAddDatasetIt
               {isSynthLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
               Sintetizar con ScrapeGraph
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Engine 4: Obscura (Rust Headless) */}
+      {activeEngine === 'obscura' && (
+        <div className="space-y-4 bg-slate-950/60 p-4 rounded-xl border border-rose-950/40">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="md:col-span-8 space-y-2">
+              <label className="text-xs font-semibold text-slate-300">URL Objetivo (Obscura Rust Browser):</label>
+              <input
+                type="text"
+                placeholder="https://example.com o aplicación web compleja con JS"
+                value={obscuraUrl}
+                onChange={e => setObscuraUrl(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-rose-500 font-mono"
+              />
+            </div>
+            <div className="md:col-span-4 space-y-2">
+              <label className="text-xs font-semibold text-slate-300">Modo de Volcado (--dump):</label>
+              <select
+                value={obscuraDump}
+                onChange={e => setObscuraDump(e.target.value as any)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-rose-500"
+              >
+                <option value="text">Texto Limpio (DOM renderizado)</option>
+                <option value="html">HTML Renderizado (V8)</option>
+                <option value="links">Lista de Enlaces</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="md:col-span-8 space-y-2">
+              <label className="text-xs font-semibold text-slate-300">Evaluar Expresión JS en V8 (--eval, opcional):</label>
+              <input
+                type="text"
+                placeholder="document.title o document.querySelector('article').innerText"
+                value={obscuraEval}
+                onChange={e => setObscuraEval(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-rose-500 font-mono"
+              />
+            </div>
+            <div className="md:col-span-4 flex items-end gap-3">
+              <label className="flex items-center gap-2 cursor-pointer pb-2.5">
+                <input
+                  type="checkbox"
+                  checked={obscuraStealth}
+                  onChange={e => setObscuraStealth(e.target.checked)}
+                  className="rounded bg-slate-900 border-slate-700 text-rose-500 focus:ring-rose-500"
+                />
+                <span className="text-xs font-medium text-slate-300">Modo Stealth</span>
+              </label>
+              <button
+                onClick={handleObscuraFetch}
+                disabled={isObscuraLoading || !obscuraUrl.trim()}
+                className="flex-1 bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-rose-600/20"
+              >
+                {isObscuraLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                Ejecutar con Obscura
+              </button>
+            </div>
+          </div>
+
+          <div className="text-[11px] text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center justify-between font-mono">
+            <span>⚡ Motor: <strong>Rust + V8 JS Engine</strong> (~30MB RAM vs 200MB Chromium, 85ms carga).</span>
+            {obscuraEngineInfo && <span className="text-rose-400">{obscuraEngineInfo}</span>}
           </div>
         </div>
       )}

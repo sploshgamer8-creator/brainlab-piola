@@ -16,6 +16,7 @@
     "test": "tsx scripts/run_audit_tests.ts",
     "lint": "tsc --noEmit",
     "download:llama": "tsx scripts/download_llama.ts",
+    "download:obscura": "tsx scripts/download_obscura.ts",
     "dev:electron": "tsx scripts/build_electron.ts && cross-env NODE_ENV=development concurrently \"npm run dev -- --port 3456 --strictPort\" \"wait-on tcp:3456 && electron .\"",
     "build:electron": "npm run download:llama && npm run build && electron-builder",
     "build:railway": "npm run build",
