@@ -734,6 +734,55 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
     }
   }
 
+  // Exportar Pares Cosechados (para sincronización con cliente local)
+  if (req.url?.startsWith('/api/cloud/harvester/export-samples') && req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json');
+    try {
+      const pool = getPgPool();
+      if (!pool) {
+        return res.writeHead(400).end(JSON.stringify({ success: false, error: 'PostgreSQL no conectado en este entorno.' }));
+      }
+      const urlObj = new URL(req.url, 'http://localhost');
+      const limit = Math.min(5000, parseInt(urlObj.searchParams.get('limit') || '2000', 10));
+      const offset = Math.max(0, parseInt(urlObj.searchParams.get('offset') || '0', 10));
+
+      const queryRes = await pool.query(
+        `SELECT id, topic, samples_json 
+         FROM teacher_pool_jobs 
+         WHERE status='completed' AND samples_json IS NOT NULL 
+         ORDER BY created_at ASC 
+         LIMIT $1 OFFSET $2`,
+        [limit, offset]
+      );
+
+      const pairs: Array<{ input: string; output: string; source?: string; topic?: string }> = [];
+      for (const row of queryRes.rows) {
+        try {
+          const parsed = typeof row.samples_json === 'string' ? JSON.parse(row.samples_json) : row.samples_json;
+          if (Array.isArray(parsed)) {
+            for (const item of parsed) {
+              const inp = (item.input || item.instruction || '').trim();
+              const out = (item.output || item.response || '').trim();
+              if (inp && out) {
+                pairs.push({ input: inp, output: out, topic: row.topic, source: 'teacher_pool' });
+              }
+            }
+          }
+        } catch {}
+      }
+
+      return res.writeHead(200).end(JSON.stringify({
+        success: true,
+        count: pairs.length,
+        limit,
+        offset,
+        samples: pairs
+      }));
+    } catch (err: any) {
+      return res.writeHead(500).end(JSON.stringify({ success: false, error: err.message }));
+    }
+  }
+
   // Iniciar Farmeo en Servidor
   if (req.url === '/api/cloud/harvester/start' && req.method === 'POST') {
     let body = '';
