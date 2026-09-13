@@ -39,8 +39,9 @@ def get_or_load_model(ckpt_rel_path):
             raise FileNotFoundError(f"Checkpoint no encontrado: {ckpt_rel_path}")
 
     norm_path = os.path.normpath(ckpt_path)
+    file_mtime = os.path.getmtime(norm_path)
     with model_lock:
-        if norm_path in model_cache:
+        if norm_path in model_cache and model_cache[norm_path].get("mtime", 0) >= file_mtime:
             return model_cache[norm_path]
 
         checkpoint = torch.load(norm_path, map_location=device, weights_only=False)
@@ -53,7 +54,8 @@ def get_or_load_model(ckpt_rel_path):
             "model": model,
             "config": config,
             "params_count": model.get_num_params(),
-            "filename": os.path.basename(norm_path)
+            "filename": os.path.basename(norm_path),
+            "mtime": file_mtime
         }
         return model_cache[norm_path]
 

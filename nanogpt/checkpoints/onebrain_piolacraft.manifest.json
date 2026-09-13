@@ -1,15 +1,15 @@
 {
   "checkpoint": "onebrain_piolacraft.pt",
-  "sha256": "3ede2417d32db556571f1c3aed5b7604eb8bf56a8319fa9308488964217a9142",
+  "sha256": "045a6fc38fea506949f4b3fba5a634ad0b03b56607f9dbad4fb37f6e76e9f8ff",
   "parameters": 19341312,
-  "train_loss": 0.4982,
-  "val_loss": 0.7198,
-  "generalization_ratio": 1.44,
-  "steps": 200,
+  "train_loss": 0.5174,
+  "val_loss": 0.6807,
+  "generalization_ratio": 1.32,
+  "steps": 300,
   "batch_size": 16,
   "block_size": 256,
   "learning_rate": 0.0002,
   "device": "cuda",
   "hardware": "NVIDIA GeForce RTX 2060",
-  "date": "2026-09-13T22:34:29Z"
+  "date": "2026-09-13T23:02:27Z"
 }

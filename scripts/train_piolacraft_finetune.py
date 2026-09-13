@@ -20,7 +20,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 BATCH_SIZE = 16
 BLOCK_SIZE = 256
 LEARNING_RATE = 2e-4
-STEPS = 200
+STEPS = 300
 LOG_INTERVAL = 25
 
 def main():

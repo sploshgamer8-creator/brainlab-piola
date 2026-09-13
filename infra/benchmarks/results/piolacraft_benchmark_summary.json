@@ -13,7 +13,7 @@
       {
         "prompt": "\u00bfQue es Pico de diamante en PiolaCraft?",
         "category": "voxelibre_crafting",
-        "response": "the the following sentence is a list of",
+        "response": "the text summarized to a strategies and",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -21,7 +21,7 @@
       {
         "prompt": "\u00bfComo se usa Horno?",
         "category": "voxelibre_crafting",
-        "response": "the describe the following sentence is a",
+        "response": "the sentence is a particle in the senten",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -29,7 +29,7 @@
       {
         "prompt": "\u00bfQue suelta Bloque de carbon?",
         "category": "voxelibre_crafting",
-        "response": "the main are all the given sentence in t",
+        "response": "the possible strategy in the conversatio",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -37,7 +37,7 @@
       {
         "prompt": "\u00bfQue es Espada de hierro en PiolaCraft?",
         "category": "voxelibre_crafting",
-        "response": "the story is a sentence in the store of",
+        "response": "the most product is a time to computer a",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -45,7 +45,7 @@
       {
         "prompt": "\u00bfQue pasa con caida?",
         "category": "game_mechanics",
-        "response": "the provide a story of the content of a",
+        "response": "the color is a content in a sentence in",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -53,7 +53,7 @@
       {
         "prompt": "\u00bfQue pasa con asfixia agua?",
         "category": "game_mechanics",
-        "response": "the main in the sentence is a formal to",
+        "response": "the contribute of the sentence is a time",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -61,7 +61,7 @@
       {
         "prompt": "\u00bfQue pasa con lava?",
         "category": "game_mechanics",
-        "response": "the first statement of the story of the",
+        "response": "the first story about a list of the stan",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -69,7 +69,7 @@
       {
         "prompt": "\u00bfComo registro un bloque en Luanti?",
         "category": "luanti_lua",
-        "response": "the impact of the product of the store i",
+        "response": "the most different are a process of the",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -77,7 +77,7 @@
       {
         "prompt": "\u00bfComo obtengo la posicion del jugador?",
         "category": "luanti_lua",
-        "response": "the start and seen the given sentence.<|user|>",
+        "response": "the content of the following sentence is",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -85,7 +85,7 @@
       {
         "prompt": "\u00bfComo envio un mensaje en el chat del servidor?",
         "category": "luanti_lua",
-        "response": "the discribe and sentence is a content o",
+        "response": "the possible to the provides the store i",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -93,7 +93,7 @@
       {
         "prompt": "\u00bfQuien sos?",
         "category": "lucy_identity",
-        "response": "the following sentence in the store of t",
+        "response": "the following sentence is a sense of the",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -101,7 +101,7 @@
       {
         "prompt": "seguime",
         "category": "lucy_identity",
-        "response": "the sentence is in the following sentenc",
+        "response": "the given sentence in a sentence in the",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -109,7 +109,7 @@
       {
         "prompt": "quedate aca",
         "category": "lucy_identity",
-        "response": "a story in a sentence between the theme",
+        "response": "the possible sentence is a process of th",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -130,7 +130,7 @@
       {
         "prompt": "\u00bfQue es Pico de diamante en PiolaCraft?",
         "category": "voxelibre_crafting",
-        "response": "escaleras de hormig\u00f3n verde: una para pr",
+        "response": "losa doble de andesita pulida: las losas",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -138,7 +138,7 @@
       {
         "prompt": "\u00bfComo se usa Horno?",
         "category": "voxelibre_crafting",
-        "response": "simplemente col\u00f3quelo donde desea que ap",
+        "response": "solo se puede colocar en un bloque de hi",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -146,7 +146,7 @@
       {
         "prompt": "\u00bfQue suelta Bloque de carbon?",
         "category": "voxelibre_crafting",
-        "response": "escaleras de hormig\u00f3n amarillo suelta: s",
+        "response": "losa de adobe suelta: birchtree hollow l",
         "hits": [
           "suelta"
         ],
@@ -156,7 +156,7 @@
       {
         "prompt": "\u00bfQue es Espada de hierro en PiolaCraft?",
         "category": "voxelibre_crafting",
-        "response": "escaleras de hormig\u00f3n amarillo: las esca",
+        "response": "losa de arenisca roja lisa: las losas do",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -164,7 +164,7 @@
       {
         "prompt": "\u00bfQue pasa con caida?",
         "category": "game_mechanics",
-        "response": "simplemente col\u00f3quelo donde desea que ap",
+        "response": "s\u00ed, la arena cae si no tiene nada abajo.",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -172,7 +172,7 @@
       {
         "prompt": "\u00bfQue pasa con asfixia agua?",
         "category": "game_mechanics",
-        "response": "sobre eso en piolacraft: como hago una l",
+        "response": "simplemente col\u00f3quelo donde desea que ap",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -180,7 +180,7 @@
       {
         "prompt": "\u00bfQue pasa con lava?",
         "category": "game_mechanics",
-        "response": "sobre eso en piolacraft: como hago una m",
+        "response": "simplemente col\u00f3quelo donde desea que ap",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -188,7 +188,7 @@
       {
         "prompt": "\u00bfComo registro un bloque en Luanti?",
         "category": "luanti_lua",
-        "response": "madera de abeto suelta: concrete roca.",
+        "response": "sobre eso en piolacraft: que es la lana",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -196,7 +196,7 @@
       {
         "prompt": "\u00bfComo obtengo la posicion del jugador?",
         "category": "luanti_lua",
-        "response": "losa de hormig\u00f3n magenta suelta: slab co",
+        "response": "sobre eso en piolacraft: como se hace un",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -204,7 +204,7 @@
       {
         "prompt": "\u00bfComo envio un mensaje en el chat del servidor?",
         "category": "luanti_lua",
-        "response": "sobre eso en piolacraft: como hago una p",
+        "response": "se pueden colores de noche.\n<|user|>\u00bfque es lo",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -212,7 +212,7 @@
       {
         "prompt": "\u00bfQuien sos?",
         "category": "lucy_identity",
-        "response": "sobre eso en piolacraft: como hago una m",
+        "response": "sobre eso en piolacraft: quien este algu",
         "hits": [
           "piolacraft"
         ],
@@ -222,7 +222,7 @@
       {
         "prompt": "seguime",
         "category": "lucy_identity",
-        "response": "sobre eso en piolacraft: te acordas cuan",
+        "response": "sobre eso en piolacraft: hay pantanos\n<|user|>",
         "hits": [],
         "score": 0.0,
         "pass": false
@@ -230,12 +230,12 @@
       {
         "prompt": "quedate aca",
         "category": "lucy_identity",
-        "response": "sobre eso en piolacraft: como hago una c",
+        "response": "sobre eso en piolacraft: hace que algunt",
         "hits": [],
         "score": 0.0,
         "pass": false
       }
     ]
   },
-  "timestamp": "2026-09-13T22:36:26Z"
+  "timestamp": "2026-09-13T23:02:46Z"
 }
