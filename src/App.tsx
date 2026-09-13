@@ -99,6 +99,7 @@ export default function App() {
   useEffect(() => {
     if (modelRef.current) {
       trainerRef.current = new BrainTrainer(modelRef.current, tokenizer, datasets, hyperparams);
+      trainerRef.current.setAnchorDatasets(STARTER_DATASETS, hyperparams.replayRatio ?? 0.25);
       trainerRef.current.currentStep = trainingStep;
       trainerRef.current.totalTokensTrained = tokensProcessed;
       trainerRef.current.lossHistory = lossHistory;

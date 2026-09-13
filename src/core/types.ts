@@ -134,4 +134,6 @@ export interface TrainingHyperparameters {
   maxIters: number;
   weightDecay: number;
   gradClip: number;
+  replayRatio?: number;
+  useCosineDecay?: boolean;
 }

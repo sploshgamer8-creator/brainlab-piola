@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Play, Pause, StepForward, Save, Zap, AlertCircle, TrendingDown, Gauge, Repeat, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { BrainProject, CheckpointMetadata, DatasetItem, PersonalityTraits, TrainingHyperparameters } from '../../core/types';
 import { OmniDistillPanel } from '../OmniDistillPanel';
+import { fetchDistillationBatch } from '../../core/distill_service';
 
 interface TrainTabProps {
   currentProject: BrainProject;
@@ -44,6 +45,70 @@ export const TrainTab: React.FC<TrainTabProps> = ({
   const [checkpointNotes, setCheckpointNotes] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [isAutoFarming, setIsAutoFarming] = useState(false);
+  const autoFarmingRef = useRef(false);
+  const [autoFarmingTopic, setAutoFarmingTopic] = useState('Conversación natural en español y razonamiento lógico');
+  const [autoFarmingRounds, setAutoFarmingRounds] = useState(0);
+  const [autoFarmingStatus, setAutoFarmingStatus] = useState<string | null>(null);
+  const [autoFarmingStepsPerBatch, setAutoFarmingStepsPerBatch] = useState(30);
+
+  const startAutoFarming = async () => {
+    setIsAutoFarming(true);
+    autoFarmingRef.current = true;
+    setAutoFarmingStatus('Iniciando ciclo continuo de destilación con profesor GPT-4...');
+
+    let round = autoFarmingRounds;
+    while (autoFarmingRef.current) {
+      round++;
+      setAutoFarmingRounds(round);
+      setAutoFarmingStatus(`[Ronda ${round}] Extrayendo lote de alta densidad desde GPT-4 / Maestro...`);
+
+      try {
+        const omniRouteUrl = localStorage.getItem('local_brain_omniroute_url') || '';
+        const omniRouteApiKey = localStorage.getItem('local_brain_omniroute_key') || localStorage.getItem('local_brain_openai_key') || '';
+        const omniRouteModel = localStorage.getItem('local_brain_omniroute_model') || localStorage.getItem('local_brain_openai_model') || 'gpt-4o-mini';
+
+        const distillRes = await fetchDistillationBatch({
+          topic: autoFarmingTopic,
+          category: 'spanish',
+          count: 4,
+          traits,
+          complexity: 'conversational',
+          omniRouteUrl: omniRouteUrl || undefined,
+          omniRouteApiKey: omniRouteApiKey || undefined,
+          omniRouteModel: omniRouteModel || undefined,
+        });
+
+        if (!autoFarmingRef.current) break;
+
+        if (distillRes.candidates && distillRes.candidates.length > 0) {
+          setAutoFarmingStatus(`[Ronda ${round}] Absorbiendo ${distillRes.candidates.length} pares con backprop analítico (${autoFarmingStepsPerBatch} pasos)...`);
+          onInjectSamplesAndTrain(distillRes.candidates);
+          await new Promise(resolve => setTimeout(resolve, Math.max(1200, autoFarmingStepsPerBatch * 45)));
+        } else {
+          setAutoFarmingStatus(`[Ronda ${round}] Esperando respuesta del maestro...`);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      } catch (err: any) {
+        setAutoFarmingStatus(`Error en ronda ${round}: ${err.message}. Reintentando en 3s...`);
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+
+      if (autoFarmingRef.current) {
+        setAutoFarmingStatus(`[Ronda ${round}] Ronda finalizada con éxito. Preparando siguiente extracción...`);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    setIsAutoFarming(false);
+    setAutoFarmingStatus(null);
+  };
+
+  const stopAutoFarming = () => {
+    autoFarmingRef.current = false;
+    setIsAutoFarming(false);
+    setAutoFarmingStatus(null);
+    onPauseTraining();
+  };
 
   // SVG Chart points calculation
   const chartHeight = 160;
@@ -69,6 +134,105 @@ export const TrainTab: React.FC<TrainTabProps> = ({
         onInjectSamplesAndTrain={onInjectSamplesAndTrain}
         onLoadPretrainedWeights={onLoadPretrainedWeights}
       />
+
+      {/* Auto-Farming & Continuous Distillation Loop HUD */}
+      <div className="bg-slate-900/90 rounded-xl border border-emerald-500/40 p-6 space-y-4 shadow-lg shadow-emerald-950/20">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-emerald-950 border border-emerald-800 flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                Auto-Farming & Destilación Continua Supervisada (GPT-4)
+                {isAutoFarming && (
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                )}
+              </h3>
+              <p className="text-xs text-slate-400">
+                Ciclo autónomo de extracción de pares sintéticos de alta densidad y absorción en los pesos del alumno con buffer anti-olvido (25% Replay).
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {isAutoFarming ? (
+              <button
+                type="button"
+                onClick={stopAutoFarming}
+                className="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-2 transition shadow-md shadow-rose-950"
+              >
+                <Pause className="w-3.5 h-3.5" />
+                Detener Auto-Farming
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={isTraining}
+                onClick={startAutoFarming}
+                className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-2 transition shadow-md shadow-emerald-950"
+              >
+                <Play className="w-3.5 h-3.5" />
+                Iniciar Auto-Farming Continuo
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Configuration inputs when idle, or live metrics when active */}
+        {!isAutoFarming ? (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div className="sm:col-span-2">
+              <label className="block text-slate-400 mb-1">Tema / Dominio a Destilar:</label>
+              <input
+                type="text"
+                value={autoFarmingTopic}
+                onChange={e => setAutoFarmingTopic(e.target.value)}
+                placeholder="Ej. Diálogos inteligentes en español y lógica en Lua"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs font-mono focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+            <div>
+              <label className="block text-slate-400 mb-1">Pasos de AdamW por Lote:</label>
+              <input
+                type="number"
+                min={10}
+                max={200}
+                value={autoFarmingStepsPerBatch}
+                onChange={e => setAutoFarmingStepsPerBatch(parseInt(e.target.value) || 30)}
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs font-mono focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-lg flex items-center gap-3">
+              <div className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin shrink-0" />
+              <div className="text-xs font-mono text-emerald-300">
+                {autoFarmingStatus || 'Destilando conocimiento...'}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 text-xs font-mono">
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-400 block text-[10px]">RONDAS COMPLETADAS</span>
+                <span className="text-white font-bold text-base">{autoFarmingRounds}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-400 block text-[10px]">PÉRDIDA ACTUAL (LOSS)</span>
+                <span className="text-emerald-400 font-bold text-base">{currentLoss.toFixed(3)}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-400 block text-[10px]">PASO ACUMULADO</span>
+                <span className="text-indigo-400 font-bold text-base">{currentStep}</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Top Banner */}
       <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-6 flex flex-wrap items-center justify-between gap-4">

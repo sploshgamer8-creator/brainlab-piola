@@ -50,18 +50,21 @@ export class BrainTrainer {
     this.datasets = datasets.filter(d => d.approved);
   }
 
-  /**
-   * Prepares a concatenated token stream from the active approved datasets.
-   */
-  private getTrainingTokens(): number[] {
-    if (this.datasets.length === 0) {
-      // Fallback baseline conversation if empty
+  anchorDatasets: DatasetItem[] = [];
+  replayRatio: number = 0.25;
+
+  public setAnchorDatasets(anchors: DatasetItem[], ratio: number = 0.25) {
+    this.anchorDatasets = anchors.filter(d => d.approved);
+    this.replayRatio = ratio;
+  }
+
+  private getTokensFrom(items: DatasetItem[]): number[] {
+    if (items.length === 0) {
       const base = this.tokenizer.formatConversation('hola', '¡Hola! Soy tu cerebro local.');
       return this.tokenizer.encode(base);
     }
-
     const tokens: number[] = [];
-    for (const item of this.datasets) {
+    for (const item of items) {
       const formatted = this.tokenizer.formatConversation(item.input, item.output);
       const encoded = this.tokenizer.encode(formatted);
       tokens.push(...encoded);
@@ -70,12 +73,30 @@ export class BrainTrainer {
   }
 
   /**
+   * Prepares a concatenated token stream with anti-catastrophic-forgetting replay.
+   */
+  private getTrainingTokens(): number[] {
+    const useReplay = this.anchorDatasets.length > 0 && Math.random() < (this.hyperparams.replayRatio ?? this.replayRatio);
+    const sourceData = useReplay ? this.anchorDatasets : this.datasets;
+    return this.getTokensFrom(sourceData.length > 0 ? sourceData : this.datasets);
+  }
+
+  /**
    * Execute a single training iteration.
    */
   public stepIteration(): { step: number; loss: number } {
     const allTokens = this.getTrainingTokens();
     const blockSize = this.model.config.block_size;
-    const { learningRate, weightDecay, gradClip } = this.hyperparams;
+    const { learningRate, weightDecay, gradClip, useCosineDecay, maxIters } = this.hyperparams;
+
+    // Cosine learning rate decay
+    let effectiveLR = learningRate;
+    if (useCosineDecay) {
+      const totalIters = Math.max(100, maxIters || 500);
+      const minLr = learningRate * 0.1;
+      const progress = Math.min(1.0, this.currentStep / totalIters);
+      effectiveLR = minLr + 0.5 * (learningRate - minLr) * (1 + Math.cos(Math.PI * progress));
+    }
 
     if (allTokens.length <= blockSize + 1) {
       // Pad or duplicate if too short
@@ -100,7 +121,7 @@ export class BrainTrainer {
     this.model.backward(fwd.activations);
 
     // Optimizer step
-    this.model.step(learningRate, 0.9, 0.95, weightDecay, gradClip);
+    this.model.step(effectiveLR, 0.9, 0.95, weightDecay, gradClip);
 
     this.currentStep++;
     this.totalTokensTrained += blockSize;
