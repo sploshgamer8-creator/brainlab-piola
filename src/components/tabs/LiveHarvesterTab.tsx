@@ -124,8 +124,8 @@ export const LiveHarvesterTab: React.FC<LiveHarvesterTabProps> = ({ onInjectSamp
 
   const flywheel = telemetry?.flywheel;
   const isHarvesterActive = telemetry?.serverStatus === 'active';
-  const totalTokens = telemetry?.totalHarvestedTokens || 35840;
-  const trainedTokens = flywheel?.tokens || 35840;
+  const totalTokens = telemetry?.totalHarvestedTokens ?? 0;
+  const trainedTokens = flywheel?.tokens ?? 0;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
@@ -224,8 +224,8 @@ export const LiveHarvesterTab: React.FC<LiveHarvesterTabProps> = ({ onInjectSamp
             {trainedTokens.toLocaleString()}
           </div>
           <div className="text-[11px] text-slate-400 flex items-center justify-between pt-1 border-t border-slate-800/80 font-mono">
-            <span>Pasos AdamW: {flywheel?.step || 280}</span>
-            <span className="text-emerald-400 font-bold">Ciclo #{flywheel?.cycle || 14}</span>
+            <span>Pasos AdamW: {flywheel?.step ?? 0}</span>
+            <span className="text-emerald-400 font-bold">Ciclo #{flywheel?.cycle ?? 0}</span>
           </div>
         </div>
 
@@ -236,10 +236,12 @@ export const LiveHarvesterTab: React.FC<LiveHarvesterTabProps> = ({ onInjectSamp
             <Activity className="w-4 h-4 text-indigo-400" />
           </div>
           <div className="text-2xl font-bold font-mono text-indigo-400 flex items-baseline gap-2">
-            {(flywheel?.loss || 2.80).toFixed(4)}
-            <span className="text-xs text-emerald-400 font-normal font-sans">
-              ↓ -74% (10.8 → 2.80)
-            </span>
+            {flywheel?.loss !== undefined ? Number(flywheel.loss).toFixed(4) : '---'}
+            {flywheel?.loss !== undefined && (
+              <span className="text-xs text-emerald-400 font-normal font-sans">
+                (Min: {Number(flywheel.loss).toFixed(4)})
+              </span>
+            )}
           </div>
           <div className="text-[11px] text-slate-400 flex items-center justify-between pt-1 border-t border-slate-800/80 font-mono">
             <span>Arquitectura:</span>
@@ -254,7 +256,7 @@ export const LiveHarvesterTab: React.FC<LiveHarvesterTabProps> = ({ onInjectSamp
             <Database className="w-4 h-4 text-cyan-400" />
           </div>
           <div className="text-2xl font-bold font-mono text-cyan-400">
-            {(flywheel?.buffer || 4590).toLocaleString()} <span className="text-sm font-sans font-normal text-slate-400">pares</span>
+            {(flywheel?.buffer ?? 4590).toLocaleString()} <span className="text-sm font-sans font-normal text-slate-400">pares</span>
           </div>
           <div className="text-[11px] text-slate-400 flex items-center justify-between pt-1 border-t border-slate-800/80 font-mono">
             <span>Protección:</span>

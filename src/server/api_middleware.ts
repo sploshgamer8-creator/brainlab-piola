@@ -516,12 +516,77 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
   }
 
   // ----------------------------------------------------
+  // 💓 FLYWHEEL TELEMETRY HEARTBEAT (PC Local -> Cloud)
+  // ----------------------------------------------------
+  if (req.url?.startsWith('/api/cloud/telemetry/heartbeat') && req.method === 'POST') {
+    const processPayload = async (payload: any) => {
+      res.setHeader('Content-Type', 'application/json');
+      try {
+        const pool = getPgPool();
+        if (pool) {
+          await pool.query(`
+            CREATE TABLE IF NOT EXISTS cortex_heartbeats (
+              id INT PRIMARY KEY DEFAULT 1,
+              telemetry JSONB NOT NULL,
+              updated_at TIMESTAMPTZ DEFAULT NOW()
+            );
+            INSERT INTO cortex_heartbeats (id, telemetry, updated_at)
+            VALUES (1, $1, NOW())
+            ON CONFLICT (id) DO UPDATE SET telemetry = $1, updated_at = NOW();
+          `, [JSON.stringify(payload)]);
+        }
+        return res.writeHead(200).end(JSON.stringify({ success: true, saved: true }));
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+      }
+    };
+
+    if ((req as any).body && typeof (req as any).body === 'object') {
+      processPayload((req as any).body);
+      return;
+    }
+
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body || '{}');
+        processPayload(payload);
+      } catch (e: any) {
+        res.setHeader('Content-Type', 'application/json');
+        return res.writeHead(400).end(JSON.stringify({ error: 'Invalid JSON' }));
+      }
+    });
+    return;
+  }
+
+  // ----------------------------------------------------
   // 🛰️ SERVER HARVESTER LIVE ENGINE (100% SERVIDOR 24/7)
   // ----------------------------------------------------
-  if (req.url === '/api/cloud/harvester/live' && req.method === 'GET') {
+  if (req.url?.startsWith('/api/cloud/harvester/live') && req.method === 'GET') {
     res.setHeader('Content-Type', 'application/json');
     const pool = getPgPool();
-    const flywheelData = getFlywheelTelemetry();
+    let flywheelData = getFlywheelTelemetry();
+
+    if (pool && (!flywheelData.active || flywheelData.step === 0)) {
+      try {
+        const hbRes = await pool.query("SELECT telemetry FROM cortex_heartbeats WHERE id = 1");
+        if (hbRes.rows.length > 0 && hbRes.rows[0].telemetry) {
+          const stored = hbRes.rows[0].telemetry;
+          flywheelData = {
+            active: true,
+            cycle: stored.cycle || 0,
+            step: stored.step || 0,
+            loss: stored.loss || 0,
+            layers: stored.layers || '8L',
+            tokens: stored.tokens || 0,
+            buffer: stored.buffer || 4590,
+            lastUpdated: stored.lastUpdated || new Date().toISOString(),
+            recentLogs: stored.recentLogs || []
+          };
+        }
+      } catch {}
+    }
 
     if (!pool) {
       return res.writeHead(200).end(JSON.stringify({
