@@ -81,6 +81,12 @@ export async function initPostgres(): Promise<void> {
         created_at TIMESTAMPTZ DEFAULT now(),
         updated_at TIMESTAMPTZ DEFAULT now()
       );
+
+      CREATE TABLE IF NOT EXISTS cortex_heartbeats (
+        id INT PRIMARY KEY DEFAULT 1,
+        telemetry JSONB NOT NULL,
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
     `);
 
   } catch (err) {

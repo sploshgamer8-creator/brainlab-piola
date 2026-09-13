@@ -529,10 +529,12 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
               id INT PRIMARY KEY DEFAULT 1,
               telemetry JSONB NOT NULL,
               updated_at TIMESTAMPTZ DEFAULT NOW()
-            );
+            )
+          `);
+          await pool.query(`
             INSERT INTO cortex_heartbeats (id, telemetry, updated_at)
             VALUES (1, $1, NOW())
-            ON CONFLICT (id) DO UPDATE SET telemetry = $1, updated_at = NOW();
+            ON CONFLICT (id) DO UPDATE SET telemetry = $1, updated_at = NOW()
           `, [JSON.stringify(payload)]);
         }
         return res.writeHead(200).end(JSON.stringify({ success: true, saved: true }));
