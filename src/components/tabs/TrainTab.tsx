@@ -45,20 +45,61 @@ export const TrainTab: React.FC<TrainTabProps> = ({
   const [stepsToRun, setStepsToRun] = useState(100);
   const [checkpointNotes, setCheckpointNotes] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
-  const [isAutoFarming, setIsAutoFarming] = useState(false);
+  const [isAutoFarming, setIsAutoFarming] = useState(() => {
+    return localStorage.getItem('brainlab_autofarming_active') === 'true';
+  });
   const autoFarmingRef = useRef(false);
-  const [autoFarmingTopic, setAutoFarmingTopic] = useState('Stanford Alpaca: Instrucciones complejas, razonamiento formal y resolución analítica');
-  const [autoFarmingRounds, setAutoFarmingRounds] = useState(0);
+  const [autoFarmingTopic, setAutoFarmingTopic] = useState(() => {
+    return localStorage.getItem('brainlab_autofarming_topic') || 'PiolaCraft: Guía de supervivencia, crafteos VoxeLibre, mecánicas del juego y personalidad de Lucy';
+  });
+  const [autoFarmingRounds, setAutoFarmingRounds] = useState(() => {
+    return Number(localStorage.getItem('brainlab_autofarming_rounds')) || 0;
+  });
   const [autoFarmingStatus, setAutoFarmingStatus] = useState<string | null>(null);
-  const [autoFarmingLogs, setAutoFarmingLogs] = useState<string[]>([]);
-  const [autoFarmingStepsPerBatch, setAutoFarmingStepsPerBatch] = useState(30);
-  const [autoFarmingBatchSize, setAutoFarmingBatchSize] = useState(4);
-  const [autoFarmingSource, setAutoFarmingSource] = useState<'omniroute' | 'railway'>('railway');
+  const [autoFarmingLogs, setAutoFarmingLogs] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('brainlab_autofarming_logs');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [autoFarmingStepsPerBatch, setAutoFarmingStepsPerBatch] = useState(() => {
+    return Number(localStorage.getItem('brainlab_autofarming_steps')) || 30;
+  });
+  const [autoFarmingBatchSize, setAutoFarmingBatchSize] = useState(() => {
+    return Number(localStorage.getItem('brainlab_autofarming_batch')) || 4;
+  });
+  const [autoFarmingSource, setAutoFarmingSource] = useState<'omniroute' | 'railway'>(() => {
+    return (localStorage.getItem('brainlab_autofarming_source') as 'omniroute' | 'railway') || 'railway';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('brainlab_autofarming_topic', autoFarmingTopic);
+  }, [autoFarmingTopic]);
+
+  useEffect(() => {
+    localStorage.setItem('brainlab_autofarming_steps', String(autoFarmingStepsPerBatch));
+  }, [autoFarmingStepsPerBatch]);
+
+  useEffect(() => {
+    localStorage.setItem('brainlab_autofarming_batch', String(autoFarmingBatchSize));
+  }, [autoFarmingBatchSize]);
+
+  useEffect(() => {
+    localStorage.setItem('brainlab_autofarming_source', autoFarmingSource);
+  }, [autoFarmingSource]);
 
   const addLog = (msg: string | null) => { 
     setAutoFarmingStatus(msg); 
     if (msg) {
-      setAutoFarmingLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
+      setAutoFarmingLogs(prev => {
+        const next = [...prev.slice(-49), `[${new Date().toLocaleTimeString()}] ${msg}`];
+        try {
+          localStorage.setItem('brainlab_autofarming_logs', JSON.stringify(next));
+        } catch {}
+        return next;
+      });
     }
   };
 
@@ -100,6 +141,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
   const startAutoFarming = async () => {
     setIsAutoFarming(true);
     autoFarmingRef.current = true;
+    localStorage.setItem('brainlab_autofarming_active', 'true');
     addLog('Iniciando pipeline paralelo (Inferencia Cloud + Entrenamiento Local)...');
 
     let round = autoFarmingRounds;
@@ -110,15 +152,16 @@ export const TrainTab: React.FC<TrainTabProps> = ({
     while (autoFarmingRef.current) {
       round++;
       setAutoFarmingRounds(round);
+      localStorage.setItem('brainlab_autofarming_rounds', String(round));
       
-      addLog(`[Ronda ${round}] Esperando lote de generaciÃ³n del Maestro...`);
+      addLog(`[Ronda ${round}] Esperando lote de generación del Maestro...`);
       
       try {
         const candidates = await nextBatchPromise;
         if (!autoFarmingRef.current) break;
 
         if (candidates && candidates.length > 0) {
-          // Iniciar Inmediatamente la bÃºsqueda de la SIGUIENTE ronda
+          // Iniciar Inmediatamente la búsqueda de la SIGUIENTE ronda
           nextBatchPromise = fetchBatchFromSource();
 
           // Inyectar a la base de datos de React/Entrenamiento
@@ -128,7 +171,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
           addLog(`[Ronda ${round}] Entrenando red local (${autoFarmingStepsPerBatch} pasos) mientras la nube genera la Ronda ${round + 1}...`);
           await onStartTraining(autoFarmingStepsPerBatch);
         } else {
-          addLog(`[Ronda ${round}] Lote vacÃ­o o fallido. Reintentando en 3s...`);
+          addLog(`[Ronda ${round}] Lote vacío o fallido. Reintentando en 3s...`);
           await new Promise(resolve => setTimeout(resolve, 3000));
           nextBatchPromise = fetchBatchFromSource();
         }
@@ -150,9 +193,22 @@ export const TrainTab: React.FC<TrainTabProps> = ({
   const stopAutoFarming = () => {
     autoFarmingRef.current = false;
     setIsAutoFarming(false);
+    localStorage.setItem('brainlab_autofarming_active', 'false');
     addLog(null);
     onPauseTraining();
   };
+
+  // Auto-resume continuous farming across page refreshes if previously active
+  useEffect(() => {
+    if (localStorage.getItem('brainlab_autofarming_active') === 'true' && !autoFarmingRef.current) {
+      const timer = setTimeout(() => {
+        if (!autoFarmingRef.current && localStorage.getItem('brainlab_autofarming_active') === 'true') {
+          startAutoFarming();
+        }
+      }, 700);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // SVG Chart points calculation (Resistente a NaN)
   const chartHeight = 160;
@@ -273,6 +329,13 @@ export const TrainTab: React.FC<TrainTabProps> = ({
                 className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs font-mono focus:outline-none focus:border-emerald-500 mb-1.5"
               />
               <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setAutoFarmingTopic('PiolaCraft: Guía de supervivencia, crafteos VoxeLibre, mecánicas del juego y personalidad de Lucy')}
+                  className="text-[10px] bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/70 text-emerald-300 font-bold px-2 py-0.5 rounded transition shadow-sm"
+                >
+                  🎮 PiolaCraft: Lucy & VoxeLibre
+                </button>
                 <button
                   type="button"
                   onClick={() => setAutoFarmingTopic('Stanford Alpaca: Instrucciones complejas, razonamiento formal y resolución analítica')}

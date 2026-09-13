@@ -27,7 +27,13 @@ export default function App() {
   // Load Projects from Storage
   const [projects, setProjects] = useState<BrainProject[]>(() => loadProjectsFromStorage());
   const [currentProject, setCurrentProject] = useState<BrainProject>(() => projects[0] || loadProjectsFromStorage()[0]);
-  const [activeTab, setActiveTab] = useState<string>('chat');
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    return localStorage.getItem('brainlab_active_tab') || 'chat';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('brainlab_active_tab', activeTab);
+  }, [activeTab]);
 
   // Datasets & Memory
   const [datasets, setDatasets] = useState<DatasetItem[]>(() => {
@@ -470,7 +476,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'train' && (
+        <div className={activeTab === 'train' ? 'block' : 'hidden'}>
           <TrainTab
             currentProject={currentProject}
             traits={currentProject.traits}
@@ -489,7 +495,7 @@ export default function App() {
             onInjectSamplesAndTrain={handleInjectSamplesAndTrain}
             onLoadPretrainedWeights={handleLoadPretrainedWeights}
           />
-        )}
+        </div>
 
         {activeTab === 'evaluate' && modelRef.current && (
           <EvaluateTab

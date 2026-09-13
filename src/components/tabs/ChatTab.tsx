@@ -107,11 +107,23 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   // Farmeador 100M de Parámetros (Teacher Harvester) States
   const [sidebarTab, setSidebarTab] = useState<'farmer' | 'sampling'>('farmer');
   const [isFarmerActive, setIsFarmerActive] = useState(true);
-  const [isContinuousFarming, setIsContinuousFarming] = useState(false);
+  const [isContinuousFarming, setIsContinuousFarming] = useState(() => {
+    return localStorage.getItem('brainlab_chat_farming_active') === 'true';
+  });
   const [isFarmingBatch, setIsFarmingBatch] = useState(false);
   const [autoFarmOnChat, setAutoFarmOnChat] = useState(true);
   const [autoAbsorbOnFarm, setAutoAbsorbOnFarm] = useState(true);
-  const [farmingDomain, setFarmingDomain] = useState<'spanish' | 'lua' | 'general' | 'personality'>('spanish');
+  const [farmingDomain, setFarmingDomain] = useState<'spanish' | 'lua' | 'general' | 'personality'>(() => {
+    return (localStorage.getItem('brainlab_chat_farming_domain') as any) || 'spanish';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('brainlab_chat_farming_active', isContinuousFarming ? 'true' : 'false');
+  }, [isContinuousFarming]);
+
+  useEffect(() => {
+    localStorage.setItem('brainlab_chat_farming_domain', farmingDomain);
+  }, [farmingDomain]);
   const [farmedTokens, setFarmedTokens] = useState<number>(() => {
     try {
       const saved = localStorage.getItem('local_brain_farmed_tokens_v1');
