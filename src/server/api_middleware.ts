@@ -632,7 +632,7 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
           // Despachar 3 tareas inmediatas a la cola de Railway
           for (let i = 0; i < 3; i++) {
             await pool.query(
-              "INSERT INTO teacher_pool_jobs (topic, count, model, status) VALUES ($1, $2, 'llama-3.1-8b-instant', 'queued')",
+              "INSERT INTO teacher_pool_jobs (topic, count, model, status) VALUES ($1, $2, 'openai/gpt-oss-20b', 'queued')",
               [`${topic} [Lote #${i + 1}]`, count]
             );
           }
@@ -672,7 +672,7 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
       res.setHeader('Content-Type', 'application/json');
       try {
         const payload = JSON.parse(body || '{}');
-        const { topic, count = 5, model = 'llama-3.1-8b-instant' } = payload;
+        const { topic, count = 5, model = 'openai/gpt-oss-20b' } = payload;
         const pool = getPgPool();
         if (!pool) {
           return res.writeHead(200).end(JSON.stringify({

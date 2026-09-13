@@ -112,7 +112,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
         const dispatchRes = await axios.post(`${CLOUD_URL}/api/cloud/teacher-pool/dispatch`, {
           topic: autoFarmingTopic,
           count: autoFarmingBatchSize,
-          model: 'llama-3.1-8b-instant'
+          model: 'openai/gpt-oss-20b'
         }, { timeout: 6000 });
 
         const jobId = dispatchRes.data?.jobId;

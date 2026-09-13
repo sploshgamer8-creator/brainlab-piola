@@ -104,7 +104,7 @@ export const LiveHarvesterTab: React.FC<LiveHarvesterTabProps> = ({ onInjectSamp
       const res = await axios.post(`${CLOUD_URL}/api/cloud/harvester/dispatch-batch`, {
         topic: selectedTopic,
         count: batchCount,
-        model: 'llama-3.1-8b-instant'
+        model: 'openai/gpt-oss-20b'
       });
       setStatusMessage(`✅ Lote #${res.data.jobId?.slice(0, 8) || '01'} encolado en el servidor`);
       await fetchLiveTelemetry();
