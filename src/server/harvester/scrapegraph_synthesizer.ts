@@ -6,6 +6,7 @@
  */
 
 import { GoogleGenAI } from '@google/genai';
+import { sanitizeTeacherOutput } from '../../core/stm_sanitizer';
 
 export interface SynthesizerOptions {
   rawContent: string;
@@ -149,7 +150,16 @@ function extractJsonSamples(rawText: string): TrainingSample[] {
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
       if (Array.isArray(parsed)) {
-        return parsed.filter(item => item.instruction && item.output);
+        return parsed
+          .filter(item => item.instruction && item.output)
+          .map(item => {
+            const rawOut = String(item.output || '').trim();
+            const sanitized = sanitizeTeacherOutput(rawOut);
+            return {
+              ...item,
+              output: sanitized.cleanedText || rawOut
+            };
+          });
       }
     }
   } catch {}

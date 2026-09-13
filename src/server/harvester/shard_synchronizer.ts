@@ -9,6 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import pg from 'pg';
 import { NanoTokenizer } from '../../core/tokenizer';
+import { sanitizeTeacherOutput } from '../../core/stm_sanitizer';
 
 const { Pool } = pg;
 const PROJECT_ROOT = process.cwd();
@@ -110,8 +111,12 @@ export async function syncCloudToBinaryShards(): Promise<ShardSyncResult> {
       if (Array.isArray(samples)) {
         for (const s of samples) {
           const inp = String(s.input || s.instruction || '').trim();
-          const out = String(s.output || s.response || '').trim();
-          if (inp && out) allPairs.push({ input: inp, output: out });
+          const rawOut = String(s.output || s.response || '').trim();
+          if (inp && rawOut) {
+            const sanitized = sanitizeTeacherOutput(rawOut);
+            const cleanOut = sanitized.cleanedText || rawOut;
+            allPairs.push({ input: inp, output: cleanOut });
+          }
         }
       }
     }

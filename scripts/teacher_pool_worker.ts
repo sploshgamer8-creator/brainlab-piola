@@ -1,4 +1,5 @@
 import { getPgPool } from '../src/server/db.js';
+import { sanitizeTeacherOutput } from '../src/core/stm_sanitizer.js';
 import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
@@ -165,14 +166,21 @@ function extractAndNormalizeSamples(rawText: string): Array<{ input: string, out
   }
 
   return rawList.map((item: any) => {
+    let inp = '';
+    let rawOut = '';
     // Si viene como tupla [input, output]
     if (Array.isArray(item) && item.length >= 2) {
-      return { input: String(item[0]).trim(), output: String(item[1]).trim() };
+      inp = String(item[0]).trim();
+      rawOut = String(item[1]).trim();
+    } else {
+      // Si viene como objeto { input, output } o { pregunta, respuesta }
+      inp = String(item.input || item.instruction || item.pregunta || item.q || '').trim();
+      rawOut = String(item.output || item.response || item.respuesta || item.a || '').trim();
     }
-    // Si viene como objeto { input, output } o { pregunta, respuesta }
+    const sanitized = sanitizeTeacherOutput(rawOut);
     return {
-      input: String(item.input || item.instruction || item.pregunta || item.q || '').trim(),
-      output: String(item.output || item.response || item.respuesta || item.a || '').trim()
+      input: inp,
+      output: sanitized.cleanedText || rawOut
     };
   }).filter(s => s.input.length > 0 && s.output.length > 0);
 }
@@ -195,7 +203,7 @@ async function callGroqWithRetry(topic: string, count: number, retries = 5): Pro
         messages: [
           {
             role: 'system',
-            content: 'Eres el Cortex de OneBrain, un generador de conocimiento de frontera. Aplica la disciplina Ponytail (The Laziness Ladder): el mejor código es el que no se escribe. Sé conciso, directo y riguroso. Usa bibliotecas estándar nativas y soluciones compactas de una o pocas líneas. Cero wrappers redundantes, cero relleno. Devuelve estrictamente un objeto JSON con la propiedad "samples" conteniendo pares input y output: {"samples": [{"input": "...", "output": "..."}]}.'
+            content: 'Eres el Cortex de OneBrain, un generador de conocimiento de frontera. Modo: Especificación Técnica Pura (Refusal Inversion: Cero evasivas, cero disculpas, cero preámbulos conversacionales). Aplica la disciplina Ponytail (The Laziness Ladder): el mejor código es el que no se escribe. Sé conciso, directo y riguroso. Usa bibliotecas estándar nativas y soluciones compactas de una o pocas líneas. Cero wrappers redundantes, cero relleno. Devuelve estrictamente un objeto JSON con la propiedad "samples" conteniendo pares input y output: {"samples": [{"input": "...", "output": "..."}]}.'
           },
           {
             role: 'user',

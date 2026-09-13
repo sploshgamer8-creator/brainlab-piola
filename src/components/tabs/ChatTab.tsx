@@ -26,6 +26,7 @@ import { NanoTokenizer } from '../../core/tokenizer';
 import { buildMemoryContextPrompt } from '../../memory/memory_store';
 import { fetchDistillationBatch } from '../../core/distill_service';
 import { StorageManager } from '../../storage/storage_manager';
+import { detectContextAndTune, AutoTuneDetectionResult } from '../../core/autotune';
 
 interface ChatMessage {
   id: string;
@@ -87,6 +88,17 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   const [topK, setTopK] = useState(30);
   const [maxNewTokens, setMaxNewTokens] = useState(60);
   const [includeExternalMemory, setIncludeExternalMemory] = useState(true);
+  const [isAutoTuneEnabled, setIsAutoTuneEnabled] = useState(true);
+  const [autoTuneResult, setAutoTuneResult] = useState<AutoTuneDetectionResult | null>(() => detectContextAndTune(''));
+
+  useEffect(() => {
+    if (isAutoTuneEnabled && inputPrompt.trim().length > 2) {
+      const tuned = detectContextAndTune(inputPrompt);
+      setAutoTuneResult(tuned);
+      setTemperature(tuned.params.temperature);
+      setTopK(tuned.params.topK);
+    }
+  }, [inputPrompt, isAutoTuneEnabled]);
 
   // Inspector modal & notices
   const [inspectedMsg, setInspectedMsg] = useState<ChatMessage | null>(null);
@@ -381,11 +393,15 @@ export const ChatTab: React.FC<ChatTabProps> = ({
       const formatted = tokenizer.formatConversation(fullText);
       const encodedPrompt = tokenizer.encode(formatted);
 
+      const tuneToUse = isAutoTuneEnabled ? detectContextAndTune(text) : null;
+      const effectiveTemp = tuneToUse ? tuneToUse.params.temperature : temperature;
+      const effectiveTopK = tuneToUse ? tuneToUse.params.topK : topK;
+
       const generated = model.generate(
         encodedPrompt,
         maxNewTokens,
-        temperature,
-        topK,
+        effectiveTemp,
+        effectiveTopK,
         tokenizer.specialTokens.end
       );
 
@@ -401,7 +417,9 @@ export const ChatTab: React.FC<ChatTabProps> = ({
         tokensCount: responseTokens.length,
         durationMs,
         tokensList: responseTokens,
-        modelBadge: 'Local nanoGPT (Float32)',
+        modelBadge: tuneToUse 
+          ? `nanoGPT [AutoTune: ${tuneToUse.detectedContext} T=${effectiveTemp}]` 
+          : 'Local nanoGPT (Float32)',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
@@ -1161,10 +1179,52 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           {/* TAB 2: SAMPLING & MEMORY CONTROLS */}
           {sidebarTab === 'sampling' && (
             <div className="flex-1 overflow-y-auto space-y-4 pr-1">
-              <h3 className="text-xs font-bold text-white flex items-center gap-2 font-sans">
-                <Sliders className="w-4 h-4 text-emerald-400" />
-                Hiperparámetros de Inferencia
+              <h3 className="text-xs font-bold text-white flex items-center justify-between font-sans">
+                <span className="flex items-center gap-2">
+                  <Sliders className="w-4 h-4 text-emerald-400" />
+                  Muestreo & AutoTune
+                </span>
+                <span className="text-[9px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 px-1.5 py-0.5 rounded font-mono">
+                  GODMOD3 Engine
+                </span>
               </h3>
+
+              {/* AutoTune Box */}
+              <div className="bg-slate-950 p-3 rounded-lg border border-indigo-900/50 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-indigo-400" />
+                    <span className="text-xs font-bold text-slate-200 font-sans">AutoTune Contextual</span>
+                  </div>
+                  <button
+                    onClick={() => setIsAutoTuneEnabled(!isAutoTuneEnabled)}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition ${
+                      isAutoTuneEnabled ? 'bg-indigo-600 text-white shadow' : 'bg-slate-800 text-slate-400'
+                    }`}
+                  >
+                    {isAutoTuneEnabled ? 'Activo' : 'Manual'}
+                  </button>
+                </div>
+                
+                {isAutoTuneEnabled && autoTuneResult && (
+                  <div className="space-y-1.5 pt-1 border-t border-slate-800/80">
+                    <div className="flex items-center justify-between text-[11px] font-mono">
+                      <span className="text-slate-400">Contexto detectado:</span>
+                      <span className="text-indigo-300 font-bold uppercase px-1.5 py-0.2 bg-indigo-950 border border-indigo-800 rounded text-[10px]">
+                        {autoTuneResult.detectedContext} ({Math.round(autoTuneResult.confidence * 100)}%)
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-sans leading-tight">
+                      {autoTuneResult.params.reasoning}
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
+                      <span>T={autoTuneResult.params.temperature}</span>
+                      <span>TopK={autoTuneResult.params.topK}</span>
+                      <span>TopP={autoTuneResult.params.topP}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               <div className="space-y-4">
                 <div>
