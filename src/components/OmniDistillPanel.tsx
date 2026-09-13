@@ -60,8 +60,12 @@ export const OmniDistillPanel: React.FC<OmniDistillPanelProps> = ({
     localStorage.setItem('local_brain_omniroute_url', omniRouteUrl);
     localStorage.setItem('local_brain_omniroute_key', omniRouteApiKey);
     localStorage.setItem('local_brain_omniroute_model', omniRouteModel);
+    if (omniRouteApiKey.startsWith('sk-') || omniRouteModel.includes('gpt-')) {
+      localStorage.setItem('local_brain_openai_key', omniRouteApiKey);
+      localStorage.setItem('local_brain_openai_model', omniRouteModel);
+    }
     setShowGatewayConfig(false);
-    setStatusMessage('Configuración de Gateway OmniRoute guardada.');
+    setStatusMessage('Configuración de Gateway guardada correctamente.');
     setTimeout(() => setStatusMessage(null), 3000);
   };
 
@@ -167,12 +171,70 @@ export const OmniDistillPanel: React.FC<OmniDistillPanelProps> = ({
           <div className="flex items-center justify-between">
             <span className="font-semibold text-slate-200 flex items-center gap-1.5">
               <Cpu className="w-4 h-4 text-indigo-400" />
-              Configurar Pasarela OmniRoute (352 Proveedores / Formato OpenAI /v1)
+              Configurar Pasarela de Destilación (GPT-4 / OpenAI / Gemini / Gateway)
             </span>
-            <span className="text-[10px] text-indigo-300 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800">
-              Zero Cost Farmeo
+            <span className="text-[10px] text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+              Formato OpenAI /v1
             </span>
           </div>
+
+          {/* Quick Provider Presets */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <span className="text-[11px] text-slate-400 mr-1 font-medium">Presets Rápidos:</span>
+            <button
+              type="button"
+              onClick={() => {
+                setOmniRouteUrl('https://api.openai.com/v1');
+                setOmniRouteModel('gpt-4o-mini');
+              }}
+              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 text-[10px] font-mono transition flex items-center gap-1"
+            >
+              <Sparkles className="w-2.5 h-2.5 text-emerald-400" />
+              GPT-4o Mini
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOmniRouteUrl('https://api.openai.com/v1');
+                setOmniRouteModel('gpt-4o');
+              }}
+              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 text-[10px] font-mono transition flex items-center gap-1"
+            >
+              <Sparkles className="w-2.5 h-2.5 text-emerald-400" />
+              GPT-4o
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOmniRouteUrl('');
+                setOmniRouteModel('gemini-2.5-flash');
+              }}
+              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-blue-300 border border-slate-700 text-[10px] font-mono transition"
+            >
+              Gemini 2.5 Flash
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOmniRouteUrl('https://api.groq.com/openai/v1');
+                setOmniRouteModel('llama-3.1-70b-versatile');
+              }}
+              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 text-[10px] font-mono transition"
+            >
+              Groq Llama 3
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOmniRouteUrl('http://127.0.0.1:8080/v1');
+                setOmniRouteModel('qwen2.5-7b');
+              }}
+              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-purple-300 border border-slate-700 text-[10px] font-mono transition"
+            >
+              llama.cpp Local
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label className="block text-slate-400 mb-1">OmniRoute URL Base:</label>

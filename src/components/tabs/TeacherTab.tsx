@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Zap, Bot, ShieldAlert, Check, X, Edit2, Sparkles, Filter, CheckCircle2, ArrowRight, Cpu, Sliders, Server } from 'lucide-react';
 import { PersonalityTraits, DatasetItem } from '../../core/types';
 import { GeneratedCandidate, generateSyntheticSamples, requestTeacherGemini } from '../../teacher/teacher_service';
-import { TeacherManager, TeacherProvider } from '../../harvesting/teacher_provider';
+import { TeacherManager, TeacherProvider, GPT4TeacherProvider } from '../../harvesting/teacher_provider';
 import { DistillationEngine } from '../../training/distillation_engine';
 
 interface TeacherTabProps {
@@ -16,7 +16,7 @@ export const TeacherTab: React.FC<TeacherTabProps> = ({
   onAddDatasetItems,
   onSetTeacherActive,
 }) => {
-  const [teacherMode, setTeacherMode] = useState<'synthetic' | 'gemini' | 'llamacpp'>('synthetic');
+  const [teacherMode, setTeacherMode] = useState<'gpt4' | 'gemini' | 'llamacpp' | 'synthetic'>('gpt4');
   const [topic, setTopic] = useState('Lua game scripting & table management');
   const [category, setCategory] = useState<DatasetItem['category']>('lua');
   const [sampleCount, setSampleCount] = useState(4);
@@ -41,7 +41,27 @@ export const TeacherTab: React.FC<TeacherTabProps> = ({
     onSetTeacherActive(true);
     try {
       let results: GeneratedCandidate[] = [];
-      if (teacherMode === 'synthetic') {
+      if (teacherMode === 'gpt4') {
+        const provider = new GPT4TeacherProvider();
+        const resp = await provider.generateSamples({
+          topic,
+          category,
+          count: sampleCount,
+          traits,
+          promptContext,
+        });
+        results = resp.candidates.map((c) => ({
+          id: c.id,
+          topic,
+          category,
+          input: c.input,
+          output: c.output,
+          status: 'pending_review' as const,
+          source: 'teacher_synthetic' as const,
+          createdAt: new Date().toISOString(),
+          tags: c.tags || ['gpt4', 'frontier_teacher'],
+        }));
+      } else if (teacherMode === 'synthetic') {
         results = await generateSyntheticSamples(topic, category, sampleCount, traits);
       } else if (teacherMode === 'gemini') {
         results = await requestTeacherGemini(promptContext, topic, category, sampleCount, traits);
@@ -55,7 +75,7 @@ export const TeacherTab: React.FC<TeacherTabProps> = ({
           traits,
           promptContext,
         });
-        results = resp.candidates.map((c, i) => ({
+        results = resp.candidates.map((c) => ({
           id: c.id,
           topic,
           category,
@@ -68,7 +88,7 @@ export const TeacherTab: React.FC<TeacherTabProps> = ({
         }));
       }
       setCandidates(prev => [...results, ...prev]);
-      setNotification(`Se generaron ${results.length} ejemplos candidatos para revisión con ${teacherMode}.`);
+      setNotification(`Se generaron ${results.length} ejemplos candidatos para revisión con ${teacherMode.toUpperCase()}.`);
       setTimeout(() => setNotification(null), 4000);
     } catch (err: any) {
       console.error('Teacher generation error', err);
@@ -185,21 +205,24 @@ export const TeacherTab: React.FC<TeacherTabProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Mode selector */}
-          <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-300 block">Tipo de Profesor</label>
-            <div className="grid grid-cols-3 gap-2">
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-xs font-semibold text-slate-300 block">Tipo de Profesor de Destilación</label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
                 type="button"
-                id="btn-teacher-mode-synthetic"
-                onClick={() => setTeacherMode('synthetic')}
+                id="btn-teacher-mode-gpt4"
+                onClick={() => setTeacherMode('gpt4')}
                 className={`p-2.5 rounded-lg border text-left transition ${
-                  teacherMode === 'synthetic'
-                    ? 'bg-emerald-950/50 border-emerald-500 text-emerald-300'
+                  teacherMode === 'gpt4'
+                    ? 'bg-emerald-950/70 border-emerald-500 text-emerald-300 ring-1 ring-emerald-500/40'
                     : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:bg-slate-800'
                 }`}
               >
-                <div className="text-xs font-bold text-white">Sintético Offline</div>
-                <div className="text-[10px] text-slate-400">Heurístico local</div>
+                <div className="text-xs font-bold text-white flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-emerald-400" />
+                  GPT-4o / OpenAI
+                </div>
+                <div className="text-[10px] text-emerald-400">Frontier Teacher</div>
               </button>
 
               <button
@@ -213,7 +236,7 @@ export const TeacherTab: React.FC<TeacherTabProps> = ({
                 }`}
               >
                 <div className="text-xs font-bold text-white">Gemini 2.5</div>
-                <div className="text-[10px] text-slate-400">Frontier Teacher</div>
+                <div className="text-[10px] text-slate-400">Google Frontier</div>
               </button>
 
               <button
@@ -228,6 +251,20 @@ export const TeacherTab: React.FC<TeacherTabProps> = ({
               >
                 <div className="text-xs font-bold text-white">llama.cpp 7B</div>
                 <div className="text-[10px] text-slate-400">Local Offline</div>
+              </button>
+
+              <button
+                type="button"
+                id="btn-teacher-mode-synthetic"
+                onClick={() => setTeacherMode('synthetic')}
+                className={`p-2.5 rounded-lg border text-left transition ${
+                  teacherMode === 'synthetic'
+                    ? 'bg-slate-700/80 border-slate-400 text-slate-200'
+                    : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:bg-slate-800'
+                }`}
+              >
+                <div className="text-xs font-bold text-white">Sintético</div>
+                <div className="text-[10px] text-slate-400">Heurístico local</div>
               </button>
             </div>
           </div>

@@ -19,6 +19,7 @@ import { STARTER_MEMORY } from './memory/memory_store';
 import { loadProjectsFromStorage, saveProjectsToStorage, BrainBundleFile } from './core/checkpoint_manager';
 import { BrainTrainer } from './training/trainer';
 import { getPretrainedSpanishWeights, getPretrainedLuaWeights } from './training/pretrained_store';
+import { RegisteredModel } from './models/model_registry';
 
 export default function App() {
   // Load Projects from Storage
@@ -142,6 +143,53 @@ export default function App() {
     setCurrentLoss(cp.loss);
     setTokensProcessed(cp.totalTokensTrained || 0);
     setLossHistory(cp.history || []);
+  };
+
+  // Switch Active Student Architecture
+  const handleSwitchStudentArchitecture = (model: RegisteredModel) => {
+    if (!model.gptConfig) return;
+    if (trainerRef.current && isTraining) {
+      trainerRef.current.pauseTraining();
+      setIsTraining(false);
+    }
+
+    const newCpId = `brain_arch_${Date.now().toString().slice(-4)}`;
+    const newModel = new NanoGPTModel(model.gptConfig);
+    const serialized = newModel.serialize();
+
+    const newCheckpoint: CheckpointMetadata = {
+      id: newCpId,
+      name: `${model.name} (Inicial)`,
+      version: 1,
+      createdAt: new Date().toISOString(),
+      branch: currentProject.activeBranch || 'main',
+      step: 0,
+      loss: 4.85,
+      totalTokensTrained: 0,
+      config: model.gptConfig,
+      paramCount: model.parameterCount,
+      weightsSerialized: serialized,
+      history: [],
+      traits: { ...currentProject.traits },
+      notes: `Instanciado desde catálogo: ${model.name} (${model.parameterCountFormatted} parámetros).`,
+    };
+
+    const updatedProject = {
+      ...currentProject,
+      currentCheckpointId: newCpId,
+      checkpoints: [newCheckpoint, ...currentProject.checkpoints],
+    };
+
+    setCurrentProject(updatedProject);
+    const updatedAll = projects.map(p => p.id === updatedProject.id ? updatedProject : p);
+    setProjects(updatedAll);
+    saveProjectsToStorage(updatedAll);
+
+    modelRef.current = newModel;
+    setTrainingStep(0);
+    setCurrentLoss(4.85);
+    setTokensProcessed(0);
+    setLossHistory([]);
   };
 
   // Start Training
@@ -355,7 +403,10 @@ export default function App() {
         )}
 
         {activeTab === 'model' && (
-          <ModelTab currentProject={currentProject} />
+          <ModelTab
+            currentProject={currentProject}
+            onSwitchStudentArchitecture={handleSwitchStudentArchitecture}
+          />
         )}
 
         {activeTab === 'data' && (

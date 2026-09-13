@@ -231,23 +231,86 @@ export class OfflineRuleTeacherProvider implements TeacherProvider {
 }
 
 /**
+ * Proveedor 0: GPT-4o / GPT-4 (OpenAI Frontier Teacher)
+ */
+export class GPT4TeacherProvider implements TeacherProvider {
+  public id = 'gpt4-frontier-teacher';
+  public name = 'GPT-4o / GPT-4 (OpenAI Frontier)';
+  public isOffline = false;
+
+  public async checkAvailability(): Promise<boolean> {
+    try {
+      const openAiKey = localStorage.getItem('local_brain_openai_key') || localStorage.getItem('local_brain_omniroute_key') || '';
+      const res = await fetch('/api/gateway/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ omniRouteApiKey: openAiKey }),
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  public async generateSamples(req: TeacherHarvestRequest): Promise<TeacherHarvestResponse> {
+    const t0 = performance.now();
+    const openAiKey = localStorage.getItem('local_brain_openai_key') || '';
+    const openAiModel = localStorage.getItem('local_brain_openai_model') || 'gpt-4o-mini';
+    const omniRouteUrl = localStorage.getItem('local_brain_omniroute_url') || '';
+    const omniRouteApiKey = localStorage.getItem('local_brain_omniroute_key') || '';
+
+    const res = await fetch('/api/distill/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        topic: req.topic,
+        category: req.category,
+        count: req.count,
+        traits: req.traits,
+        complexity: req.category === 'lua' ? 'lua_code' : 'conversational',
+        openaiApiKey: openAiKey || undefined,
+        openaiModel: openAiModel || undefined,
+        omniRouteUrl: omniRouteUrl || undefined,
+        omniRouteApiKey: omniRouteApiKey || undefined,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`GPT-4 Provider HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const t1 = performance.now();
+
+    return {
+      candidates: data.candidates || [],
+      providerId: this.id,
+      providerName: data.sourceModel || this.name,
+      isOffline: false,
+      latencyMs: Math.round(t1 - t0),
+    };
+  }
+}
+
+/**
  * Gestor Unificado de Profesores
  */
 export class TeacherManager {
   private static providers: Map<string, TeacherProvider> = new Map([
+    ['gpt4-frontier-teacher', new GPT4TeacherProvider()],
     ['gemini-frontier-teacher', new GeminiTeacherProvider()],
     ['llamacpp-7b-teacher', new LlamaCppTeacherProvider()],
     ['offline-rules-teacher', new OfflineRuleTeacherProvider()],
   ]);
 
-  private static activeProviderId = 'gemini-frontier-teacher';
+  private static activeProviderId = 'gpt4-frontier-teacher';
 
   public static listProviders(): TeacherProvider[] {
     return Array.from(this.providers.values());
   }
 
   public static getActiveProvider(): TeacherProvider {
-    return this.providers.get(this.activeProviderId) || this.providers.get('offline-rules-teacher')!;
+    return this.providers.get(this.activeProviderId) || this.providers.get('gemini-frontier-teacher') || this.providers.get('offline-rules-teacher')!;
   }
 
   public static setActiveProvider(id: string): boolean {

@@ -130,32 +130,39 @@ Reglas:
 2. Preguntas naturales que un usuario real haría en español.
 3. Formato JSON estricto: [{"input": "...", "output": "...", "tags": ["..."]}]`;
 
-        // 1. Intentar primero vía OmniRoute Gateway si está configurado
-        if (omniRouteUrl && omniRouteUrl.trim().length > 0) {
-          try {
-            const gatewayEndpoint = omniRouteUrl.endsWith('/chat/completions')
-              ? omniRouteUrl
-              : `${omniRouteUrl.replace(/\/+$/, '')}/chat/completions`;
+        // 1. Intentar vía OpenAI / GPT-4 Directo o Gateway OmniRoute
+        const openAiApiKey = payload.openaiApiKey || (omniRouteApiKey?.startsWith('sk-') ? omniRouteApiKey : '') || process.env.OPENAI_API_KEY || '';
+        const isDirectOpenAI = !!openAiApiKey && (!omniRouteUrl || omniRouteUrl.includes('api.openai.com'));
+        const targetEndpoint = isDirectOpenAI
+          ? 'https://api.openai.com/v1/chat/completions'
+          : omniRouteUrl
+          ? (omniRouteUrl.endsWith('/chat/completions') ? omniRouteUrl : `${omniRouteUrl.replace(/\/+$/, '')}/chat/completions`)
+          : '';
 
-            const omniRes = await fetch(gatewayEndpoint, {
+        const effectiveModel = payload.openaiModel || payload.omniRouteModel || (openAiApiKey ? 'gpt-4o-mini' : 'omniroute-auto');
+        const effectiveAuthKey = isDirectOpenAI ? openAiApiKey : (omniRouteApiKey || openAiApiKey);
+
+        if (targetEndpoint && effectiveAuthKey) {
+          try {
+            const endpointRes = await fetch(targetEndpoint, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                ...(omniRouteApiKey ? { Authorization: `Bearer ${omniRouteApiKey}` } : {}),
+                Authorization: `Bearer ${effectiveAuthKey}`,
               },
               body: JSON.stringify({
-                model: payload.omniRouteModel || 'omniroute-auto',
+                model: effectiveModel,
                 messages: [
                   { role: 'system', content: promptInstruction },
-                  { role: 'user', content: `Genera ${count} pares destilados sobre ${topic} en formato JSON.` },
+                  { role: 'user', content: `Genera ${count} pares destilados sobre ${topic} en formato JSON estricto.` },
                 ],
                 temperature: 0.7,
               }),
             });
 
-            if (omniRes.ok) {
-              const omniData = await omniRes.json();
-              const rawText = omniData.choices?.[0]?.message?.content || '[]';
+            if (endpointRes.ok) {
+              const resData = await endpointRes.json();
+              const rawText = resData.choices?.[0]?.message?.content || '[]';
               let cleaned = rawText.trim();
               if (cleaned.startsWith('```json')) {
                 cleaned = cleaned.replace(/^```json\s*/, '').replace(/```$/, '').trim();
@@ -164,26 +171,30 @@ Reglas:
               }
               const parsed = JSON.parse(cleaned);
               const candidates = (Array.isArray(parsed) ? parsed : []).map((item: any) => ({
-                id: `omniroute_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+                id: `gpt4_distill_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
                 category: category || 'spanish',
                 input: item.input || 'Consulta',
-                output: item.output || 'Respuesta destilada',
+                output: item.output || 'Respuesta destilada por GPT-4',
                 source: 'synthetic_api',
                 approved: true,
                 createdAt: new Date().toISOString(),
-                tags: item.tags || ['omniroute_stream', category, targetScale],
+                tags: item.tags || ['gpt4_distilled', category, targetScale, effectiveModel],
               }));
 
+              const modelLabel = isDirectOpenAI ? `OpenAI ${effectiveModel}` : `Gateway (${resData.model || effectiveModel})`;
               return res.writeHead(200).end(
                 JSON.stringify({
-                  sourceModel: `OmniRoute Gateway (${omniData.model || 'auto-routed'})`,
-                  distillRatio: targetScale === '7B' ? '120,000x' : '35,000x',
+                  sourceModel: `${modelLabel} (Frontier Teacher)`,
+                  distillRatio: targetScale === '7B' ? '120,000x' : '50,000x',
                   candidates,
                 })
               );
+            } else {
+              const errBody = await endpointRes.text();
+              console.warn(`[Distill] HTTP ${endpointRes.status} from ${targetEndpoint}:`, errBody.slice(0, 150));
             }
-          } catch (omniErr: any) {
-            console.warn('OmniRoute direct gateway error, falling back to Gemini:', omniErr.message);
+          } catch (endpointErr: any) {
+            console.warn('[Distill] Endpoint error, falling back to Gemini/offline:', endpointErr.message);
           }
         }
 

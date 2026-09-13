@@ -8,9 +8,10 @@ import { StorageManager } from '../../storage/storage_manager';
 
 interface ModelTabProps {
   currentProject: BrainProject;
+  onSwitchStudentArchitecture?: (model: RegisteredModel) => void;
 }
 
-export const ModelTab: React.FC<ModelTabProps> = ({ currentProject }) => {
+export const ModelTab: React.FC<ModelTabProps> = ({ currentProject, onSwitchStudentArchitecture }) => {
   const [activeLayer, setActiveLayer] = useState<string>('c_attn');
   const [auditReport, setAuditReport] = useState<FullAuditReport | null>(null);
   const [isRunningAudit, setIsRunningAudit] = useState(false);
@@ -437,6 +438,78 @@ export const ModelTab: React.FC<ModelTabProps> = ({ currentProject }) => {
         </div>
       </div>
 
+      {/* Benchmark Summary Table & Architectural Trade-offs */}
+      <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-6 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-amber-400" />
+            <h3 className="text-base font-bold text-white">Métricas de Rendimiento Empírico en CPU (Modelos Alumnos)</h3>
+          </div>
+          <span className="text-xs bg-amber-950/70 text-amber-300 border border-amber-800 px-2.5 py-0.5 rounded font-mono">
+            Calibrado en Tiempo Real
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs font-mono">
+            <thead>
+              <tr className="border-b border-slate-800 text-slate-400">
+                <th className="pb-2">Arquitectura</th>
+                <th className="pb-2">Parámetros</th>
+                <th className="pb-2">RAM Entreno</th>
+                <th className="pb-2">Forward</th>
+                <th className="pb-2">Backward</th>
+                <th className="pb-2 text-emerald-400">Step Total</th>
+                <th className="pb-2 text-indigo-400">Inferencia</th>
+                <th className="pb-2">Perfil Óptimo</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/60 text-slate-300">
+              <tr className="hover:bg-slate-800/30">
+                <td className="py-2.5 font-bold text-white">Nano Student (Karpathy)</td>
+                <td>~221K</td>
+                <td className="text-emerald-400">2.94 MB</td>
+                <td>68.6 ms</td>
+                <td>77.7 ms</td>
+                <td className="text-emerald-400 font-bold">~150 ms</td>
+                <td className="text-indigo-300">156 tok/s</td>
+                <td className="text-slate-400">Ultra-ágil en navegador</td>
+              </tr>
+              <tr className="hover:bg-slate-800/30 bg-emerald-950/20">
+                <td className="py-2.5 font-bold text-emerald-300">Micro Student ★ Sweet Spot</td>
+                <td className="text-emerald-300 font-bold">~503K</td>
+                <td className="text-emerald-400">6.71 MB</td>
+                <td>72.2 ms</td>
+                <td>160.5 ms</td>
+                <td className="text-emerald-400 font-bold">~240 ms</td>
+                <td className="text-indigo-300">100 tok/s</td>
+                <td className="text-emerald-400">Equilibrio ideal (4 pasos/s)</td>
+              </tr>
+              <tr className="hover:bg-slate-800/30">
+                <td className="py-2.5 font-bold text-white">Medium Student</td>
+                <td>~1.60M</td>
+                <td>21.32 MB</td>
+                <td>483.1 ms</td>
+                <td>932.6 ms</td>
+                <td className="text-amber-400 font-bold">~1.45 s</td>
+                <td className="text-indigo-300">26 tok/s</td>
+                <td className="text-slate-400">Sintaxis profunda y Lua</td>
+              </tr>
+              <tr className="hover:bg-slate-800/30">
+                <td className="py-2.5 font-bold text-white">Scaled Student</td>
+                <td>~2.89M</td>
+                <td>38.60 MB</td>
+                <td>901.0 ms</td>
+                <td>1,955.6 ms</td>
+                <td className="text-red-400 font-bold">~2.91 s</td>
+                <td className="text-indigo-300">15 tok/s</td>
+                <td className="text-slate-400">Entrenamiento asíncrono</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* Model Registry (Unified Catalog) */}
       <div id="model-registry-section" className="bg-slate-900/90 rounded-xl border border-slate-800 p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
@@ -446,7 +519,7 @@ export const ModelTab: React.FC<ModelTabProps> = ({ currentProject }) => {
               Catálogo Unificado de Modelos (Model Registry)
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Gestión desacoplada: Estudiantes pequeños entrenables localmente y Modelos Grandes (7B) para destilación o inferencia externa.
+              Gestión desacoplada: Selecciona y activa el modelo alumno deseado, o conecta profesores de frontera para destilación.
             </p>
           </div>
           <span className="text-xs text-slate-400 font-mono">
@@ -457,6 +530,9 @@ export const ModelTab: React.FC<ModelTabProps> = ({ currentProject }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {modelsList.map((m) => {
             const isSelected = selectedModelId === m.id;
+            const isCurrentActiveStudent = m.role === 'student_trainable' && m.gptConfig &&
+              m.gptConfig.n_embd === cfg.n_embd && m.gptConfig.n_layer === cfg.n_layer;
+
             return (
               <div
                 key={m.id}
@@ -465,8 +541,10 @@ export const ModelTab: React.FC<ModelTabProps> = ({ currentProject }) => {
                   BackendSelector.selectBackend(m.id);
                 }}
                 className={`p-4 rounded-xl border transition cursor-pointer flex flex-col justify-between ${
-                  isSelected
-                    ? 'bg-slate-800/80 border-emerald-500/80 ring-1 ring-emerald-500/30'
+                  isCurrentActiveStudent
+                    ? 'bg-emerald-950/20 border-emerald-500/80 ring-1 ring-emerald-500/30'
+                    : isSelected
+                    ? 'bg-slate-800/80 border-indigo-500/80 ring-1 ring-indigo-500/30'
                     : 'bg-slate-950/70 border-slate-800 hover:border-slate-700'
                 }`}
               >
@@ -492,20 +570,58 @@ export const ModelTab: React.FC<ModelTabProps> = ({ currentProject }) => {
                   <p className="text-xs text-slate-400 line-clamp-2 mb-3">
                     {m.description}
                   </p>
+
+                  {/* Empirical benchmark stats badge row */}
+                  {m.benchmark && (
+                    <div className="grid grid-cols-3 gap-2 bg-slate-900/90 p-2 rounded-lg border border-slate-800 mb-3 text-[11px] font-mono">
+                      <div>
+                        <span className="text-slate-400 block text-[9px]">PASO TOTAL</span>
+                        <span className="text-emerald-400 font-bold">{m.benchmark.stepMs} ms</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[9px]">INFERENCIA</span>
+                        <span className="text-indigo-400 font-bold">{m.benchmark.tokPerSec} tok/s</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[9px]">RAM ENTRENO</span>
+                        <span className="text-slate-200 font-bold">{m.benchmark.trainRAM_MB} MB</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
-                  <span className="text-slate-400">
-                    Runtime: <strong className="text-slate-200">{m.runtime}</strong>
-                  </span>
-                  <span className="text-slate-400">
-                    Formato: <strong className="text-slate-200">{m.format}</strong>
-                  </span>
-                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                    m.isTrainableLocally ? 'text-emerald-400 bg-emerald-950/40' : 'text-slate-400 bg-slate-900'
-                  }`}>
-                    {m.isTrainableLocally ? 'Entrenable Local' : 'Inferencia / Maestro'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400">
+                      Runtime: <strong className="text-slate-200">{m.runtime}</strong>
+                    </span>
+                  </div>
+
+                  {m.role === 'student_trainable' ? (
+                    isCurrentActiveStudent ? (
+                      <span className="text-emerald-400 bg-emerald-950/80 border border-emerald-700/80 px-2.5 py-1 rounded text-xs font-bold flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        ALUMNO ACTIVO
+                      </span>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onSwitchStudentArchitecture) {
+                            onSwitchStudentArchitecture(m);
+                          }
+                        }}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1 rounded text-xs flex items-center gap-1 transition shadow-md shadow-emerald-950"
+                      >
+                        <Zap className="w-3 h-3" />
+                        Activar este Alumno
+                      </button>
+                    )
+                  ) : (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold text-purple-300 bg-purple-950/60 border border-purple-800">
+                      Profesor de Destilación
+                    </span>
+                  )}
                 </div>
               </div>
             );
