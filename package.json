@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "main": "dist-electron/electron/main.js",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
