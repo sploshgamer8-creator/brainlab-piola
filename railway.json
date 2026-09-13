@@ -1,11 +1,11 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "DOCKERFILE",
-    "dockerfilePath": "Dockerfile"
+    "builder": "NIXPACKS",
+    "buildCommand": "npm run build:railway"
   },
   "deploy": {
-    "startCommand": "./scripts/start_railway.sh",
+    "startCommand": "node scripts/migrate.js && node dist-electron/src/server/express_app.js",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }

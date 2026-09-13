@@ -6,7 +6,7 @@ async function main() {
     bundle: true,
     platform: 'node',
     target: 'node18',
-    external: ['electron', 'express', 'sqlite3', 'sql.js'],
+    packages: 'external',
     outdir: 'dist-electron',
     format: 'esm', // Since package.json is type: module
   });

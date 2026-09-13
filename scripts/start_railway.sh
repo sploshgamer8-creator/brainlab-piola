@@ -1,15 +1,17 @@
-[INFO] Actualizando start_railway.sh para ejecutar la migraci¢n.
-#!/usr/bin/env bash
+#!/bin/sh
 set -e
 
-:: 1?? Levantar llama-server en background
-./bin/llama-server &
+echo "[BrainLab] Starting Railway service..."
 
-:: 2?? Esperar a que el servidor arranque
-sleep 2
+if [ -n "$DATABASE_URL" ] || [ -n "$POSTGRES_URL" ]; then
+  echo "[BrainLab] Running PostgreSQL migrations..."
+  node scripts/migrate.js || true
+fi
 
-:: 3?? Ejecutar la migraci¢n (crea tabla proyectos
-psql $POSTGRES_URL -f scripts/migrations/001_create_proyectos.sql
+if [ -f "./bin/llama-server" ]; then
+  echo "[BrainLab] Starting local llama-server in background..."
+  ./bin/llama-server --port 8080 -m ./models/qwen2.5-0.5b.gguf &
+fi
 
-:: 4?? Iniciar la aplicaci¢n Node/Express
+echo "[BrainLab] Starting Express backend..."
 npm run start:railway
