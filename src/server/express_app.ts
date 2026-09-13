@@ -10,6 +10,18 @@ export async function startExpressServer(port?: number): Promise<void> {
   return new Promise((resolve) => {
     const app = express();
     
+    // Basic CORS middleware for local Electron dev
+    app.use((req, res, next) => {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
+      if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+      }
+      next();
+    });
+
     // Mount the Vite api_middleware as a regular Express middleware
     app.use((req, res, next) => {
       handleApiRoutes(req, res, next);

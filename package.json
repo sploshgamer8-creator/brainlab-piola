@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build && tsx scripts/build_electron.ts",
-    "start": "node scripts/migrate.js && node dist-electron/src/server/express_app.js",
+    "start": "node scripts/migrate.js && node scripts/start_all.js",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js dist-electron",
     "test": "tsx scripts/run_audit_tests.ts",

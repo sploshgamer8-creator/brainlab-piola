@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cpu, ShieldCheck, Zap, Sparkles, FolderKanban, GitBranch, Menu, X, Check } from 'lucide-react';
+import { Cpu, ShieldCheck, Zap, Sparkles, FolderKanban, GitBranch, Menu, X, Check, Hammer } from 'lucide-react';
 import { BrainProject } from '../core/types';
 
 interface HeaderProps {
@@ -97,6 +97,13 @@ export const Header: React.FC<HeaderProps> = ({
       icon: GitBranch,
       category: 'Despliegue',
       description: 'Exportador de paquetes .brain, scripts PyTorch y runner standalone.',
+    },
+    {
+      id: 'forge',
+      label: 'La Forja (Compiler)',
+      icon: Hammer,
+      category: 'Despliegue',
+      description: 'Compilador GGUF. Cuantización hiper-optimizada con llama.cpp.',
     },
   ];
 

@@ -29,17 +29,21 @@ const EXPRESS_PORT = 34567;
 function startExpress() {
   console.log('[Electron] Starting Express Backend...');
   
+  const env = { ...process.env, PORT: EXPRESS_PORT.toString() };
+
   if (app.isPackaged) {
     const expressPath = path.join(__dirname, '..', 'src', 'server', 'express_app.js');
     expressProcess = spawn(process.execPath, [expressPath], {
-      stdio: 'inherit'
+      stdio: 'inherit',
+      env
     });
   } else {
     const expressPath = path.join(PROJECT_ROOT, 'src', 'server', 'express_app.ts');
     expressProcess = spawn('npx', ['tsx', expressPath], {
       cwd: PROJECT_ROOT,
       stdio: 'inherit',
-      shell: true
+      shell: true,
+      env
     });
   }
 }

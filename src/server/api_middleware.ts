@@ -16,7 +16,7 @@ function getAIClient(): GoogleGenAI {
   return aiClient;
 }
 
-export function handleApiRoutes(req: IncomingMessage, res: ServerResponse, next: () => void) {
+export async function handleApiRoutes(req: IncomingMessage, res: ServerResponse, next: () => void) {
   if (!req.url?.startsWith('/api/')) {
     return next();
   }
@@ -335,6 +335,121 @@ export function handleApiRoutes(req: IncomingMessage, res: ServerResponse, next:
         }
       } catch (err: any) {
         return res.writeHead(500).end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // Teacher Pool dispatch endpoint
+  if (req.url?.startsWith('/api/cloud/teacher-pool/dispatch') && req.method === 'POST') {
+  let body = '';
+  req.on('data', chunk => { body += chunk; });
+  req.on('end', async () => {
+    res.setHeader('Content-Type', 'application/json');
+    try {
+      const payload = JSON.parse(body || '{}');
+      const { topic, count = 10, model = 'qwen7b' } = payload;
+      if (!topic) {
+        return res.writeHead(400).end(JSON.stringify({ error: 'Missing topic in request' }));
+      }
+      const pool = getPgPool();
+      if (!pool) {
+        return res.writeHead(500).end(JSON.stringify({ error: 'PostgreSQL not configured' }));
+      }
+      const insertRes = await pool.query(
+        `INSERT INTO teacher_pool_jobs (topic, count, model, status) VALUES ($1, $2, $3, 'queued') RETURNING id`,
+        [topic, count, model]
+      );
+      const jobId = insertRes.rows[0].id;
+      return res.writeHead(200).end(JSON.stringify({ jobId }));
+    } catch (err: any) {
+      return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+    }
+  });
+  return;
+}
+
+// Teacher Pool status endpoint
+if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GET') {
+  const urlObj = new URL(req.url, 'http://localhost');
+  const parts = urlObj.pathname.split('/');
+  const jobId = parts[parts.length - 1];
+  const pool = getPgPool();
+  if (!pool) {
+    res.writeHead(500).end(JSON.stringify({ error: 'PostgreSQL not configured' }));
+    return;
+  }
+  
+  try {
+    const result = await pool.query('SELECT status, samples_json FROM teacher_pool_jobs WHERE id = $1', [jobId]);
+    if (result.rows.length === 0) {
+      res.writeHead(404).end(JSON.stringify({ error: 'Job not found' }));
+      return;
+    }
+    const row = result.rows[0];
+    const response: any = { status: row.status };
+    if (row.samples_json) response.samples = row.samples_json;
+    res.writeHead(200).end(JSON.stringify(response));
+  } catch (err: any) {
+    res.writeHead(500).end(JSON.stringify({ error: err.message }));
+  }
+  return;
+}
+
+  // OneBrain Foundry - Model Compiler Endpoint
+  if (req.url?.startsWith('/api/forge/compile') && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      
+      try {
+        const payload = JSON.parse(body || '{}');
+        const { baseModel, targetRam, quantProfile } = payload;
+        
+        const { spawn } = require('child_process');
+        const path = require('path');
+        const fs = require('fs');
+        
+        const scriptPath = path.resolve(process.cwd(), 'scripts', 'model_compiler.py');
+        const outDir = path.resolve(process.cwd(), 'exports', 'onebrain_' + Date.now());
+        
+        if (!fs.existsSync(scriptPath)) {
+          res.write(`data: ${JSON.stringify({ type: 'error', message: 'model_compiler.py not found' })}\n\n`);
+          return res.end();
+        }
+        
+        const pyProcess = spawn('python', [
+          scriptPath,
+          '--base_model', baseModel || 'unsloth/Qwen2.5-7B-Instruct',
+          '--target_ram', targetRam || '16GB',
+          '--quant_profile', quantProfile || 'Balanced',
+          '--output_dir', outDir
+        ]);
+        
+        pyProcess.stdout.on('data', (data: Buffer) => {
+          const lines = data.toString().split('\n');
+          for (const line of lines) {
+            if (line.trim()) {
+              res.write(`data: ${line}\n\n`);
+            }
+          }
+        });
+        
+        pyProcess.stderr.on('data', (data: Buffer) => {
+          console.error(`[Compiler] ${data.toString()}`);
+        });
+        
+        pyProcess.on('close', (code: number) => {
+          res.write(`data: ${JSON.stringify({ type: 'finish', code })}\n\n`);
+          res.end();
+        });
+        
+      } catch (err: any) {
+        res.write(`data: ${JSON.stringify({ type: 'error', message: err.message })}\n\n`);
+        res.end();
       }
     });
     return;

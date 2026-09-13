@@ -2,7 +2,7 @@ import { build } from 'esbuild';
 
 async function main() {
   await build({
-    entryPoints: ['electron/main.ts', 'src/server/express_app.ts'],
+    entryPoints: ['electron/main.ts', 'src/server/express_app.ts', 'scripts/teacher_pool_worker.ts'],
     bundle: true,
     platform: 'node',
     target: 'node18',

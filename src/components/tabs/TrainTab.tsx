@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { Play, Pause, StepForward, Save, Zap, AlertCircle, TrendingDown, Gauge, Repeat, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { Play, Pause, StepForward, Save, Zap, AlertCircle, TrendingDown, Gauge, Repeat, SlidersHorizontal, Sparkles, Copy } from 'lucide-react';
 import { BrainProject, CheckpointMetadata, DatasetItem, PersonalityTraits, TrainingHyperparameters } from '../../core/types';
 import { OmniDistillPanel } from '../OmniDistillPanel';
 import { fetchDistillationBatch } from '../../core/distill_service';
+import axios from 'axios';
 
 interface TrainTabProps {
   currentProject: BrainProject;
@@ -46,67 +47,110 @@ export const TrainTab: React.FC<TrainTabProps> = ({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [isAutoFarming, setIsAutoFarming] = useState(false);
   const autoFarmingRef = useRef(false);
-  const [autoFarmingTopic, setAutoFarmingTopic] = useState('Conversación natural en español y razonamiento lógico');
+  const [autoFarmingTopic, setAutoFarmingTopic] = useState('ConversaciÃ³n natural en espaÃ±ol y razonamiento lÃ³gico');
   const [autoFarmingRounds, setAutoFarmingRounds] = useState(0);
   const [autoFarmingStatus, setAutoFarmingStatus] = useState<string | null>(null);
+  const [autoFarmingLogs, setAutoFarmingLogs] = useState<string[]>([]);
   const [autoFarmingStepsPerBatch, setAutoFarmingStepsPerBatch] = useState(30);
+  const [autoFarmingBatchSize, setAutoFarmingBatchSize] = useState(4);
+  const [autoFarmingSource, setAutoFarmingSource] = useState<'omniroute' | 'railway'>('railway');
+
+  const addLog = (msg: string | null) => { 
+    setAutoFarmingStatus(msg); 
+    if (msg) {
+      setAutoFarmingLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
+    }
+  };
+
+  const fetchBatchFromSource = async () => {
+    if (autoFarmingSource === 'railway') {
+      const CLOUD_URL = 'https://brainlab-production.up.railway.app';
+      const dispatchRes = await axios.post(`${CLOUD_URL}/api/cloud/teacher-pool/dispatch`, { topic: autoFarmingTopic, count: autoFarmingBatchSize, model: 'qwen7b' });
+      const jobId = dispatchRes.data.jobId;
+      
+      let jobStatus = 'queued';
+      while (jobStatus !== 'completed' && jobStatus !== 'failed' && autoFarmingRef.current) {
+        await new Promise(r => setTimeout(r, 2000));
+        const statusRes = await axios.get(`${CLOUD_URL}/api/cloud/teacher-pool/status/${jobId}`);
+        jobStatus = statusRes.data.status;
+        if (jobStatus === 'completed') {
+          return JSON.parse(statusRes.data.samples) as DatasetItem[];
+        }
+      }
+      return [];
+    } else {
+      const omniRouteUrl = localStorage.getItem('local_brain_omniroute_url') || '';
+      const omniRouteApiKey = localStorage.getItem('local_brain_omniroute_key') || localStorage.getItem('local_brain_openai_key') || '';
+      const omniRouteModel = localStorage.getItem('local_brain_omniroute_model') || localStorage.getItem('local_brain_openai_model') || 'gpt-4o-mini';
+
+      const distillRes = await fetchDistillationBatch({
+        topic: autoFarmingTopic,
+        category: 'spanish',
+        count: autoFarmingBatchSize,
+        traits,
+        complexity: 'conversational',
+        omniRouteUrl: omniRouteUrl || undefined,
+        omniRouteApiKey: omniRouteApiKey || undefined,
+        omniRouteModel: omniRouteModel || undefined,
+      });
+      return distillRes.candidates || [];
+    }
+  };
 
   const startAutoFarming = async () => {
     setIsAutoFarming(true);
     autoFarmingRef.current = true;
-    setAutoFarmingStatus('Iniciando ciclo continuo de destilación con profesor GPT-4...');
+    addLog('Iniciando pipeline paralelo (Inferencia Cloud + Entrenamiento Local)...');
 
     let round = autoFarmingRounds;
+    
+    // Iniciar el pre-fetch del primer lote en paralelo
+    let nextBatchPromise = fetchBatchFromSource();
+
     while (autoFarmingRef.current) {
       round++;
       setAutoFarmingRounds(round);
-      setAutoFarmingStatus(`[Ronda ${round}] Extrayendo lote de alta densidad desde GPT-4 / Maestro...`);
-
+      
+      addLog(`[Ronda ${round}] Esperando lote de generaciÃ³n del Maestro...`);
+      
       try {
-        const omniRouteUrl = localStorage.getItem('local_brain_omniroute_url') || '';
-        const omniRouteApiKey = localStorage.getItem('local_brain_omniroute_key') || localStorage.getItem('local_brain_openai_key') || '';
-        const omniRouteModel = localStorage.getItem('local_brain_omniroute_model') || localStorage.getItem('local_brain_openai_model') || 'gpt-4o-mini';
-
-        const distillRes = await fetchDistillationBatch({
-          topic: autoFarmingTopic,
-          category: 'spanish',
-          count: 4,
-          traits,
-          complexity: 'conversational',
-          omniRouteUrl: omniRouteUrl || undefined,
-          omniRouteApiKey: omniRouteApiKey || undefined,
-          omniRouteModel: omniRouteModel || undefined,
-        });
-
+        const candidates = await nextBatchPromise;
         if (!autoFarmingRef.current) break;
 
-        if (distillRes.candidates && distillRes.candidates.length > 0) {
-          setAutoFarmingStatus(`[Ronda ${round}] Absorbiendo ${distillRes.candidates.length} pares con backprop analítico (${autoFarmingStepsPerBatch} pasos)...`);
-          onInjectSamplesAndTrain(distillRes.candidates);
-          await new Promise(resolve => setTimeout(resolve, Math.max(1200, autoFarmingStepsPerBatch * 45)));
+        if (candidates && candidates.length > 0) {
+          // Iniciar Inmediatamente la bÃºsqueda de la SIGUIENTE ronda
+          nextBatchPromise = fetchBatchFromSource();
+
+          // Inyectar a la base de datos de React/Entrenamiento
+          onInjectSamplesAndTrain(candidates);
+          
+          // Iniciar el backpropagation local de esta ronda (bloquea hasta terminar)
+          addLog(`[Ronda ${round}] Entrenando red local (${autoFarmingStepsPerBatch} pasos) mientras la nube genera la Ronda ${round + 1}...`);
+          await onStartTraining(autoFarmingStepsPerBatch);
         } else {
-          setAutoFarmingStatus(`[Ronda ${round}] Esperando respuesta del maestro...`);
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          addLog(`[Ronda ${round}] Lote vacÃ­o o fallido. Reintentando en 3s...`);
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          nextBatchPromise = fetchBatchFromSource();
         }
       } catch (err: any) {
-        setAutoFarmingStatus(`Error en ronda ${round}: ${err.message}. Reintentando en 3s...`);
+        addLog(`Error en ronda ${round}: ${err.message}. Reintentando en 3s...`);
         await new Promise(resolve => setTimeout(resolve, 3000));
+        nextBatchPromise = fetchBatchFromSource();
       }
 
       if (autoFarmingRef.current) {
-        setAutoFarmingStatus(`[Ronda ${round}] Ronda finalizada con éxito. Preparando siguiente extracción...`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
 
     setIsAutoFarming(false);
-    setAutoFarmingStatus(null);
+    addLog(null);
   };
 
   const stopAutoFarming = () => {
     autoFarmingRef.current = false;
     setIsAutoFarming(false);
-    setAutoFarmingStatus(null);
+    addLog(null);
     onPauseTraining();
   };
 
@@ -144,7 +188,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
             </div>
             <div>
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                Auto-Farming & Destilación Continua Supervisada (GPT-4)
+                Auto-Farming & DestilaciÃ³n Continua Supervisada (GPT-4)
                 {isAutoFarming && (
                   <span className="flex h-2 w-2 relative">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -153,12 +197,23 @@ export const TrainTab: React.FC<TrainTabProps> = ({
                 )}
               </h3>
               <p className="text-xs text-slate-400">
-                Ciclo autónomo de extracción de pares sintéticos de alta densidad y absorción en los pesos del alumno con buffer anti-olvido (25% Replay).
+                Ciclo autÃ³nomo de extracciÃ³n de pares sintÃ©ticos de alta densidad y absorciÃ³n en los pesos del alumno con buffer anti-olvido (25% Replay).
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
+            {autoFarmingLogs.length > 0 && (
+              <button
+                type="button"
+                onClick={() => navigator.clipboard.writeText(autoFarmingLogs.join('\n'))}
+                title="Copiar Logs"
+                className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-2 rounded-lg text-xs flex items-center gap-2 transition border border-slate-700"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                Logs
+              </button>
+            )}
             {isAutoFarming ? (
               <button
                 type="button"
@@ -184,19 +239,41 @@ export const TrainTab: React.FC<TrainTabProps> = ({
 
         {/* Configuration inputs when idle, or live metrics when active */}
         {!isAutoFarming ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+            <div className="sm:col-span-4">
+              <label className="block text-slate-400 mb-1">Fuente del Maestro:</label>
+              <select
+                value={autoFarmingSource}
+                onChange={e => setAutoFarmingSource(e.target.value as 'omniroute' | 'railway')}
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500 mb-2"
+              >
+                <option value="omniroute">OmniRoute / OpenAI / GPT-4</option>
+                <option value="railway">Railway Cloud Qwen-7B (Background Worker)</option>
+              </select>
+            </div>
             <div className="sm:col-span-2">
               <label className="block text-slate-400 mb-1">Tema / Dominio a Destilar:</label>
               <input
                 type="text"
                 value={autoFarmingTopic}
                 onChange={e => setAutoFarmingTopic(e.target.value)}
-                placeholder="Ej. Diálogos inteligentes en español y lógica en Lua"
+                placeholder="Ej. DiÃ¡logos inteligentes en espaÃ±ol y lÃ³gica en Lua"
                 className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs font-mono focus:outline-none focus:border-emerald-500"
               />
             </div>
             <div>
-              <label className="block text-slate-400 mb-1">Pasos de AdamW por Lote:</label>
+              <label className="block text-slate-400 mb-1">Muestras (Pares/Ronda):</label>
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={autoFarmingBatchSize}
+                onChange={e => setAutoFarmingBatchSize(parseInt(e.target.value) || 4)}
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs font-mono focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+            <div>
+              <label className="block text-slate-400 mb-1">Pasos (AdamW/Ronda):</label>
               <input
                 type="number"
                 min={10}
@@ -222,7 +299,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
                 <span className="text-white font-bold text-base">{autoFarmingRounds}</span>
               </div>
               <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-400 block text-[10px]">PÉRDIDA ACTUAL (LOSS)</span>
+                <span className="text-slate-400 block text-[10px]">PÃ‰RDIDA ACTUAL (LOSS)</span>
                 <span className="text-emerald-400 font-bold text-base">{currentLoss.toFixed(3)}</span>
               </div>
               <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
@@ -245,7 +322,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
             </span>
           </div>
           <p className="text-sm text-slate-400 mt-1">
-            Optimizador AdamW acoplado a backpropagation analítico calculando gradientes de atención causal y capas MLP completamente en el navegador.
+            Optimizador AdamW acoplado a backpropagation analÃ­tico calculando gradientes de atenciÃ³n causal y capas MLP completamente en el navegador.
           </p>
         </div>
 
@@ -269,7 +346,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
                 title="Ejecutar exactamente 1 paso de entrenamiento"
               >
                 <StepForward className="w-3.5 h-3.5" />
-                Paso Único (1 iter)
+                Paso Ãšnico (1 iter)
               </button>
               <button
                 id="btn-start-training"
@@ -303,7 +380,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
 
         <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-4 font-mono">
           <span className="text-amber-400 text-xs block flex items-center gap-1">
-            <TrendingDown className="w-3.5 h-3.5" /> PÉRDIDA (LOSS)
+            <TrendingDown className="w-3.5 h-3.5" /> PÃ‰RDIDA (LOSS)
           </span>
           <span className="text-2xl font-bold text-amber-300">{currentLoss.toFixed(4)}</span>
           <div className="text-[10px] text-slate-500 mt-1">Cross-Entropy Causal</div>
@@ -331,10 +408,10 @@ export const TrainTab: React.FC<TrainTabProps> = ({
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
               <TrendingDown className="w-4 h-4 text-amber-400" />
-              Curva de Pérdida en Tiempo Real (Cross-Entropy Loss)
+              Curva de PÃ©rdida en Tiempo Real (Cross-Entropy Loss)
             </h3>
             <span className="text-xs font-mono text-slate-400">
-              Últimos {historySlice.length} pasos
+              Ãšltimos {historySlice.length} pasos
             </span>
           </div>
 
@@ -383,7 +460,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
               </div>
             ) : (
               <div className="h-44 flex items-center justify-center text-xs text-slate-500 font-mono">
-                Presiona "Entrenar" para iniciar el loop y registrar la curva de pérdida.
+                Presiona "Entrenar" para iniciar el loop y registrar la curva de pÃ©rdida.
               </div>
             )}
           </div>
@@ -393,7 +470,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
         <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-6 space-y-4 font-mono text-xs">
           <h3 className="text-base font-bold text-white flex items-center gap-2 font-sans">
             <Gauge className="w-4 h-4 text-emerald-400" />
-            Hiperparámetros de AdamW
+            HiperparÃ¡metros de AdamW
           </h3>
 
           <div className="space-y-3">
@@ -432,7 +509,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
 
             <div>
               <div className="flex justify-between text-slate-300 mb-1">
-                <span>Grad Clip (Máx Norma):</span>
+                <span>Grad Clip (MÃ¡x Norma):</span>
                 <span className="text-slate-300">{hyperparams.gradClip}</span>
               </div>
               <input
@@ -467,9 +544,9 @@ export const TrainTab: React.FC<TrainTabProps> = ({
               </div>
             </div>
 
-            {/* Presets de Régimen de Aprendizaje */}
+            {/* Presets de RÃ©gimen de Aprendizaje */}
             <div className="pt-2 border-t border-slate-800">
-              <span className="text-slate-400 block mb-2 font-sans font-semibold">Preajustes de Régimen:</span>
+              <span className="text-slate-400 block mb-2 font-sans font-semibold">Preajustes de RÃ©gimen:</span>
               <div className="grid grid-cols-3 gap-1.5">
                 <button
                   type="button"
@@ -483,7 +560,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
                   type="button"
                   onClick={() => onUpdateHyperparams({ ...hyperparams, learningRate: 0.001, weightDecay: 0.1, gradClip: 1.0 })}
                   className="bg-slate-800 hover:bg-slate-700 text-slate-300 p-1.5 rounded text-[10px] text-center transition border border-slate-700"
-                  title="Balance óptimo para aprender nuevos patrones rápidamente"
+                  title="Balance Ã³ptimo para aprender nuevos patrones rÃ¡pidamente"
                 >
                   Equilibrado
                 </button>
@@ -491,7 +568,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
                   type="button"
                   onClick={() => onUpdateHyperparams({ ...hyperparams, learningRate: 0.0025, weightDecay: 0.05, gradClip: 1.5 })}
                   className="bg-slate-800 hover:bg-slate-700 text-slate-300 p-1.5 rounded text-[10px] text-center transition border border-slate-700"
-                  title="Tasa acelerada para salir de mínimos locales planos"
+                  title="Tasa acelerada para salir de mÃ­nimos locales planos"
                 >
                   Agresivo
                 </button>
@@ -507,31 +584,31 @@ export const TrainTab: React.FC<TrainTabProps> = ({
           <div className="flex items-center gap-2">
             <Repeat className="w-5 h-5 text-emerald-400" />
             <div>
-              <h3 className="text-base font-bold text-white">Buffer de Replay Priorizado (PER) & Protección Anti-Olvido</h3>
+              <h3 className="text-base font-bold text-white">Buffer de Replay Priorizado (PER) & ProtecciÃ³n Anti-Olvido</h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Muestreo ponderado por pérdida (loss) con conjunto de anclajes (Anchor Set) para prevenir el olvido catastrófico.
+                Muestreo ponderado por pÃ©rdida (loss) con conjunto de anclajes (Anchor Set) para prevenir el olvido catastrÃ³fico.
               </p>
             </div>
           </div>
           <span className="text-xs bg-emerald-950/80 text-emerald-300 border border-emerald-800 px-2.5 py-0.5 rounded font-mono">
-            Régimen: 30% Nuevo | 50% Replay | 20% Ancla
+            RÃ©gimen: 30% Nuevo | 50% Replay | 20% Ancla
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
           <div className="bg-slate-950 p-3.5 rounded-lg border border-slate-800 space-y-1">
-            <span className="text-slate-400 text-[11px] block">DEDUPLICACIÓN HASH (FNV-1a)</span>
+            <span className="text-slate-400 text-[11px] block">DEDUPLICACIÃ“N HASH (FNV-1a)</span>
             <span className="text-emerald-400 font-bold text-sm">ACTIVA (En Memoria & Disco)</span>
             <p className="text-[10px] text-slate-500 font-sans mt-1">
-              Descarta pares idénticos y recalibra prioridades sin duplicar espacio.
+              Descarta pares idÃ©nticos y recalibra prioridades sin duplicar espacio.
             </p>
           </div>
 
           <div className="bg-slate-950 p-3.5 rounded-lg border border-slate-800 space-y-1">
             <span className="text-slate-400 text-[11px] block">CONJUNTO ANCLA (ANCHOR DATASET)</span>
-            <span className="text-amber-400 font-bold text-sm">PROTECCIÓN PERMANENTE</span>
+            <span className="text-amber-400 font-bold text-sm">PROTECCIÃ“N PERMANENTE</span>
             <p className="text-[10px] text-slate-500 font-sans mt-1">
-              Los ejemplos sintácticos esenciales nunca son desalojados del buffer.
+              Los ejemplos sintÃ¡cticos esenciales nunca son desalojados del buffer.
             </p>
           </div>
 
@@ -539,7 +616,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
             <span className="text-slate-400 text-[11px] block">MOTOR DE ENTRENAMIENTO</span>
             <span className="text-blue-400 font-bold text-sm">HILO SECUNDARIO (WEB WORKER)</span>
             <p className="text-[10px] text-slate-500 font-sans mt-1">
-              Descenso de gradiente asíncrono para mantener fluidez a 60 FPS en el cliente.
+              Descenso de gradiente asÃ­ncrono para mantener fluidez a 60 FPS en el cliente.
             </p>
           </div>
         </div>
@@ -554,7 +631,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
               Guardar Nuevo Checkpoint
             </h3>
             <p className="text-xs text-slate-400">
-              Crea una instantánea inmutable de los pesos neuronales, configuración y estado del paso {currentStep}.
+              Crea una instantÃ¡nea inmutable de los pesos neuronales, configuraciÃ³n y estado del paso {currentStep}.
             </p>
 
             <div className="space-y-3">
@@ -562,7 +639,7 @@ export const TrainTab: React.FC<TrainTabProps> = ({
                 <label className="text-xs font-semibold text-slate-300 block mb-1">Notas del Checkpoint</label>
                 <textarea
                   rows={3}
-                  placeholder="ej. Entrenado sobre 45 ejemplos de Lua. Pérdida reducida a 1.72."
+                  placeholder="ej. Entrenado sobre 45 ejemplos de Lua. PÃ©rdida reducida a 1.72."
                   value={checkpointNotes}
                   onChange={e => setCheckpointNotes(e.target.value)}
                   className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500"
@@ -597,3 +674,5 @@ export const TrainTab: React.FC<TrainTabProps> = ({
     </div>
   );
 };
+
+

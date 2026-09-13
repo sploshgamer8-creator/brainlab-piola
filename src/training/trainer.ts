@@ -58,6 +58,23 @@ export class BrainTrainer {
     this.replayRatio = ratio;
   }
 
+  public async loadCloudSamples(jobId: string) {
+    try {
+      const resp = await fetch(`/api/cloud/teacher-pool/status/${jobId}`);
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json.status === 'completed' && json.samples) {
+          const samples: DatasetItem[] = JSON.parse(json.samples);
+          // Auto-approve incoming cloud samples
+          samples.forEach(s => s.approved = true);
+          this.setDatasets([...samples, ...this.datasets]);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load cloud samples:', e);
+    }
+  }
+
   private getTokensFrom(items: DatasetItem[]): number[] {
     if (items.length === 0) {
       const base = this.tokenizer.formatConversation('hola', '¡Hola! Soy tu cerebro local.');
@@ -120,7 +137,7 @@ export class BrainTrainer {
     }
 
     // Fallback: standard unmasked token stream
-    const allTokens = this.getTrainingTokens();
+    const allTokens = this.getTokensFrom(items);
     if (allTokens.length <= blockSize + 1) {
       while (allTokens.length <= blockSize + 1) {
         allTokens.push(...allTokens);
@@ -164,7 +181,7 @@ export class BrainTrainer {
     this.model.step(effectiveLR, 0.9, 0.95, weightDecay, gradClip);
 
     this.currentStep++;
-    this.totalTokensTrained += blockSize;
+    this.totalTokensTrained += this.model.config.block_size;
     this.lossHistory.push({ step: this.currentStep, loss });
 
     return { step: this.currentStep, loss };

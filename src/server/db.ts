@@ -69,6 +69,20 @@ export async function initPostgres(): Promise<void> {
       CREATE INDEX IF NOT EXISTS idx_brain_checkpoints_project ON brain_checkpoints(project_id);
     `);
     console.log('[PostgreSQL] Tables "proyectos", "brain_projects", "brain_checkpoints" verified and ready on Railway!');
+    // Create teacher pool jobs table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS teacher_pool_jobs (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        topic TEXT NOT NULL,
+        count INT NOT NULL,
+        model TEXT NOT NULL DEFAULT 'qwen7b',
+        status TEXT NOT NULL DEFAULT 'queued',
+        samples_json JSONB,
+        created_at TIMESTAMPTZ DEFAULT now(),
+        updated_at TIMESTAMPTZ DEFAULT now()
+      );
+    `);
+
   } catch (err) {
     console.error('[PostgreSQL] Error initializing tables:', err);
   }

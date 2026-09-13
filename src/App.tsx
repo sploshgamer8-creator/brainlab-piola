@@ -10,8 +10,9 @@ import { EvaluateTab } from './components/tabs/EvaluateTab';
 import { ChatTab } from './components/tabs/ChatTab';
 import { MemoryTab } from './components/tabs/MemoryTab';
 import { ExportTab } from './components/tabs/ExportTab';
+import { ForgeTab } from './components/tabs/ForgeTab';
 
-import { BrainProject, DatasetItem, ExternalMemoryItem, PersonalityTraits, TrainingHyperparameters } from './core/types';
+import { BrainProject, DatasetItem, ExternalMemoryItem, PersonalityTraits, TrainingHyperparameters, CheckpointMetadata } from './core/types';
 import { NanoGPTModel } from './core/nanogpt_engine';
 import { NanoTokenizer } from './core/tokenizer';
 import { STARTER_DATASETS } from './training/datasets_store';
@@ -526,6 +527,12 @@ export default function App() {
             currentProject={currentProject}
             memoryItems={memoryItems}
             onImportBrainBundle={handleImportBrainBundle}
+          />
+        )}
+
+        {activeTab === 'forge' && (
+          <ForgeTab
+            currentProject={currentProject}
           />
         )}
       </main>
