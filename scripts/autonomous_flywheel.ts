@@ -113,7 +113,8 @@ export async function startAutonomousFlywheel() {
   logEvolution(`🎮 Corpus PiolaCraft integrado: ${piolacraftCorpus.length.toLocaleString()} pares (Enciclopedia, 70 Mecánicas, Diálogo real de Lucy y Lua).`);
 
   const activeDataset: DatasetItem[] = [...STARTER_DATASETS, ...piolacraftCorpus];
-  const processedJobIds = new Set<number>();
+  const processedJobIds = new Set<string | number>();
+  const hotIngestionQueue: DatasetItem[] = [];
 
   let trainer = new BrainTrainer(model, tokenizer, activeDataset, HYPERPARAMS);
   trainer.setAnchorDatasets([...STARTER_DATASETS, ...piolacraftCorpus.slice(0, 150)], 0.25);
@@ -132,71 +133,96 @@ export async function startAutonomousFlywheel() {
     cycleCount++;
     try {
       // ----------------------------------------------------
-      // PASO 1: SINCRONIZAR COSECHA DE LA NUBE (RAILWAY)
+      // PASO 1: SINCRONIZAR COSECHA DE LA NUBE (RAILWAY FEED & POSTGRES)
       // ----------------------------------------------------
       let newPairsFound = 0;
+      let cloudJobs: any[] = [];
 
       if (pool) {
         try {
           const res = await pool.query(`
-            SELECT id, topic, samples_json 
+            SELECT id, topic, samples_json, updated_at
             FROM teacher_pool_jobs 
             WHERE status='completed' AND samples_json IS NOT NULL
-            ORDER BY created_at DESC 
-            LIMIT 50
+            ORDER BY updated_at DESC 
+            LIMIT 100
           `);
+          cloudJobs = res.rows;
+        } catch {}
+      }
 
-          for (const row of res.rows) {
-            if (processedJobIds.has(row.id)) continue;
-            processedJobIds.add(row.id);
-
-            let samples: any = row.samples_json;
-            if (typeof samples === 'string') {
-              try { samples = JSON.parse(samples); } catch { continue; }
-            }
-
-            if (Array.isArray(samples)) {
-              for (const s of samples) {
-                const inp = String(s.input || s.instruction || '').trim();
-                const rawOut = String(s.output || s.response || '').trim();
-                if (inp && rawOut) {
-                  const cleaned = sanitizeTeacherOutput(rawOut);
-                  const cleanOut = cleaned.cleanedText || rawOut;
-
-                  activeDataset.push({
-                    id: `flywheel_${row.id}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-                    input: inp,
-                    output: cleanOut,
-                    category: 'spanish',
-                    source: 'teacher_synthetic',
-                    approved: true,
-                    createdAt: new Date().toISOString(),
-                    tags: ['cortex_flywheel', 'stm_sanitized']
-                  });
-                  newPairsFound++;
-                }
-              }
+      if (cloudJobs.length === 0) {
+        try {
+          const feedRes = await fetch('https://brainlab-production.up.railway.app/api/cloud/harvester/feed?limit=400');
+          if (feedRes.ok) {
+            const feedData: any = await feedRes.json();
+            if (feedData.jobs && Array.isArray(feedData.jobs)) {
+              cloudJobs = feedData.jobs;
             }
           }
+        } catch {}
+      }
 
-          if (newPairsFound > 0) {
-            trainer.setDatasets(activeDataset);
-            logEvolution(`📥 Córtex Cloud: Absorbidos ${newPairsFound} nuevos pares de entrenamiento purificados con STM.`);
-            
-            // Compilar shards binarios uint16 en segundo plano
-            syncCloudToBinaryShards().catch(err => {
-              console.warn('[ShardSync Warning]:', err.message);
-            });
+      for (const row of cloudJobs) {
+        const strId = String(row.id);
+        if (processedJobIds.has(strId)) continue;
+        processedJobIds.add(strId);
+
+        let samples: any = row.samples_json;
+        if (typeof samples === 'string') {
+          try { samples = JSON.parse(samples); } catch { continue; }
+        }
+
+        if (Array.isArray(samples)) {
+          for (const s of samples) {
+            const inp = String(s.input || s.instruction || '').trim();
+            const rawOut = String(s.output || s.response || '').trim();
+            if (inp && rawOut) {
+              const cleaned = sanitizeTeacherOutput(rawOut);
+              const cleanOut = cleaned.cleanedText || rawOut;
+
+              const newItem: DatasetItem = {
+                id: `flywheel_${row.id}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+                input: inp,
+                output: cleanOut,
+                category: 'spanish',
+                source: 'teacher_synthetic',
+                approved: true,
+                createdAt: new Date().toISOString(),
+                tags: ['cortex_flywheel', 'stm_sanitized', 'hot_absorbed']
+              };
+
+              activeDataset.push(newItem);
+              hotIngestionQueue.push(newItem);
+              newPairsFound++;
+            }
           }
-        } catch (dbErr: any) {
-          console.warn('⚠️ [Postgres Aviso]: Error temporal de conexión a la nube, reintentando en siguiente ciclo...', dbErr.message);
         }
       }
 
+      if (newPairsFound > 0) {
+        logEvolution(`🔥 [Hot Ingestion]: Absorbidos ${newPairsFound} nuevos pares de la cosecha en la nube directo al búfer caliente (Total búfer: ${activeDataset.length} pares | Pendientes en caliente: ${hotIngestionQueue.length}).`);
+        
+        // Compilar shards binarios uint16 en segundo plano
+        syncCloudToBinaryShards().catch(err => {
+          console.warn('[ShardSync Warning]:', err.message);
+        });
+      }
+
       // ----------------------------------------------------
-      // PASO 2: ENTRENAMIENTO CONTINUO LOCAL CON ADAMW
+      // PASO 2: ENTRENAMIENTO CONTINUO CON ADAMW & INGESTIÓN EN CALIENTE
       // ----------------------------------------------------
-      const stepsToRun = newPairsFound > 0 ? 50 : 20; // Ritmo ampliado al Máximo Sano
+      // Si hay pares en el búfer caliente, drenamos hasta 40 pares para entrenamiento focalizado inmediato
+      const hotBatch = hotIngestionQueue.splice(0, 40);
+      if (hotBatch.length > 0) {
+        // Curriculum focalizado: pares calientes nuevos + anclajes anti-olvido
+        trainer.setDatasets([...hotBatch, ...STARTER_DATASETS, ...piolacraftCorpus.slice(0, 50)]);
+      } else {
+        trainer.setDatasets(activeDataset);
+      }
+
+      // Ritmo de absorción adaptativo: 50 pasos si hay cola caliente, 30 pasos en crucero
+      const stepsToRun = hotBatch.length > 0 ? 50 : 30;
       let lastStepLoss = currentLoss;
 
       for (let s = 0; s < stepsToRun; s++) {
@@ -354,6 +380,22 @@ export async function startAutonomousFlywheel() {
           console.warn('⚠️ [SQLite Warning]:', sqliteErr.message);
         }
       }
+
+      // 💓 Heartbeat continuo al Servidor Cloud (Railway PostgreSQL)
+      fetch('https://brainlab-production.up.railway.app/api/cloud/telemetry/heartbeat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          active: true,
+          cycle: cycleCount,
+          step: totalStepsCompleted,
+          loss: currentLoss,
+          layers: `${model.config.n_layer}L`,
+          tokens: trainer.totalTokensTrained,
+          buffer: activeDataset.length,
+          lastUpdated: new Date().toISOString()
+        })
+      }).catch(() => {});
 
     } catch (cycleErr: any) {
       logEvolution(`❌ Error en ciclo del Flywheel: ${cycleErr.message}`);

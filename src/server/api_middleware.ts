@@ -563,6 +563,53 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
   }
 
   // ----------------------------------------------------
+  // 📥 HARVESTER DATA FEED (Cloud Teacher Jobs -> Local Flywheel)
+  // ----------------------------------------------------
+  if (req.url?.startsWith('/api/cloud/harvester/feed') && req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json');
+    const pool = getPgPool();
+    if (!pool) {
+      return res.writeHead(200).end(JSON.stringify({ jobs: [], count: 0, totalHarvestedTokens: 0 }));
+    }
+    try {
+      const urlObj = new URL(req.url, 'http://localhost');
+      const limit = Math.min(1000, parseInt(urlObj.searchParams.get('limit') || '400', 10));
+      const since = urlObj.searchParams.get('since');
+
+      let query = `
+        SELECT id, topic, samples_json, created_at, updated_at
+        FROM teacher_pool_jobs
+        WHERE status = 'completed' AND samples_json IS NOT NULL
+      `;
+      const params: any[] = [];
+      if (since) {
+        params.push(since);
+        query += ` AND updated_at > $${params.length}`;
+      }
+      params.push(limit);
+      query += ` ORDER BY updated_at DESC LIMIT $${params.length}`;
+
+      const resRows = await pool.query(query, params);
+
+      const statsRes = await pool.query(`
+        SELECT sum(length(coalesce(samples_json::text, ''))) as total_chars
+        FROM teacher_pool_jobs WHERE status='completed'
+      `);
+      const totalChars = parseInt(statsRes.rows[0]?.total_chars || '0', 10);
+      const totalHarvestedTokens = Math.round(totalChars / 3.5);
+
+      return res.writeHead(200).end(JSON.stringify({
+        jobs: resRows.rows,
+        count: resRows.rows.length,
+        totalHarvestedTokens,
+        timestamp: new Date().toISOString()
+      }));
+    } catch (err: any) {
+      return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+    }
+  }
+
+  // ----------------------------------------------------
   // 🛰️ SERVER HARVESTER LIVE ENGINE (100% SERVIDOR 24/7)
   // ----------------------------------------------------
   if (req.url?.startsWith('/api/cloud/harvester/live') && req.method === 'GET') {
@@ -650,7 +697,10 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
       }
 
       const estimatedCloudTokens = Math.round(totalChars / 3.5);
-      const totalTokensCombined = estimatedCloudTokens + flywheelData.tokens;
+      const trainedTokens = flywheelData.tokens || 0;
+      const absorptionRate = estimatedCloudTokens > 0
+        ? Math.min(100, Math.round((trainedTokens / estimatedCloudTokens) * 100))
+        : 100;
 
       return res.writeHead(200).end(JSON.stringify({
         serverStatus: serverHarvesterState,
@@ -663,8 +713,10 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
           completed: counts.completed || 0,
           failed: counts.failed || 0
         },
-        totalHarvestedTokens: totalTokensCombined,
+        totalHarvestedTokens: estimatedCloudTokens,
         cloudTokens: estimatedCloudTokens,
+        trainedTokens: trainedTokens,
+        absorptionRate: absorptionRate,
         recentSamples: recentSamples.slice(0, 10),
         timestamp: new Date().toISOString()
       }));

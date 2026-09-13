@@ -197,27 +197,68 @@ export const LiveHarvesterTab: React.FC<LiveHarvesterTabProps> = ({ onInjectSamp
         )}
       </div>
 
+      {/* Hot Absorption Progress & Zero Waste Banner */}
+      <div className="bg-slate-900/90 border border-emerald-500/30 rounded-xl p-4 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-amber-500/20 border border-amber-500/40 rounded-xl text-amber-400 shrink-0">
+            <Flame className="w-5 h-5 animate-bounce" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h4 className="text-sm font-bold text-white tracking-wide">
+                Ingestión Neuronal en Caliente
+              </h4>
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full font-mono font-bold">
+                0% TOKENS DESPERDICIADOS
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Cada token cosechado por los Maestros Groq se inyecta directamente al búfer de entrenamiento continuo de Lucy con anclaje anti-olvido.
+            </p>
+          </div>
+        </div>
+
+        <div className="w-full md:w-80 space-y-1.5 shrink-0 font-mono text-xs">
+          <div className="flex justify-between text-slate-300">
+            <span className="text-[11px] text-slate-400">Absorción en Lucy:</span>
+            <span className="font-bold text-emerald-400">
+              {Math.min(100, Math.round((trainedTokens / Math.max(1, totalTokens)) * 100))}% Sincronizado
+            </span>
+          </div>
+          <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800 flex">
+            <div
+              style={{ width: `${Math.min(100, Math.round((trainedTokens / Math.max(1, totalTokens)) * 100))}%` }}
+              className="bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 h-full rounded-full transition-all duration-500"
+            />
+          </div>
+          <div className="flex justify-between text-[10px] text-slate-400">
+            <span>Cosecha: {totalTokens.toLocaleString()} tok</span>
+            <span>Entrenados: {trainedTokens.toLocaleString()} tok</span>
+          </div>
+        </div>
+      </div>
+
       {/* 4 Cards: Live Token & Neural Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Tokens Harvested */}
         <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-mono">TOKENS COSECHADOS</span>
+            <span className="text-xs font-mono">TOKENS COSECHADOS (MAESTROS)</span>
             <Flame className="w-4 h-4 text-amber-400" />
           </div>
           <div className="text-2xl font-bold font-mono text-amber-400">
             {totalTokens.toLocaleString()}
           </div>
           <div className="text-[11px] text-slate-400 flex items-center justify-between pt-1 border-t border-slate-800/80 font-mono">
-            <span>Fuente: Groq / Qwen</span>
-            <span className="text-emerald-400 font-bold">5 Keys Activas</span>
+            <span>Pool Groq (5 Keys)</span>
+            <span className="text-amber-400 font-bold">gpt-oss-20b</span>
           </div>
         </div>
 
         {/* Card 2: Tokens Ingested into Weights */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-2 relative overflow-hidden">
+        <div className="bg-slate-900/80 border border-emerald-500/30 rounded-xl p-5 space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-mono">TOKENS ENTRENADOS (ALUMNO)</span>
+            <span className="text-xs font-mono">TOKENS ENTRENADOS (LUCY)</span>
             <Zap className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-2xl font-bold font-mono text-emerald-400">
