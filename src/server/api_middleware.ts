@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { execSync } from 'child_process';
 import { getDatabase, persistDatabase, exportSqliteBuffer, getPgPool } from './db';
+import { fetchWithScraplingStealth, ingestWithAgentReach, runScrapeGraphPipeline } from './harvester';
 
 let aiClient: GoogleGenAI | null = null;
 
@@ -505,8 +506,17 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
           reply = `📊 **Estado en Vivo del Córtex (Railway):**\n- Tareas completadas: **${completedCount}**\n- Tokens farmeados en PostgreSQL: **${tokensCount} tokens**\n- Piso Mínimo Local: **24.8M tokens** (Stanford Alpaca + CodeAlpaca en 50 shards binarios).\n- Keys de Groq: **5 API Keys activas** con rotación y cooldown.`;
         } else if (userMsg.includes('growth') || userMsg.includes('crecer') || userMsg.includes('zeroblock')) {
           reply = `🧬 **Model Growth Engine (ZeroBlockInsert):**\nPermite duplicar la profundidad del modelo (ej. 4 a 8 capas) conservando el 100% de la función previa (\\Delta Logits = 0.000000). Al inicializar las proyecciones residuales en cero, las nuevas capas actúan como identidad pura mientras se entrenan con los datos nuevos.`;
+        } else if (userMsg.includes('scrapling') || userMsg.includes('stealth') || userMsg.includes('cloudflare')) {
+          navigationTarget = 'data';
+          reply = '🕷️ **Scrapling Stealth Engine**: Activo en la pestaña **Datasets**. Permite bypass de Cloudflare Turnstile, emulación TLS de navegador y extracción con selectores CSS limpios.';
+        } else if (userMsg.includes('reach') || userMsg.includes('youtube') || userMsg.includes('reddit') || userMsg.includes('rss')) {
+          navigationTarget = 'data';
+          reply = '🌐 **Agent Reach Engine**: Activo en la pestaña **Datasets**. Puedes extraer transcripciones de YouTube, documentación de GitHub o hilos de Reddit sin claves de API de pago.';
+        } else if (userMsg.includes('scrapegraph') || userMsg.includes('sintetiz')) {
+          navigationTarget = 'data';
+          reply = '🧬 **ScrapeGraphAI Pipeline**: Activo en la pestaña **Datasets**. Convierte cualquier texto o documentación web en pares de entrenamiento estructurados {instruction, input, output} para NanoGPT.';
         } else {
-          reply = `👋 ¡Hola! Soy tu asistente y copiloto de **OneBrain**. Puedo navegar a cualquier panel que me pidas (ej: *"llévame a la Forja"*, *"ir a entrenar"*, *"ver datasets"*), consultar cuántos tokens van farmeados en la nube en tiempo real, o explicarte cualquier detalle de la arquitectura. ¿Qué deseas hacer?`;
+          reply = `👋 ¡Hola! Soy tu asistente y copiloto de **OneBrain**. Puedo navegar a cualquier panel que me pidas (ej: *"llévame a la Forja"*, *"ir a entrenar"*, *"ver datasets"*), consultar cuántos tokens van farmeados en la nube en tiempo real, o activar los motores de Scrapling, Agent Reach y ScrapeGraphAI. ¿Qué deseas hacer?`;
         }
 
         return res.writeHead(200).end(JSON.stringify({
@@ -514,6 +524,73 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
           navigationTarget
         }));
 
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // ==========================================
+  // HARVEST & INGESTION HUB (Scrapling, Agent Reach, ScrapeGraphAI)
+  // ==========================================
+
+  // 1. Scrapling Stealth Web Fetch
+  if (req.url === '/api/harvest/scrapling' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      res.setHeader('Content-Type', 'application/json');
+      try {
+        const payload = JSON.parse(body || '{}');
+        const { url, cssSelector } = payload;
+        if (!url) {
+          return res.writeHead(400).end(JSON.stringify({ error: 'URL requerida' }));
+        }
+        const result = await fetchWithScraplingStealth({ url, cssSelector });
+        return res.writeHead(200).end(JSON.stringify(result));
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // 2. Agent Reach Multi-Platform Ingest (YouTube, GitHub, Reddit, RSS)
+  if (req.url === '/api/harvest/reach' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      res.setHeader('Content-Type', 'application/json');
+      try {
+        const payload = JSON.parse(body || '{}');
+        const { platform, target, limit } = payload;
+        if (!platform || !target) {
+          return res.writeHead(400).end(JSON.stringify({ error: 'platform y target son requeridos' }));
+        }
+        const result = await ingestWithAgentReach({ platform, target, limit });
+        return res.writeHead(200).end(JSON.stringify(result));
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // 3. ScrapeGraphAI Pipeline Synthesizer
+  if (req.url === '/api/harvest/synthesize' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      res.setHeader('Content-Type', 'application/json');
+      try {
+        const payload = JSON.parse(body || '{}');
+        const { rawContent, topic, count, category } = payload;
+        if (!rawContent) {
+          return res.writeHead(400).end(JSON.stringify({ error: 'rawContent es requerido' }));
+        }
+        const result = await runScrapeGraphPipeline({ rawContent, topic, count, category });
+        return res.writeHead(200).end(JSON.stringify(result));
       } catch (err: any) {
         return res.writeHead(500).end(JSON.stringify({ error: err.message }));
       }

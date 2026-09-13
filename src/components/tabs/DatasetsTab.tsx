@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Sparkles, Plus, Trash2, Edit3, Filter, Code2, Globe, CheckCircle2, AlertTriangle, Search, Download, Upload, ShieldCheck, Check } from 'lucide-react';
 import { DatasetItem, BrainProject } from '../../core/types';
 import { inspectDatasetQuality } from '../../training/datasets_store';
+import { WebHarvesterHub } from '../WebHarvesterHub';
 
 interface DatasetsTabProps {
   datasets: DatasetItem[];
@@ -146,6 +147,9 @@ export const DatasetsTab: React.FC<DatasetsTabProps> = ({
 
   return (
     <div id="datasets-tab-container" className="space-y-6">
+      {/* OneBrain Web Harvester & Ingestion Hub (Scrapling, Agent Reach, ScrapeGraphAI) */}
+      <WebHarvesterHub onAddDatasetItems={(items) => onUpdateDatasets([...items, ...datasets])} />
+
       {/* Top Banner & QA Report */}
       <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
