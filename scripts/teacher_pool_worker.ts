@@ -260,8 +260,8 @@ async function autoSeedJobsIfLow(pool: any) {
     const countRes = await pool.query("SELECT count(*) FROM teacher_pool_jobs WHERE status='queued'");
     const queuedCount = parseInt(countRes.rows[0].count, 10);
 
-    if (queuedCount < 3) {
-      const needed = 6 - queuedCount;
+    if (queuedCount < 5) {
+      const needed = 10 - queuedCount;
       console.log(`🌾 Auto-Seeder: Cola baja (${queuedCount} tareas). Inyectando ${needed} tareas nuevas al Córtex...`);
 
       for (let i = 0; i < needed; i++) {
