@@ -13,3 +13,4 @@ dist-electron/
 release/
 Dockerfile.bak
 vars.txt
+*.sqlite

@@ -16,7 +16,7 @@ import { NanoGPTModel } from './core/nanogpt_engine';
 import { NanoTokenizer } from './core/tokenizer';
 import { STARTER_DATASETS } from './training/datasets_store';
 import { STARTER_MEMORY } from './memory/memory_store';
-import { loadProjectsFromStorage, saveProjectsToStorage, BrainBundleFile } from './core/checkpoint_manager';
+import { loadProjectsFromStorage, saveProjectsToStorage, BrainBundleFile, loadCheckpointWeights } from './core/checkpoint_manager';
 import { BrainTrainer } from './training/trainer';
 import { getPretrainedSpanishWeights, getPretrainedLuaWeights } from './training/pretrained_store';
 import { RegisteredModel } from './models/model_registry';
@@ -76,6 +76,18 @@ export default function App() {
     }
   }
 
+  // Hydrate weights from IndexedDB/Cloud if activeCheckpoint doesn't have them in memory
+  useEffect(() => {
+    if (activeCheckpoint && !activeCheckpoint.weightsSerialized && modelRef.current) {
+      loadCheckpointWeights(activeCheckpoint.id).then(weights => {
+        if (weights && modelRef.current) {
+          activeCheckpoint.weightsSerialized = weights;
+          modelRef.current.deserialize(weights);
+        }
+      });
+    }
+  }, [activeCheckpoint?.id]);
+
   // Training state
   const [isTraining, setIsTraining] = useState(false);
   const [trainingStep, setTrainingStep] = useState(activeCheckpoint.step);
@@ -119,13 +131,21 @@ export default function App() {
   }, [modelRef.current, datasets]);
 
   // Switch Checkpoint
-  const handleSwitchCheckpoint = (cpId: string) => {
+  const handleSwitchCheckpoint = async (cpId: string) => {
     const cp = currentProject.checkpoints.find(c => c.id === cpId);
     if (!cp) return;
 
     if (trainerRef.current && isTraining) {
       trainerRef.current.pauseTraining();
       setIsTraining(false);
+    }
+
+    let weights = cp.weightsSerialized;
+    if (!weights) {
+      weights = (await loadCheckpointWeights(cpId)) || undefined;
+      if (weights) {
+        cp.weightsSerialized = weights;
+      }
     }
 
     const updatedProject = { ...currentProject, currentCheckpointId: cpId };
@@ -136,8 +156,8 @@ export default function App() {
 
     // Reinitialize model
     modelRef.current = new NanoGPTModel(cp.config);
-    if (cp.weightsSerialized) {
-      modelRef.current.deserialize(cp.weightsSerialized);
+    if (weights) {
+      modelRef.current.deserialize(weights);
     }
 
     setTrainingStep(cp.step);

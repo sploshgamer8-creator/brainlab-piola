@@ -10,6 +10,7 @@
 
 import { BrainProject, BrainCheckpoint, CheckpointMetadata, GPTConfig, PersonalityTraits, ExternalMemoryItem } from './types';
 import { DEFAULT_TRAITS } from '../personality/traits_manager';
+import { StorageManager } from '../storage/storage_manager';
 
 export interface BrainBundleFile {
   format: 'local_brain_v1';
@@ -165,10 +166,94 @@ export function loadProjectsFromStorage(): BrainProject[] {
 
 export function saveProjectsToStorage(projects: BrainProject[]): void {
   try {
-    localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(projects));
+    // 1. Guardar pesos pesados en IndexedDB y construir versión ligera para localStorage
+    const lightweightProjects = projects.map(p => ({
+      ...p,
+      checkpoints: p.checkpoints.map(cp => {
+        if (cp.weightsSerialized) {
+          // Asíncronamente guardar los pesos en IndexedDB
+          StorageManager.saveCheckpointWeights(cp.id, cp.weightsSerialized).catch(err => {
+            console.warn(`[Storage] Error guardando pesos de ${cp.id} en IndexedDB:`, err);
+          });
+        }
+        // Desacoplar pesos pesados de localStorage para no exceder cuota de 5MB
+        const { weightsSerialized, ...metadataOnly } = cp;
+        return metadataOnly;
+      })
+    }));
+
+    localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(lightweightProjects));
+
+    // 2. Sincronización asíncrona no bloqueante con la nube (PostgreSQL en Railway)
+    syncProjectsWithCloud(projects).catch(() => {
+      // Offline o backend no disponible: silencioso
+    });
   } catch (e) {
     console.error('Error saving projects to storage', e);
   }
+}
+
+/**
+ * Carga los pesos serializados de un checkpoint, buscando en orden:
+ * 1. IndexedDB local (rápido y sin límite de tamaño)
+ * 2. Nube (/api/cloud/sync?checkpointId=...)
+ */
+export async function loadCheckpointWeights(checkpointId: string): Promise<string | null> {
+  try {
+    // 1. Intentar IndexedDB
+    const cached = await StorageManager.getCheckpointWeights(checkpointId);
+    if (cached) return cached;
+
+    // 2. Intentar Nube
+    const res = await fetch(`/api/cloud/sync?checkpointId=${encodeURIComponent(checkpointId)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.checkpoint?.weightsSerialized) {
+        // Almacenar en caché local de IndexedDB para futuros arranques instantáneos
+        await StorageManager.saveCheckpointWeights(checkpointId, data.checkpoint.weightsSerialized);
+        return data.checkpoint.weightsSerialized;
+      }
+    }
+  } catch (err) {
+    console.warn(`[Storage] No se pudieron recuperar los pesos para ${checkpointId}:`, err);
+  }
+  return null;
+}
+
+/**
+ * Sincroniza proyectos y checkpoints con la nube (Railway PostgreSQL)
+ */
+export async function syncProjectsWithCloud(projects: BrainProject[]): Promise<{ success: boolean; projects?: BrainProject[] }> {
+  try {
+    const checkpointsWithWeights: any[] = [];
+    for (const p of projects) {
+      for (const cp of p.checkpoints) {
+        if (cp.weightsSerialized) {
+          checkpointsWithWeights.push({ ...cp, projectId: p.id });
+        }
+      }
+    }
+
+    const res = await fetch('/api/cloud/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        projects: projects.map(p => ({
+          ...p,
+          checkpoints: p.checkpoints.map(({ weightsSerialized, ...rest }) => rest)
+        })),
+        checkpoints: checkpointsWithWeights
+      })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      return { success: true };
+    }
+  } catch (e) {
+    // Modo offline o sin conexión
+  }
+  return { success: false };
 }
 
 export function createBrainBundle(

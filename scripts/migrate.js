@@ -21,14 +21,18 @@ async function runMigration() {
   });
 
   try {
-    const sqlPath = path.join(__dirname, 'migrations', '001_create_proyectos.sql');
-    if (fs.existsSync(sqlPath)) {
-      const sql = fs.readFileSync(sqlPath, 'utf-8');
-      console.log(`[Migration] Executing: ${sqlPath}`);
-      await pool.query(sql);
-      console.log('[Migration] Database migration executed successfully!');
+    const migrationsDir = path.join(__dirname, 'migrations');
+    if (fs.existsSync(migrationsDir)) {
+      const files = fs.readdirSync(migrationsDir).filter(f => f.endsWith('.sql')).sort();
+      for (const file of files) {
+        const filePath = path.join(migrationsDir, file);
+        const sql = fs.readFileSync(filePath, 'utf-8');
+        console.log(`[Migration] Executing: ${file}`);
+        await pool.query(sql);
+      }
+      console.log('[Migration] All database migrations executed successfully!');
     } else {
-      console.warn('[Migration] Migration SQL file not found at:', sqlPath);
+      console.warn('[Migration] Migrations directory not found at:', migrationsDir);
     }
   } catch (err) {
     console.error('[Migration] Error running migration:', err);

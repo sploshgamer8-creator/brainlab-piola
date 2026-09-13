@@ -73,20 +73,72 @@ export class BrainTrainer {
   }
 
   /**
-   * Prepares a concatenated token stream with anti-catastrophic-forgetting replay.
+   * Prepares an instruction-masked batch where prompt tokens have target = -1
+   * so backpropagation updates ONLY weights predicting the assistant's response.
    */
-  private getTrainingTokens(): number[] {
+  public sampleTrainingBatch(): { inputs: number[]; targets: number[] } {
     const useReplay = this.anchorDatasets.length > 0 && Math.random() < (this.hyperparams.replayRatio ?? this.replayRatio);
-    const sourceData = useReplay ? this.anchorDatasets : this.datasets;
-    return this.getTokensFrom(sourceData.length > 0 ? sourceData : this.datasets);
+    const sourceData = (useReplay && this.anchorDatasets.length > 0) ? this.anchorDatasets : this.datasets;
+    const items = sourceData.length > 0 ? sourceData : this.datasets;
+    const blockSize = this.model.config.block_size;
+
+    if (items.length > 0) {
+      // Pick a random conversation item
+      const item = items[Math.floor(Math.random() * items.length)];
+      const prefix = this.tokenizer.formatConversation(item.input);
+      const prefixTokens = this.tokenizer.encode(prefix);
+      const fullText = this.tokenizer.formatConversation(item.input, item.output);
+      const fullTokens = this.tokenizer.encode(fullText);
+
+      if (fullTokens.length >= 4) {
+        // Crop or pad to blockSize + 1
+        let seq = fullTokens;
+        if (seq.length > blockSize + 1) {
+          seq = seq.slice(0, blockSize + 1);
+        }
+
+        const promptLen = Math.min(prefixTokens.length, seq.length);
+        const inputs: number[] = [];
+        const targets: number[] = [];
+
+        for (let i = 0; i < seq.length - 1; i++) {
+          inputs.push(seq[i]);
+          // Mask prompt positions with -1 (ignore_index)
+          if (i < promptLen - 1) {
+            targets.push(-1);
+          } else {
+            targets.push(seq[i + 1]);
+          }
+        }
+
+        // Verify that at least one valid target exists (not entirely masked)
+        const hasValidTarget = targets.some(t => t >= 0);
+        if (hasValidTarget && inputs.length > 0) {
+          return { inputs, targets };
+        }
+      }
+    }
+
+    // Fallback: standard unmasked token stream
+    const allTokens = this.getTrainingTokens();
+    if (allTokens.length <= blockSize + 1) {
+      while (allTokens.length <= blockSize + 1) {
+        allTokens.push(...allTokens);
+      }
+    }
+    const maxStart = allTokens.length - blockSize - 1;
+    const startIdx = Math.floor(Math.random() * Math.max(1, maxStart));
+    const chunk = allTokens.slice(startIdx, startIdx + blockSize + 1);
+    return {
+      inputs: chunk.slice(0, blockSize),
+      targets: chunk.slice(1, blockSize + 1),
+    };
   }
 
   /**
-   * Execute a single training iteration.
+   * Execute a single training iteration with SFT Instruction Masking.
    */
   public stepIteration(): { step: number; loss: number } {
-    const allTokens = this.getTrainingTokens();
-    const blockSize = this.model.config.block_size;
     const { learningRate, weightDecay, gradClip, useCosineDecay, maxIters } = this.hyperparams;
 
     // Cosine learning rate decay
@@ -98,26 +150,14 @@ export class BrainTrainer {
       effectiveLR = minLr + 0.5 * (learningRate - minLr) * (1 + Math.cos(Math.PI * progress));
     }
 
-    if (allTokens.length <= blockSize + 1) {
-      // Pad or duplicate if too short
-      while (allTokens.length <= blockSize + 1) {
-        allTokens.push(...allTokens);
-      }
-    }
-
-    // Random sample window
-    const maxStart = allTokens.length - blockSize - 1;
-    const startIdx = Math.floor(Math.random() * maxStart);
-    const chunk = allTokens.slice(startIdx, startIdx + blockSize + 1);
-
-    const inputs = chunk.slice(0, blockSize);
-    const targets = chunk.slice(1, blockSize + 1);
+    // Sample instruction-masked batch
+    const { inputs, targets } = this.sampleTrainingBatch();
 
     // Forward pass
     const fwd = this.model.forward(inputs, targets);
     const loss = fwd.loss ?? 0;
 
-    // Backward pass
+    // Backward pass (Karpathy analytical autograd honors target < 0 as ignore_index)
     this.model.backward(fwd.activations);
 
     // Optimizer step

@@ -3,20 +3,30 @@ import fs from 'fs';
 import path from 'path';
 import pg from 'pg';
 
+let pgPoolInstance: pg.Pool | null = null;
+
+export function getPgPool(): pg.Pool | null {
+  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  if (!connectionString) return null;
+  if (!pgPoolInstance) {
+    pgPoolInstance = new pg.Pool({
+      connectionString,
+      ssl: connectionString.includes('railway.internal') ? false : { rejectUnauthorized: false }
+    });
+  }
+  return pgPoolInstance;
+}
+
 /**
  * Inicializa PostgreSQL en Railway si está configurado
  */
 export async function initPostgres(): Promise<void> {
-  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-  if (!connectionString) {
+  const pool = getPgPool();
+  if (!pool) {
     console.log('[PostgreSQL] No DATABASE_URL or POSTGRES_URL configured.');
     return;
   }
-  console.log('[PostgreSQL] Connecting and verifying tables...');
-  const pool = new pg.Pool({
-    connectionString,
-    ssl: connectionString.includes('railway.internal') ? false : { rejectUnauthorized: false }
-  });
+  console.log('[PostgreSQL] Connecting and verifying tables on Railway...');
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS proyectos (
@@ -24,12 +34,43 @@ export async function initPostgres(): Promise<void> {
         nombre TEXT NOT NULL,
         creado_en TIMESTAMP DEFAULT NOW()
       );
+
+      CREATE TABLE IF NOT EXISTS brain_projects (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        current_checkpoint_id TEXT,
+        active_branch TEXT DEFAULT 'main',
+        branches_json JSONB DEFAULT '["main"]'::jsonb,
+        traits_json JSONB,
+        multilingual_ratio_json JSONB,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS brain_checkpoints (
+        id TEXT PRIMARY KEY,
+        project_id TEXT,
+        name TEXT NOT NULL,
+        version INTEGER DEFAULT 1,
+        branch TEXT DEFAULT 'main',
+        step INTEGER DEFAULT 0,
+        loss REAL DEFAULT 0.0,
+        total_tokens_trained BIGINT DEFAULT 0,
+        config_json JSONB NOT NULL,
+        param_count INTEGER DEFAULT 0,
+        history_json JSONB,
+        traits_json JSONB,
+        notes TEXT,
+        weights_serialized TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_brain_checkpoints_project ON brain_checkpoints(project_id);
     `);
-    console.log('[PostgreSQL] Table "proyectos" verified and ready on Railway!');
+    console.log('[PostgreSQL] Tables "proyectos", "brain_projects", "brain_checkpoints" verified and ready on Railway!');
   } catch (err) {
-    console.error('[PostgreSQL] Error initializing table:', err);
-  } finally {
-    await pool.end();
+    console.error('[PostgreSQL] Error initializing tables:', err);
   }
 }
 
@@ -104,6 +145,37 @@ export async function getDatabase(): Promise<Database> {
       last_commit_hash TEXT,
       last_sync_at TEXT,
       status TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS brain_projects (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT,
+      current_checkpoint_id TEXT,
+      active_branch TEXT,
+      branches_json TEXT,
+      traits_json TEXT,
+      multilingual_ratio_json TEXT,
+      created_at TEXT,
+      updated_at TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS brain_checkpoints (
+      id TEXT PRIMARY KEY,
+      project_id TEXT,
+      name TEXT NOT NULL,
+      version INTEGER,
+      branch TEXT,
+      step INTEGER,
+      loss REAL,
+      total_tokens_trained INTEGER,
+      config_json TEXT,
+      param_count INTEGER,
+      history_json TEXT,
+      traits_json TEXT,
+      notes TEXT,
+      weights_serialized TEXT,
+      created_at TEXT
     );
   `);
 

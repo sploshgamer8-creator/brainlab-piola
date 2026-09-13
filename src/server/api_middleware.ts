@@ -1,7 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { execSync } from 'child_process';
-import { getDatabase, persistDatabase, exportSqliteBuffer } from './db';
+import { getDatabase, persistDatabase, exportSqliteBuffer, getPgPool } from './db';
 
 let aiClient: GoogleGenAI | null = null;
 
@@ -19,6 +19,325 @@ function getAIClient(): GoogleGenAI {
 export function handleApiRoutes(req: IncomingMessage, res: ServerResponse, next: () => void) {
   if (!req.url?.startsWith('/api/')) {
     return next();
+  }
+
+  // Cloud Status (PostgreSQL en Railway o SQLite local)
+  if (req.url?.startsWith('/api/cloud/status') && req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json');
+    (async () => {
+      try {
+        const pool = getPgPool();
+        if (pool) {
+          const projRes = await pool.query('SELECT COUNT(*) as count FROM brain_projects');
+          const cpRes = await pool.query('SELECT COUNT(*) as count FROM brain_checkpoints');
+          return res.writeHead(200).end(JSON.stringify({
+            connected: true,
+            provider: 'postgresql_railway',
+            projectCount: parseInt(projRes.rows[0]?.count || '0', 10),
+            checkpointCount: parseInt(cpRes.rows[0]?.count || '0', 10),
+            timestamp: new Date().toISOString()
+          }));
+        } else {
+          const db = await getDatabase();
+          const projRes = db.exec('SELECT COUNT(*) as count FROM brain_projects');
+          const cpRes = db.exec('SELECT COUNT(*) as count FROM brain_checkpoints');
+          const projectCount = (projRes[0]?.values[0]?.[0] as number) || 0;
+          const checkpointCount = (cpRes[0]?.values[0]?.[0] as number) || 0;
+          return res.writeHead(200).end(JSON.stringify({
+            connected: true,
+            provider: 'sqlite_local',
+            projectCount,
+            checkpointCount,
+            timestamp: new Date().toISOString()
+          }));
+        }
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({
+          connected: false,
+          error: err.message,
+          timestamp: new Date().toISOString()
+        }));
+      }
+    })();
+    return;
+  }
+
+  // Cloud Sync (GET: Obtener proyectos y checkpoints / POST: Persistir a la nube)
+  if (req.url?.startsWith('/api/cloud/sync') && req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json');
+    (async () => {
+      try {
+        const urlObj = new URL(req.url!, 'http://localhost');
+        const checkpointId = urlObj.searchParams.get('checkpointId');
+        const pool = getPgPool();
+
+        if (pool) {
+          if (checkpointId) {
+            const resCp = await pool.query('SELECT * FROM brain_checkpoints WHERE id = $1', [checkpointId]);
+            if (resCp.rows.length === 0) {
+              return res.writeHead(404).end(JSON.stringify({ error: 'Checkpoint no encontrado' }));
+            }
+            const row = resCp.rows[0];
+            return res.writeHead(200).end(JSON.stringify({
+              checkpoint: {
+                id: row.id,
+                name: row.name,
+                version: row.version,
+                branch: row.branch,
+                step: row.step,
+                loss: row.loss,
+                totalTokensTrained: Number(row.total_tokens_trained || 0),
+                config: row.config_json,
+                paramCount: row.param_count,
+                history: row.history_json || [],
+                traits: row.traits_json,
+                notes: row.notes,
+                weightsSerialized: row.weights_serialized,
+                createdAt: row.created_at,
+              }
+            }));
+          } else {
+            const resProj = await pool.query('SELECT * FROM brain_projects ORDER BY updated_at DESC');
+            const resCp = await pool.query('SELECT id, project_id, name, version, branch, step, loss, total_tokens_trained, config_json, param_count, history_json, traits_json, notes, created_at FROM brain_checkpoints ORDER BY created_at DESC');
+
+            const checkpointsByProject: Record<string, any[]> = {};
+            for (const row of resCp.rows) {
+              const pId = row.project_id || '';
+              if (!checkpointsByProject[pId]) checkpointsByProject[pId] = [];
+              checkpointsByProject[pId].push({
+                id: row.id,
+                name: row.name,
+                version: row.version,
+                branch: row.branch,
+                step: row.step,
+                loss: row.loss,
+                totalTokensTrained: Number(row.total_tokens_trained || 0),
+                config: row.config_json,
+                paramCount: row.param_count,
+                history: row.history_json || [],
+                traits: row.traits_json,
+                notes: row.notes,
+                createdAt: row.created_at,
+              });
+            }
+
+            const projects = resProj.rows.map(p => ({
+              id: p.id,
+              name: p.name,
+              description: p.description,
+              currentCheckpointId: p.current_checkpoint_id,
+              activeBranch: p.active_branch,
+              branches: p.branches_json || ['main'],
+              traits: p.traits_json,
+              multilingualRatio: p.multilingual_ratio_json || { spanish: 60, english: 30, portuguese: 10 },
+              checkpoints: checkpointsByProject[p.id] || [],
+              createdAt: p.created_at,
+              updatedAt: p.updated_at,
+            }));
+
+            return res.writeHead(200).end(JSON.stringify({ projects }));
+          }
+        } else {
+          // SQLite fallback
+          const db = await getDatabase();
+          if (checkpointId) {
+            const stmt = db.prepare('SELECT * FROM brain_checkpoints WHERE id = :id');
+            stmt.bind({ ':id': checkpointId });
+            if (stmt.step()) {
+              const row: any = stmt.getAsObject();
+              stmt.free();
+              return res.writeHead(200).end(JSON.stringify({
+                checkpoint: {
+                  id: row.id,
+                  name: row.name,
+                  version: row.version,
+                  branch: row.branch,
+                  step: row.step,
+                  loss: row.loss,
+                  totalTokensTrained: Number(row.total_tokens_trained || 0),
+                  config: typeof row.config_json === 'string' ? JSON.parse(row.config_json) : row.config_json,
+                  paramCount: row.param_count,
+                  history: typeof row.history_json === 'string' ? JSON.parse(row.history_json) : (row.history_json || []),
+                  traits: typeof row.traits_json === 'string' ? JSON.parse(row.traits_json) : row.traits_json,
+                  notes: row.notes,
+                  weightsSerialized: row.weights_serialized,
+                  createdAt: row.created_at,
+                }
+              }));
+            } else {
+              stmt.free();
+              return res.writeHead(404).end(JSON.stringify({ error: 'Checkpoint no encontrado' }));
+            }
+          } else {
+            const projRes = db.exec('SELECT * FROM brain_projects');
+            const projectsList: any[] = [];
+            if (projRes.length > 0) {
+              const cols = projRes[0].columns;
+              for (const vals of projRes[0].values) {
+                const p: any = {};
+                cols.forEach((c, idx) => { p[c] = vals[idx]; });
+                projectsList.push({
+                  id: p.id,
+                  name: p.name,
+                  description: p.description,
+                  currentCheckpointId: p.current_checkpoint_id,
+                  activeBranch: p.active_branch,
+                  branches: typeof p.branches_json === 'string' ? JSON.parse(p.branches_json) : ['main'],
+                  traits: typeof p.traits_json === 'string' ? JSON.parse(p.traits_json) : p.traits_json,
+                  multilingualRatio: typeof p.multilingual_ratio_json === 'string' ? JSON.parse(p.multilingual_ratio_json) : { spanish: 60, english: 30, portuguese: 10 },
+                  checkpoints: [],
+                  createdAt: p.created_at,
+                  updatedAt: p.updated_at,
+                });
+              }
+            }
+            return res.writeHead(200).end(JSON.stringify({ projects: projectsList }));
+          }
+        }
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+      }
+    })();
+    return;
+  }
+
+  if (req.url === '/api/cloud/sync' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      res.setHeader('Content-Type', 'application/json');
+      try {
+        const payload = JSON.parse(body || '{}');
+        const pool = getPgPool();
+        const projectsToSync: any[] = payload.projects || (payload.project ? [payload.project] : []);
+        const checkpointsToSync: any[] = payload.checkpoints || (payload.checkpoint ? [payload.checkpoint] : []);
+
+        if (pool) {
+          for (const proj of projectsToSync) {
+            await pool.query(`
+              INSERT INTO brain_projects (id, name, description, current_checkpoint_id, active_branch, branches_json, traits_json, multilingual_ratio_json, updated_at)
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+              ON CONFLICT (id) DO UPDATE SET
+                name = EXCLUDED.name,
+                description = EXCLUDED.description,
+                current_checkpoint_id = EXCLUDED.current_checkpoint_id,
+                active_branch = EXCLUDED.active_branch,
+                branches_json = EXCLUDED.branches_json,
+                traits_json = EXCLUDED.traits_json,
+                multilingual_ratio_json = EXCLUDED.multilingual_ratio_json,
+                updated_at = NOW()
+            `, [
+              proj.id,
+              proj.name,
+              proj.description || '',
+              proj.currentCheckpointId || '',
+              proj.activeBranch || 'main',
+              JSON.stringify(proj.branches || ['main']),
+              JSON.stringify(proj.traits || {}),
+              JSON.stringify(proj.multilingualRatio || {})
+            ]);
+          }
+
+          for (const cp of checkpointsToSync) {
+            await pool.query(`
+              INSERT INTO brain_checkpoints (
+                id, project_id, name, version, branch, step, loss, total_tokens_trained,
+                config_json, param_count, history_json, traits_json, notes, weights_serialized, created_at
+              )
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
+              ON CONFLICT (id) DO UPDATE SET
+                name = EXCLUDED.name,
+                version = EXCLUDED.version,
+                branch = EXCLUDED.branch,
+                step = EXCLUDED.step,
+                loss = EXCLUDED.loss,
+                total_tokens_trained = EXCLUDED.total_tokens_trained,
+                config_json = EXCLUDED.config_json,
+                param_count = EXCLUDED.param_count,
+                history_json = EXCLUDED.history_json,
+                traits_json = EXCLUDED.traits_json,
+                notes = EXCLUDED.notes,
+                weights_serialized = COALESCE(EXCLUDED.weights_serialized, brain_checkpoints.weights_serialized)
+            `, [
+              cp.id,
+              payload.projectId || projectsToSync[0]?.id || null,
+              cp.name,
+              cp.version || 1,
+              cp.branch || 'main',
+              cp.step || 0,
+              cp.loss || 0.0,
+              cp.totalTokensTrained || 0,
+              JSON.stringify(cp.config),
+              cp.paramCount || 0,
+              JSON.stringify(cp.history || []),
+              JSON.stringify(cp.traits || {}),
+              cp.notes || '',
+              cp.weightsSerialized || null
+            ]);
+          }
+
+          return res.writeHead(200).end(JSON.stringify({
+            success: true,
+            syncedProjects: projectsToSync.length,
+            syncedCheckpoints: checkpointsToSync.length,
+            backend: 'postgresql_railway'
+          }));
+        } else {
+          const db = await getDatabase();
+          for (const proj of projectsToSync) {
+            db.run(`
+              INSERT OR REPLACE INTO brain_projects (id, name, description, current_checkpoint_id, active_branch, branches_json, traits_json, multilingual_ratio_json, created_at, updated_at)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+            `, [
+              proj.id,
+              proj.name,
+              proj.description || '',
+              proj.currentCheckpointId || '',
+              proj.activeBranch || 'main',
+              JSON.stringify(proj.branches || ['main']),
+              JSON.stringify(proj.traits || {}),
+              JSON.stringify(proj.multilingualRatio || {})
+            ]);
+          }
+
+          for (const cp of checkpointsToSync) {
+            db.run(`
+              INSERT OR REPLACE INTO brain_checkpoints (
+                id, project_id, name, version, branch, step, loss, total_tokens_trained,
+                config_json, param_count, history_json, traits_json, notes, weights_serialized, created_at
+              )
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+            `, [
+              cp.id,
+              payload.projectId || projectsToSync[0]?.id || null,
+              cp.name,
+              cp.version || 1,
+              cp.branch || 'main',
+              cp.step || 0,
+              cp.loss || 0.0,
+              cp.totalTokensTrained || 0,
+              JSON.stringify(cp.config),
+              cp.paramCount || 0,
+              JSON.stringify(cp.history || []),
+              JSON.stringify(cp.traits || {}),
+              cp.notes || '',
+              cp.weightsSerialized || null
+            ]);
+          }
+          persistDatabase();
+
+          return res.writeHead(200).end(JSON.stringify({
+            success: true,
+            syncedProjects: projectsToSync.length,
+            syncedCheckpoints: checkpointsToSync.length,
+            backend: 'sqlite_local'
+          }));
+        }
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
   }
 
   if (req.url === '/api/teacher/generate' && req.method === 'POST') {

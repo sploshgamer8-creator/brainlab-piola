@@ -103,6 +103,55 @@ export class StorageManager {
   }
 
   /**
+   * Guarda los tensores pesados serializados de un checkpoint en IndexedDB
+   * para no colapsar la cuota de 5MB de localStorage.
+   */
+  public static async saveCheckpointWeights(checkpointId: string, weightsSerialized: string): Promise<void> {
+    if (!this.dbInstance) await this.initialize();
+    if (!this.dbInstance) return;
+
+    return new Promise((resolve, reject) => {
+      const tx = this.dbInstance!.transaction('checkpoints', 'readwrite');
+      const store = tx.objectStore('checkpoints');
+      store.put({ id: checkpointId, weightsSerialized, updatedAt: Date.now() });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  /**
+   * Recupera los tensores pesados serializados de un checkpoint desde IndexedDB.
+   */
+  public static async getCheckpointWeights(checkpointId: string): Promise<string | null> {
+    if (!this.dbInstance) await this.initialize();
+    if (!this.dbInstance) return null;
+
+    return new Promise((resolve) => {
+      const tx = this.dbInstance!.transaction('checkpoints', 'readonly');
+      const store = tx.objectStore('checkpoints');
+      const req = store.get(checkpointId);
+      req.onsuccess = () => resolve(req.result?.weightsSerialized || null);
+      req.onerror = () => resolve(null);
+    });
+  }
+
+  /**
+   * Elimina los tensores pesados de un checkpoint en IndexedDB.
+   */
+  public static async deleteCheckpointWeights(checkpointId: string): Promise<void> {
+    if (!this.dbInstance) await this.initialize();
+    if (!this.dbInstance) return;
+
+    return new Promise((resolve) => {
+      const tx = this.dbInstance!.transaction('checkpoints', 'readwrite');
+      const store = tx.objectStore('checkpoints');
+      store.delete(checkpointId);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    });
+  }
+
+  /**
    * Estima la cuota y uso de almacenamiento en disco disponible en el dispositivo
    */
   public static async getStorageEstimate(): Promise<{ usageMB: number; quotaMB: number; percentage: number }> {

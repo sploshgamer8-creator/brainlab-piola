@@ -3,6 +3,7 @@ import { Plus, GitBranch, History, Cpu, CheckCircle2, ChevronRight, Layers, File
 import { BrainProject, CheckpointMetadata } from '../../core/types';
 import { DEFAULT_TRAITS } from '../../personality/traits_manager';
 import { createBrainBundle } from '../../core/checkpoint_manager';
+import { ModelRegistry } from '../../models/model_registry';
 
 interface ProjectsTabProps {
   projects: BrainProject[];
@@ -22,20 +23,30 @@ export const ProjectsTab: React.FC<ProjectsTabProps> = ({
   const [showNewModal, setShowNewModal] = useState(false);
   const [newBrainName, setNewBrainName] = useState('');
   const [newBrainDesc, setNewBrainDesc] = useState('');
-  const [newPreset, setNewPreset] = useState<'tiny' | 'small' | 'medium'>('small');
+  const [newPreset, setNewPreset] = useState<'nano' | 'micro' | 'medium' | 'scaled'>('micro');
 
   const [newBranchName, setNewBranchName] = useState('');
 
   const handleCreateBrain = () => {
     if (!newBrainName.trim()) return;
 
-    const presetConfigs = {
-      tiny: { n_layer: 2, n_head: 2, n_embd: 32, block_size: 32, params: 54000 },
-      small: { n_layer: 4, n_head: 4, n_embd: 64, block_size: 64, params: 218000 },
-      medium: { n_layer: 6, n_head: 6, n_embd: 96, block_size: 128, params: 680000 },
+    const presetMap: Record<string, any> = {
+      nano: ModelRegistry.getModel('nanogpt-221k-nano'),
+      micro: ModelRegistry.getModel('nanogpt-503k-micro'),
+      medium: ModelRegistry.getModel('nanogpt-1.6m-medium'),
+      scaled: ModelRegistry.getModel('nanogpt-2.9m-scaled'),
     };
 
-    const cfg = presetConfigs[newPreset];
+    const registered = presetMap[newPreset];
+    const cfg = registered?.gptConfig || {
+      block_size: 64,
+      vocab_size: 256,
+      n_layer: 4,
+      n_head: 6,
+      n_embd: 96,
+      dropout: 0.0,
+      bias: true,
+    };
 
     const initialCp: CheckpointMetadata = {
       id: `brain_${Date.now().toString().slice(-4)}_0001`,
@@ -46,19 +57,11 @@ export const ProjectsTab: React.FC<ProjectsTabProps> = ({
       step: 0,
       loss: 4.85,
       totalTokensTrained: 0,
-      config: {
-        block_size: cfg.block_size,
-        vocab_size: 110,
-        n_layer: cfg.n_layer,
-        n_head: cfg.n_head,
-        n_embd: cfg.n_embd,
-        dropout: 0.0,
-        bias: false,
-      },
-      paramCount: cfg.params,
+      config: cfg,
+      paramCount: registered?.parameterCount || 502848,
       history: [{ step: 0, loss: 4.85 }],
       traits: { ...DEFAULT_TRAITS },
-      notes: `Inicialización desde cero (${newPreset}). Arquitectura nanoGPT.`,
+      notes: `Inicialización desde catálogo: ${registered?.name || newPreset}. Arquitectura nanoGPT.`,
     };
 
     const newProj: BrainProject = {
@@ -355,12 +358,13 @@ export const ProjectsTab: React.FC<ProjectsTabProps> = ({
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-300 block mb-1">Perfil de Arquitectura</label>
-                <div className="grid grid-cols-3 gap-2">
+                <label className="text-xs font-semibold text-slate-300 block mb-1">Perfil de Arquitectura Calibrado</label>
+                <div className="grid grid-cols-2 gap-2">
                   {[
-                    { id: 'tiny', name: 'Micro (2L/32E)', desc: '~54K params' },
-                    { id: 'small', name: 'Estándar (4L/64E)', desc: '~218K params' },
-                    { id: 'medium', name: 'Avanzado (6L/96E)', desc: '~680K params' },
+                    { id: 'nano', name: 'Nano (221K)', desc: 'Ultra Ágil (150ms/paso)', badge: '4L / 64E' },
+                    { id: 'micro', name: 'Micro (503K) ★', desc: 'Sweet Spot (240ms/paso)', badge: '4L / 96E' },
+                    { id: 'medium', name: 'Medium (1.6M)', desc: 'Mayor Capacidad (1.4s)', badge: '8L / 128E' },
+                    { id: 'scaled', name: 'Scaled (2.9M)', desc: 'Razonamiento Profundo', badge: '9L / 160E' },
                   ].map(p => (
                     <button
                       key={p.id}
@@ -368,12 +372,15 @@ export const ProjectsTab: React.FC<ProjectsTabProps> = ({
                       onClick={() => setNewPreset(p.id as any)}
                       className={`p-2.5 rounded-lg border text-left transition ${
                         newPreset === p.id
-                          ? 'bg-emerald-950/40 border-emerald-500 text-emerald-300'
+                          ? 'bg-emerald-950/50 border-emerald-500 text-emerald-300 shadow-sm shadow-emerald-950'
                           : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:bg-slate-800'
                       }`}
                     >
-                      <div className="text-xs font-bold text-white">{p.name}</div>
-                      <div className="text-[10px] text-slate-400">{p.desc}</div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-white">{p.name}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">{p.badge}</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 mt-1">{p.desc}</div>
                     </button>
                   ))}
                 </div>
