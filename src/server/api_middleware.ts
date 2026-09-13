@@ -418,7 +418,7 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
         SELECT 
           status, 
           count(*) as count,
-          sum(case when status='completed' then length(coalesce(samples_json, '')) else 0 end) as total_chars
+          sum(case when status='completed' then length(coalesce(samples_json::text, '')) else 0 end) as total_chars
         FROM teacher_pool_jobs 
         GROUP BY status
       `);
@@ -495,7 +495,7 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
           let completedCount = '70+';
           if (pool) {
             try {
-              const res1 = await pool.query("SELECT count(*) as cnt, sum(length(coalesce(samples_json,''))) as ch FROM teacher_pool_jobs WHERE status='completed'");
+              const res1 = await pool.query("SELECT count(*) as cnt, sum(length(coalesce(samples_json::text,''))) as ch FROM teacher_pool_jobs WHERE status='completed'");
               if (res1.rows.length > 0) {
                 completedCount = res1.rows[0].cnt;
                 tokensCount = Math.round(parseInt(res1.rows[0].ch || '0', 10) / 3.5).toLocaleString();
