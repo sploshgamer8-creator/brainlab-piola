@@ -123,7 +123,17 @@ const TOPIC_CATALOG = [
   "Español: Explicación didáctica y precisa de conceptos de computación cuántica",
   "Español: Redacción de especificaciones de diseño técnico de software de grado bancario",
   "Español: Diálogo socrático para depurar errores de diseño en sistemas concurrentes",
-  "Español: Respuestas amables, analíticas y concisas para soporte técnico avanzado"
+  "Español: Respuestas amables, analíticas y concisas para soporte técnico avanzado",
+
+  // PiolaCraft / VoxeLibre & Mecánicas de Lucy
+  "PiolaCraft: Crafteos esenciales, recetas complejas y uso de herramientas en VoxeLibre",
+  "PiolaCraft: Comportamiento y combate contra mobs hostiles (Creepers, Zombies, Husk, Enderman)",
+  "PiolaCraft: Mecánicas de supervivencia, hambre, cama y reaparición en el mundo",
+  "PiolaCraft: Domesticación de animales, crianza con alimentos y uso de monturas",
+  "PiolaCraft: Automatización con Redstone, pistones, tolvas y repetidores",
+  "PiolaCraft: Minería, distribución de minerales por altura y exploración de cuevas",
+  "PiolaCraft: Modding en Lua para Luanti (registro de nodos, entidades y eventos)",
+  "Lucy NPC: Respuestas de asistencia amables, precisas y concisas para jugadores de PiolaCraft"
 ];
 
 /**

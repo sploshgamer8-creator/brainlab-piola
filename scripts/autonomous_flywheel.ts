@@ -23,6 +23,7 @@ import { NanoGPTModel } from '../src/core/nanogpt_engine';
 import { NanoTokenizer } from '../src/core/tokenizer';
 import { BrainTrainer } from '../src/training/trainer';
 import { STARTER_DATASETS } from '../src/training/datasets_store';
+import { loadPiolacraftCorpus } from '../src/training/piolacraft_corpus_loader';
 import { syncCloudToBinaryShards } from '../src/server/harvester/shard_synchronizer';
 import { sanitizeTeacherOutput } from '../src/core/stm_sanitizer';
 import { expandModelDepth, GrowthResult } from '../src/core/model_growth';
@@ -108,11 +109,14 @@ export async function startAutonomousFlywheel() {
     } catch {}
   }
 
-  const activeDataset: DatasetItem[] = [...STARTER_DATASETS];
+  const piolacraftCorpus = loadPiolacraftCorpus();
+  logEvolution(`🎮 Corpus PiolaCraft integrado: ${piolacraftCorpus.length.toLocaleString()} pares (Enciclopedia, 70 Mecánicas, Diálogo real de Lucy y Lua).`);
+
+  const activeDataset: DatasetItem[] = [...STARTER_DATASETS, ...piolacraftCorpus];
   const processedJobIds = new Set<number>();
 
   let trainer = new BrainTrainer(model, tokenizer, activeDataset, HYPERPARAMS);
-  trainer.setAnchorDatasets(STARTER_DATASETS, 0.25);
+  trainer.setAnchorDatasets([...STARTER_DATASETS, ...piolacraftCorpus.slice(0, 150)], 0.25);
   trainer.totalTokensTrained = totalStepsCompleted * model.config.block_size;
 
   const connectionString = process.env.DATABASE_URL;
