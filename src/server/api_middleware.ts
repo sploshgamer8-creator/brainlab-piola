@@ -2,7 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { execSync } from 'child_process';
 import { getDatabase, persistDatabase, exportSqliteBuffer, getPgPool } from './db';
-import { fetchWithScraplingStealth, ingestWithAgentReach, runScrapeGraphPipeline, runWithObscura, getObscuraStatus } from './harvester';
+import { fetchWithScraplingStealth, ingestWithAgentReach, runScrapeGraphPipeline, runWithObscura, getObscuraStatus, syncCloudToBinaryShards, getCloudShardsStatus } from './harvester';
 
 let aiClient: GoogleGenAI | null = null;
 
@@ -457,6 +457,31 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
     }
   }
 
+  // Cloud Shards Status endpoint
+  if (req.url === '/api/cloud/shards-status' && req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json');
+    try {
+      const status = getCloudShardsStatus();
+      return res.writeHead(200).end(JSON.stringify(status));
+    } catch (err: any) {
+      return res.writeHead(500).end(JSON.stringify({ error: err.message }));
+    }
+  }
+
+  // Cloud Shards Synchronizer endpoint (Descarga y compila uint16 shards)
+  if (req.url === '/api/cloud/sync-shards' && req.method === 'POST') {
+    res.setHeader('Content-Type', 'application/json');
+    (async () => {
+      try {
+        const result = await syncCloudToBinaryShards();
+        return res.writeHead(200).end(JSON.stringify(result));
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ success: false, error: err.message }));
+      }
+    })();
+    return;
+  }
+
   // Copilot Assistant Chat & Command Navigation
   if (req.url === '/api/copilot/chat' && req.method === 'POST') {
     let body = '';
@@ -518,6 +543,10 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
         } else if (userMsg.includes('obscura') || userMsg.includes('rust browser') || userMsg.includes('cdp')) {
           navigationTarget = 'data';
           reply = '⚡ **Obscura (Rust Headless Browser)**: Activo en la pestaña **Datasets**. Consume sólo ~30MB de RAM, ejecuta JS con motor V8, soporta CDP en el puerto 9222 y volcado directo de texto, HTML y enlaces.';
+        } else if (userMsg.includes('shard') || userMsg.includes('sincroniz') || userMsg.includes('descargar token')) {
+          navigationTarget = 'train';
+          const shardStat = getCloudShardsStatus();
+          reply = `💾 **Cloud Shard Synchronizer:**\n- Shards Binarios Compilados: **${shardStat.shardsCount}** (${(shardStat.totalTokens).toLocaleString()} tokens)\n- Formato: **uint16 little-endian** (0% padding waste)\n- Puedes sincronizar los nuevos tokens de la nube hacia shards binarios ejecutando la acción de sincronización o mediante \`POST /api/cloud/sync-shards\`.`;
         } else {
           reply = `👋 ¡Hola! Soy tu asistente y copiloto de **OneBrain**. Puedo navegar a cualquier panel que me pidas (ej: *"llévame a la Forja"*, *"ir a entrenar"*, *"ver datasets"*), consultar cuántos tokens van farmeados en la nube en tiempo real, o activar los motores de Scrapling, Agent Reach, ScrapeGraphAI y Obscura. ¿Qué deseas hacer?`;
         }

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Globe, Youtube, Github, MessageSquare, Rss, Sparkles, Shield, Cpu, ArrowRight, CheckCircle, RefreshCw, Layers, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Globe, Youtube, Github, MessageSquare, Rss, Sparkles, Shield, Cpu, ArrowRight, CheckCircle, RefreshCw, Layers, Zap, Database, DownloadCloud } from 'lucide-react';
 import axios from 'axios';
 import { DatasetItem } from '../core/types';
 
@@ -8,7 +8,7 @@ interface WebHarvesterHubProps {
 }
 
 export const WebHarvesterHub: React.FC<WebHarvesterHubProps> = ({ onAddDatasetItems }) => {
-  const [activeEngine, setActiveEngine] = useState<'scrapling' | 'reach' | 'scrapegraph' | 'obscura'>('scrapling');
+  const [activeEngine, setActiveEngine] = useState<'scrapling' | 'reach' | 'scrapegraph' | 'obscura' | 'shards'>('scrapling');
 
   // 1. Scrapling State
   const [scraplingUrl, setScraplingUrl] = useState('');
@@ -27,6 +27,50 @@ export const WebHarvesterHub: React.FC<WebHarvesterHubProps> = ({ onAddDatasetIt
   const [obscuraStealth, setObscuraStealth] = useState(true);
   const [isObscuraLoading, setIsObscuraLoading] = useState(false);
   const [obscuraEngineInfo, setObscuraEngineInfo] = useState<string | null>(null);
+
+  // 4. Cloud Shards Synchronizer State
+  const [shardsStatus, setShardsStatus] = useState<{
+    manifestExists: boolean;
+    totalTokens: number;
+    shardsCount: number;
+    samplesCount: number;
+    updatedAt?: string;
+  }>({
+    manifestExists: false,
+    totalTokens: 0,
+    shardsCount: 0,
+    samplesCount: 0,
+  });
+  const [isSyncingShards, setIsSyncingShards] = useState(false);
+
+  const fetchShardsStatus = async () => {
+    try {
+      const res = await axios.get('/api/cloud/shards-status');
+      if (res.data) setShardsStatus(res.data);
+    } catch {}
+  };
+
+  useEffect(() => {
+    fetchShardsStatus();
+  }, []);
+
+  const handleSyncShards = async () => {
+    setIsSyncingShards(true);
+    setStatusMsg('🔄 Descargando y compilando shards binarios uint16 desde PostgreSQL Railway...');
+    try {
+      const res = await axios.post('/api/cloud/sync-shards');
+      if (res.data.success) {
+        setStatusMsg(`🎉 Shards sincronizados: ${res.data.totalTokens.toLocaleString()} tokens compilados en ${res.data.shardsCount} archivos binarios uint16.`);
+        fetchShardsStatus();
+      } else {
+        setStatusMsg(`❌ Error al sincronizar shards: ${res.data.error || 'Desconocido'}`);
+      }
+    } catch (err: any) {
+      setStatusMsg(`❌ Error de conexión: ${err.message}`);
+    } finally {
+      setIsSyncingShards(false);
+    }
+  };
 
   // Shared Buffer / Extracted Content
   const [extractedTitle, setExtractedTitle] = useState('');
@@ -243,6 +287,17 @@ export const WebHarvesterHub: React.FC<WebHarvesterHubProps> = ({ onAddDatasetIt
           >
             <Zap className="w-3.5 h-3.5" />
             Obscura (Rust)
+          </button>
+          <button
+            onClick={() => setActiveEngine('shards')}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activeEngine === 'shards'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Database className="w-3.5 h-3.5" />
+            Cloud Shards
           </button>
         </div>
       </div>
@@ -461,6 +516,71 @@ export const WebHarvesterHub: React.FC<WebHarvesterHubProps> = ({ onAddDatasetIt
           <div className="text-[11px] text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center justify-between font-mono">
             <span>⚡ Motor: <strong>Rust + V8 JS Engine</strong> (~30MB RAM vs 200MB Chromium, 85ms carga).</span>
             {obscuraEngineInfo && <span className="text-rose-400">{obscuraEngineInfo}</span>}
+          </div>
+        </div>
+      )}
+
+      {/* Engine 5: Cloud Shards Synchronizer (PostgreSQL Railway -> uint16 .bin) */}
+      {activeEngine === 'shards' && (
+        <div className="space-y-4">
+          <div className="bg-slate-950 border border-slate-800 rounded-xl p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Database className="w-4 h-4 text-blue-400" />
+                  Cloud-to-Binary Shard Synchronizer
+                </h4>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Descarga todos los pares cosechados de la nube (Railway PostgreSQL), los tokeniza con NanoTokenizer y los compila en archivos binarios uint16 con <strong>0% padding waste</strong>.
+                </p>
+              </div>
+
+              <button
+                onClick={handleSyncShards}
+                disabled={isSyncingShards}
+                className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/20 whitespace-nowrap"
+              >
+                {isSyncingShards ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <DownloadCloud className="w-4 h-4" />
+                )}
+                Sincronizar Shards de la Nube
+              </button>
+            </div>
+
+            {/* Metrics cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+              <div className="bg-slate-900 border border-slate-800 rounded-lg p-3">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Tokens Compilados</span>
+                <p className="text-lg font-bold text-blue-400 font-mono mt-0.5">
+                  {shardsStatus.totalTokens.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-slate-900 border border-slate-800 rounded-lg p-3">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Shards Binarios (.bin)</span>
+                <p className="text-lg font-bold text-indigo-400 font-mono mt-0.5">
+                  {shardsStatus.shardsCount}
+                </p>
+              </div>
+              <div className="bg-slate-900 border border-slate-800 rounded-lg p-3">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Muestras Totales</span>
+                <p className="text-lg font-bold text-emerald-400 font-mono mt-0.5">
+                  {shardsStatus.samplesCount.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-slate-900 border border-slate-800 rounded-lg p-3">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Última Compilación</span>
+                <p className="text-xs font-semibold text-slate-300 font-mono mt-1 truncate">
+                  {shardsStatus.updatedAt ? new Date(shardsStatus.updatedAt).toLocaleTimeString() : 'Pendiente'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-[11px] text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center justify-between font-mono">
+            <span>💾 Destino Local: <strong>datasets/cloud_harvested/*.bin</strong></span>
+            <span>Estructura: <strong>uint16 LE (0% Padding Waste)</strong></span>
           </div>
         </div>
       )}

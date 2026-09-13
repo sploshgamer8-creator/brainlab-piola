@@ -16,3 +16,4 @@ vars.txt
 *.sqlite
 datasets/
 exports/
+scratch/

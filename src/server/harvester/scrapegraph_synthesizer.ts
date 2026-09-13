@@ -72,12 +72,12 @@ REGLAS ESTRICTAS:
   {
     "instruction": "Instrucción clara o pregunta desafiante sobre el concepto",
     "input": "Contexto adicional o código necesario (o vacío si no aplica)",
-    "output": "Explicación detallada, matemáticamente rigurosa o código impecable",
+    "output": "Solución compacta, limpia, matemáticamente rigurosa o código aplicando la disciplina Ponytail (Laziness Ladder: código estándar, minimalista, sin sobre-ingeniería ni wrappers innecesarios)",
     "category": "${category}"
   }
 ]
 2. Sin preámbulos, sin markdown externo, solo JSON puro.
-3. El contenido debe ser profundo, pedagógico y sin relleno innecesario.`;
+3. Máxima densidad de información en el menor número de líneas sin comprometer validaciones ni seguridad.`;
 
   // 1. Intentar con Groq si hay clave disponible
   if (groqApiKey) {

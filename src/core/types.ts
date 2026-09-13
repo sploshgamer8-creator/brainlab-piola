@@ -127,6 +127,35 @@ export interface ExternalMemoryItem {
   createdAt: string;
 }
 
+export type EntityType = 'concept' | 'file' | 'function' | 'agent' | 'user_fact' | 'system';
+export type RelationType = 'calls' | 'depends_on' | 'defines' | 'supersedes' | 'relates_to' | 'interacts_with';
+
+export interface EntityNode {
+  id: string;
+  name: string;
+  type: EntityType;
+  summary: string;
+  attributes?: Record<string, any>;
+  createdAt: string;
+}
+
+export interface RelationEdge {
+  id: string;
+  sourceId: string;
+  targetId: string;
+  relation: RelationType;
+  weight?: number;
+  validFrom: string;
+  validTo?: string;
+  status: 'active' | 'invalidated';
+  episodeId?: string;
+}
+
+export interface EpisodicMemoryGraph {
+  entities: EntityNode[];
+  edges: RelationEdge[];
+}
+
 export interface TrainingHyperparameters {
   learningRate: number;
   batchSize: number;

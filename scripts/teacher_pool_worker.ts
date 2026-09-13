@@ -140,7 +140,19 @@ function extractAndNormalizeSamples(rawText: string): Array<{ input: string, out
   }
 
   if (!parsed) {
-    throw new Error('No se pudo decodificar el formato JSON devuelto');
+    // Fallback de rescate mediante regex para JSONs truncados o mal escapados
+    const rescued: Array<{ input: string, output: string }> = [];
+    const itemRegex = /"input"\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*"output"\s*:\s*"((?:[^"\\]|\\.)*)"/g;
+    let m;
+    while ((m = itemRegex.exec(text)) !== null) {
+      const inp = m[1].replace(/\\n/g, '\n').replace(/\\"/g, '"').trim();
+      const out = m[2].replace(/\\n/g, '\n').replace(/\\"/g, '"').trim();
+      if (inp && out) rescued.push({ input: inp, output: out });
+    }
+    if (rescued.length > 0) {
+      return rescued;
+    }
+    throw new Error('No se pudo decodificar el formato JSON devuelto ni por fallback regex');
   }
 
   // Si devolvió { samples: [...] } o { data: [...] } o { pares: [...] } o array directo
@@ -177,21 +189,25 @@ async function callGroqWithRetry(topic: string, count: number, retries = 5): Pro
     const shortKey = `...${key.slice(-4)}`;
 
     try {
-      const payload = {
+      const useJsonObjectFormat = attempt <= 2; // Primero intentar json_object, si falla intentar texto libre
+      const payload: any = {
         model,
         messages: [
           {
             role: 'system',
-            content: 'Eres el Cortex de OneBrain, un generador de conocimiento de frontera. Devuelve estrictamente un objeto JSON con la propiedad "samples" conteniendo pares input y output. Estructura: {"samples": [{"input": "...", "output": "..."}]}.'
+            content: 'Eres el Cortex de OneBrain, un generador de conocimiento de frontera. Aplica la disciplina Ponytail (The Laziness Ladder): el mejor código es el que no se escribe. Sé conciso, directo y riguroso. Usa bibliotecas estándar nativas y soluciones compactas de una o pocas líneas. Cero wrappers redundantes, cero relleno. Devuelve estrictamente un objeto JSON con la propiedad "samples" conteniendo pares input y output: {"samples": [{"input": "...", "output": "..."}]}.'
           },
           {
             role: 'user',
-            content: `Genera ${count} pares de instrucción y respuesta analíticos y detallados sobre "${topic}" en formato JSON.`
+            content: `Genera ${count} pares compactos de alta densidad lógica sobre "${topic}" en formato JSON.`
           }
         ],
-        response_format: { type: 'json_object' },
         temperature: temp
       };
+
+      if (useJsonObjectFormat) {
+        payload.response_format = { type: 'json_object' };
+      }
 
       const resp = await fetch(GROQ_URL, {
         method: 'POST',
