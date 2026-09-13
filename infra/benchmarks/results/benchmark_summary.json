@@ -1,0 +1,34 @@
+[
+  {
+    "block": "layernorm",
+    "device": "cuda",
+    "latency_ms": 0.113,
+    "peak_mem_mb": 12.02,
+    "seq_len": 512,
+    "batch_size": 4
+  },
+  {
+    "block": "rmsnorm",
+    "device": "cuda",
+    "latency_ms": 0.283,
+    "peak_mem_mb": 18.01,
+    "seq_len": 512,
+    "batch_size": 4
+  },
+  {
+    "block": "swiglu",
+    "device": "cuda",
+    "latency_ms": 7.4944,
+    "peak_mem_mb": 102.12,
+    "seq_len": 512,
+    "batch_size": 4
+  },
+  {
+    "block": "attention",
+    "device": "cuda",
+    "latency_ms": 3.0826,
+    "peak_mem_mb": 53.22,
+    "seq_len": 512,
+    "batch_size": 4
+  }
+]

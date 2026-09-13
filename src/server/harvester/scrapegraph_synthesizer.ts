@@ -7,6 +7,7 @@
 
 import { GoogleGenAI } from '@google/genai';
 import { sanitizeTeacherOutput } from '../../core/stm_sanitizer';
+import { repairAndParseJson } from '../../core/json_repair';
 
 export interface SynthesizerOptions {
   rawContent: string;
@@ -145,24 +146,22 @@ REGLAS ESTRICTAS:
 }
 
 function extractJsonSamples(rawText: string): TrainingSample[] {
-  try {
-    const jsonMatch = rawText.match(/\[\s*\{[\s\S]*\}\s*\]/);
-    if (jsonMatch) {
-      const parsed = JSON.parse(jsonMatch[0]);
-      if (Array.isArray(parsed)) {
-        return parsed
-          .filter(item => item.instruction && item.output)
-          .map(item => {
-            const rawOut = String(item.output || '').trim();
-            const sanitized = sanitizeTeacherOutput(rawOut);
-            return {
-              ...item,
-              output: sanitized.cleanedText || rawOut
-            };
-          });
-      }
-    }
-  } catch {}
+  const parsed = repairAndParseJson<any[]>(rawText);
+  if (Array.isArray(parsed)) {
+    return parsed
+      .filter(item => (item.instruction || item.input) && (item.output || item.response))
+      .map(item => {
+        const rawOut = String(item.output || item.response || '').trim();
+        const sanitized = sanitizeTeacherOutput(rawOut);
+        return {
+          instruction: item.instruction || item.input || '',
+          input: item.input && item.instruction ? item.input : '',
+          output: sanitized.cleanedText || rawOut,
+          category: item.category,
+          quality_score: item.quality_score ?? 0.95
+        };
+      });
+  }
   return [];
 }
 

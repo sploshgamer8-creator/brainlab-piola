@@ -38,14 +38,18 @@ export type DatasetCategory =
   | 'lua'
   | 'spanish'
   | 'english'
-  | 'portuguese';
+  | 'portuguese'
+  | 'piolacraft_mechanics'
+  | 'piolacraft_enciclopedia'
+  | 'piolacraft_dialogue'
+  | 'piolacraft_lua';
 
 export interface DatasetItem {
   id: string;
   category: DatasetCategory;
   input: string;
   output: string;
-  source: 'manual' | 'teacher_synthetic' | 'teacher_gemini' | 'chat_promoted' | 'chat_conversation' | 'synthetic_api' | 'synthetic_rule';
+  source: 'manual' | 'teacher_synthetic' | 'teacher_gemini' | 'chat_promoted' | 'chat_conversation' | 'synthetic_api' | 'synthetic_rule' | 'voxelibre_mecanicas' | 'voxelibre_enciclopedia' | 'luanti_docs' | string;
   approved: boolean;
   createdAt: string;
   tags: string[];

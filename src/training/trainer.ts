@@ -76,13 +76,14 @@ export class BrainTrainer {
   }
 
   private getTokensFrom(items: DatasetItem[]): number[] {
-    if (items.length === 0) {
+    const sample = items.length > 10 ? items.slice(0, 10) : items;
+    if (sample.length === 0) {
       const base = this.tokenizer.formatConversation('hola', '¡Hola! Soy tu cerebro local.');
       return this.tokenizer.encode(base);
     }
     const tokens: number[] = [];
-    for (const item of items) {
-      const formatted = this.tokenizer.formatConversation(item.input, item.output);
+    for (const item of sample) {
+      const formatted = this.tokenizer.formatConversation(item.input || '', item.output || '');
       const encoded = this.tokenizer.encode(formatted);
       tokens.push(...encoded);
     }
@@ -100,43 +101,42 @@ export class BrainTrainer {
     const blockSize = this.model.config.block_size;
 
     if (items.length > 0) {
-      // Pick a random conversation item
-      const item = items[Math.floor(Math.random() * items.length)];
-      const prefix = this.tokenizer.formatConversation(item.input);
-      const prefixTokens = this.tokenizer.encode(prefix);
-      const fullText = this.tokenizer.formatConversation(item.input, item.output);
-      const fullTokens = this.tokenizer.encode(fullText);
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const item = items[Math.floor(Math.random() * items.length)];
+        if (!item || !item.input || !item.output) continue;
+        const prefix = this.tokenizer.formatConversation(item.input);
+        const prefixTokens = this.tokenizer.encode(prefix);
+        const fullText = this.tokenizer.formatConversation(item.input, item.output);
+        const fullTokens = this.tokenizer.encode(fullText);
 
-      if (fullTokens.length >= 4) {
-        // Crop or pad to blockSize + 1
-        let seq = fullTokens;
-        if (seq.length > blockSize + 1) {
-          seq = seq.slice(0, blockSize + 1);
-        }
-
-        const promptLen = Math.min(prefixTokens.length, seq.length);
-        const inputs: number[] = [];
-        const targets: number[] = [];
-
-        for (let i = 0; i < seq.length - 1; i++) {
-          inputs.push(seq[i]);
-          // Mask prompt positions with -1 (ignore_index)
-          if (i < promptLen - 1) {
-            targets.push(-1);
-          } else {
-            targets.push(seq[i + 1]);
+        if (fullTokens.length >= 4) {
+          let seq = fullTokens;
+          if (seq.length > blockSize + 1) {
+            seq = seq.slice(0, blockSize + 1);
           }
-        }
 
-        // Verify that at least one valid target exists (not entirely masked)
-        const hasValidTarget = targets.some(t => t >= 0);
-        if (hasValidTarget && inputs.length > 0) {
-          return { inputs, targets };
+          const promptLen = Math.min(prefixTokens.length, seq.length);
+          const inputs: number[] = [];
+          const targets: number[] = [];
+
+          for (let i = 0; i < seq.length - 1; i++) {
+            inputs.push(seq[i]);
+            if (i < promptLen - 1) {
+              targets.push(-1);
+            } else {
+              targets.push(seq[i + 1]);
+            }
+          }
+
+          const hasValidTarget = targets.some(t => t >= 0);
+          if (hasValidTarget && inputs.length > 0) {
+            return { inputs, targets };
+          }
         }
       }
     }
 
-    // Fallback: standard unmasked token stream
+    // Fallback: fast bounded token stream
     const allTokens = this.getTokensFrom(items);
     if (allTokens.length <= blockSize + 1) {
       while (allTokens.length <= blockSize + 1) {

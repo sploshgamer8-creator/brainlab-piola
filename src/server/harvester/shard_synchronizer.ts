@@ -10,6 +10,7 @@ import path from 'path';
 import pg from 'pg';
 import { NanoTokenizer } from '../../core/tokenizer';
 import { sanitizeTeacherOutput } from '../../core/stm_sanitizer';
+import { repairAndParseJson } from '../../core/json_repair';
 
 const { Pool } = pg;
 const PROJECT_ROOT = process.cwd();
@@ -106,7 +107,7 @@ export async function syncCloudToBinaryShards(): Promise<ShardSyncResult> {
     for (const row of res.rows) {
       let samples: any = row.samples_json;
       if (typeof samples === 'string') {
-        try { samples = JSON.parse(samples); } catch { continue; }
+        samples = repairAndParseJson(samples);
       }
       if (Array.isArray(samples)) {
         for (const s of samples) {

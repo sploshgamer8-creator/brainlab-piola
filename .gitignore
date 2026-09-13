@@ -17,3 +17,9 @@ vars.txt
 datasets/
 exports/
 scratch/
+__pycache__/
+*.pyc
+*.pt
+infra/env/
+infra/env313/
+infra/repos/

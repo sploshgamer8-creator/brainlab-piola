@@ -1,0 +1,47 @@
+[
+  {
+    "variant": "1. Baseline GPT-2 (LayerNorm + Learned Pos + GELU + Manual Attn)",
+    "step_time_ms": 98.84,
+    "throughput_tok_sec": 41441.0,
+    "peak_vram_mb": 1378.3,
+    "initial_loss": 4.9925,
+    "final_loss": 3.2504,
+    "loss_delta": 1.7421
+  },
+  {
+    "variant": "2. +SDPA Flash (Causal SDPA acelerado por hardware)",
+    "step_time_ms": 90.35,
+    "throughput_tok_sec": 45332.0,
+    "peak_vram_mb": 1132.7,
+    "initial_loss": 5.0097,
+    "final_loss": 3.1338,
+    "loss_delta": 1.8759
+  },
+  {
+    "variant": "3. +RMSNorm (Normalizacion simplificada sin bias)",
+    "step_time_ms": 97.98,
+    "throughput_tok_sec": 41806.0,
+    "peak_vram_mb": 1276.4,
+    "initial_loss": 5.0328,
+    "final_loss": 3.1851,
+    "loss_delta": 1.8477
+  },
+  {
+    "variant": "4. +RoPE (Rotary Positional Embeddings)",
+    "step_time_ms": 105.54,
+    "throughput_tok_sec": 38809.0,
+    "peak_vram_mb": 1404.9,
+    "initial_loss": 4.8065,
+    "final_loss": 2.4081,
+    "loss_delta": 2.3984
+  },
+  {
+    "variant": "5. +SwiGLU (OneBrain Modern Full: RMSNorm + RoPE + SwiGLU + SDPA)",
+    "step_time_ms": 111.17,
+    "throughput_tok_sec": 36843.0,
+    "peak_vram_mb": 1598.4,
+    "initial_loss": 4.9808,
+    "final_loss": 2.2267,
+    "loss_delta": 2.7541
+  }
+]
