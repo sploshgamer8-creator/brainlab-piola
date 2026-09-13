@@ -81,7 +81,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
   ]);
   const [inputPrompt, setInputPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [chatMode, setChatMode] = useState<'local' | 'duo' | 'gateway'>('local');
+  const [chatMode, setChatMode] = useState<'local' | 'onebrain_gpu' | 'duo' | 'gateway'>('onebrain_gpu');
 
   // Generation Hyperparameters
   const [temperature, setTemperature] = useState(0.8);
@@ -385,6 +385,58 @@ export const ChatTab: React.FC<ChatTabProps> = ({
             role: 'assistant',
             content: `Error al conectar con OmniRoute: ${err.message}`,
             modelBadge: 'Gateway Offline',
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          },
+        ]);
+      } finally {
+        setIsGenerating(false);
+      }
+      return;
+    }
+
+    if (chatMode === 'onebrain_gpu') {
+      try {
+        const startTime = performance.now();
+        const memContext = includeExternalMemory ? buildMemoryContextPrompt(memoryItems) : '';
+        const fullPrompt = memContext + text;
+
+        const res = await fetch('/api/infer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: fullPrompt,
+            checkpoint: 'checkpoints/onebrain_piolacraft.pt',
+            maxTokens: maxNewTokens,
+            temperature,
+            topK,
+          }),
+        });
+
+        const data = await res.json();
+        const durationMs = performance.now() - startTime;
+
+        if (data.success) {
+          const assistantMsg: ChatMessage = {
+            id: `asst_gpu_${Date.now()}`,
+            role: 'assistant',
+            content: data.response || data.full_text || '...',
+            tokensCount: data.tokens_generated || maxNewTokens,
+            durationMs: data.duration_ms || durationMs,
+            modelBadge: `OneBrain Modern GPT (${data.device?.toUpperCase() || 'CUDA'} - ${(data.params_count / 1e6 || 19.34).toFixed(1)}M)`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          };
+          setMessages(prev => [...prev, assistantMsg]);
+        } else {
+          throw new Error(data.error || 'Error al ejecutar inferencia en GPU');
+        }
+      } catch (err: any) {
+        setMessages(prev => [
+          ...prev,
+          {
+            id: `err_${Date.now()}`,
+            role: 'assistant',
+            content: `Error en OneBrain GPU: ${err.message}`,
+            modelBadge: 'GPU Error',
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           },
         ]);
@@ -781,15 +833,19 @@ export const ChatTab: React.FC<ChatTabProps> = ({
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   {currentProject.name}
                   <span className="text-[10px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded">
-                    {chatMode === 'local'
-                      ? 'Inferencia 100% Local (nanoGPT)'
+                    {chatMode === 'onebrain_gpu'
+                      ? 'OneBrain GPU (PyTorch CUDA RTX 2060)'
+                      : chatMode === 'local'
+                      ? 'Inferencia 100% Local (nanoGPT TS)'
                       : chatMode === 'duo'
                       ? 'Modo Dúo (Local + Farmeador 100M)'
                       : 'OmniRoute Gateway'}
                   </span>
                 </h3>
                 <p className="text-[11px] text-slate-400">
-                  {chatMode === 'local'
+                  {chatMode === 'onebrain_gpu'
+                    ? 'Inferencia acelerada en GPU NVIDIA RTX 2060 con checkpoint PiolaCraft y SDPA'
+                    : chatMode === 'local'
                     ? 'Pase hacia adelante en tensores Float32 sin conexiones externas'
                     : chatMode === 'duo'
                     ? 'nanoGPT responde localmente mientras el modelo de 100M cosecha datos'
@@ -800,7 +856,18 @@ export const ChatTab: React.FC<ChatTabProps> = ({
 
             <div className="flex items-center gap-2">
               {/* Mode Switcher */}
-              <div className="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
+              <div className="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs gap-1">
+                <button
+                  id="btn-chat-mode-gpu"
+                  onClick={() => setChatMode('onebrain_gpu')}
+                  className={`px-2.5 py-1 rounded text-xs font-semibold transition flex items-center gap-1 cursor-pointer ${
+                    chatMode === 'onebrain_gpu' ? 'bg-cyan-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Inferencia acelerada por GPU RTX 2060 con checkpoint de PiolaCraft"
+                >
+                  <Zap className="w-3 h-3 text-cyan-200" />
+                  OneBrain GPU
+                </button>
                 <button
                   id="btn-chat-mode-local"
                   onClick={() => setChatMode('local')}
@@ -808,7 +875,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({
                     chatMode === 'local' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  100% Local
+                  nanoGPT TS
                 </button>
                 <button
                   id="btn-chat-mode-duo"

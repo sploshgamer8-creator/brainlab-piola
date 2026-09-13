@@ -1517,6 +1517,85 @@ Reglas:
     return;
   }
 
+  // ==========================================
+  // ⚡ ONEBRAIN GPU INFERENCE ENDPOINT (RTX 2060 / PyTorch)
+  // ==========================================
+  if (req.url === '/api/infer' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      res.setHeader('Content-Type', 'application/json');
+      try {
+        const payload = JSON.parse(body || '{}');
+        const prompt = (payload.prompt || '').trim();
+        const maxTokens = Math.min(256, Math.max(10, parseInt(payload.maxTokens || '60', 10)));
+        const temperature = Math.max(0.1, Math.min(1.5, parseFloat(payload.temperature || '0.7')));
+        const topK = Math.max(1, Math.min(100, parseInt(payload.topK || '40', 10)));
+        const checkpoint = payload.checkpoint || 'checkpoints/onebrain_piolacraft.pt';
+
+        if (!prompt) {
+          return res.writeHead(400).end(JSON.stringify({ success: false, error: 'Prompt requerido' }));
+        }
+
+        const { spawn } = await import('child_process');
+        const path = await import('path');
+        const fs = await import('fs');
+
+        const pythonExe = path.resolve(process.cwd(), 'infra', 'env313', 'Scripts', 'python.exe');
+        const scriptPath = path.resolve(process.cwd(), 'nanogpt', 'sample.py');
+
+        if (!fs.existsSync(pythonExe) || !fs.existsSync(scriptPath)) {
+          return res.writeHead(500).end(JSON.stringify({
+            success: false,
+            error: 'Entorno Python CUDA (infra/env313) o sample.py no disponible en el servidor.'
+          }));
+        }
+
+        const args = [
+          scriptPath,
+          '--ckpt', checkpoint,
+          '--prompt', prompt,
+          '--max_tokens', maxTokens.toString(),
+          '--temperature', temperature.toString(),
+          '--top_k', topK.toString(),
+          '--json'
+        ];
+
+        const pyProc = spawn(pythonExe, args, { cwd: process.cwd() });
+        let stdout = '';
+        let stderr = '';
+
+        pyProc.stdout.on('data', (d: Buffer) => { stdout += d.toString(); });
+        pyProc.stderr.on('data', (d: Buffer) => { stderr += d.toString(); });
+
+        pyProc.on('close', (code: number) => {
+          if (code !== 0) {
+            return res.writeHead(500).end(JSON.stringify({
+              success: false,
+              error: `Error de ejecucion en PyTorch: ${stderr.slice(0, 200)}`,
+              code
+            }));
+          }
+
+          try {
+            const parsed = JSON.parse(stdout.trim());
+            return res.writeHead(200).end(JSON.stringify(parsed));
+          } catch {
+            return res.writeHead(200).end(JSON.stringify({
+              success: true,
+              response: stdout.trim(),
+              raw: true
+            }));
+          }
+        });
+
+      } catch (err: any) {
+        return res.writeHead(500).end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
   // Health check
   if (req.url === '/api/health') {
     res.setHeader('Content-Type', 'application/json');
