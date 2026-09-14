@@ -518,6 +518,15 @@ function startStats() {
 }
 
 async function run() {
+  // [PiolaBrain O1, 14/9] PAUSA DE VERDAD. `POST /api/cloud/harvester/pause` sólo cambia una variable del proceso web, y este worker
+  // (otro proceso, lanzado por scripts/start_all.js) seguía gastando Groq. Con HARVEST_PAUSA=1 no se arma ningún carril y el proceso
+  // queda vivo sin pedir nada: si terminara, el supervisor lo relanzaría cada 2 s. Es una variable NUEVA a propósito: el código viejo
+  // la ignora, así que el orden entre desplegar y prenderla no puede hacer que gaste en otro modo.
+  if (/^(1|si|true)$/i.test((process.env.HARVEST_PAUSA || '').trim())) {
+    console.log(`[harvester] EN PAUSA (HARVEST_PAUSA): ${lanes.length} claves sin usar, no se pide nada a Groq`);
+    setInterval(() => {}, 60 * 60_000);
+    return;
+  }
   console.log(`[harvester] ${lanes.length} claves, un carril por clave | modelo ${MODEL} | modo ${HARVEST_MODE}`);
   if (lanes.length === 0) return;
 

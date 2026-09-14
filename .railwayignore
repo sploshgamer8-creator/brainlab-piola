@@ -1,0 +1,2 @@
+# [14/9] `railway up` sube todo lo que no ignora git; esto no es del servicio (pruebas locales de modelos de razonamiento)
+scripts/razonamiento/
