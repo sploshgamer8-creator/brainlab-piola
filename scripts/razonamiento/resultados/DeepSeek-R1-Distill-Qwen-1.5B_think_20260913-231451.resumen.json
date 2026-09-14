@@ -1,0 +1,38 @@
+{
+ "modelo": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+ "dtype": "float16",
+ "pensar": true,
+ "max_tokens": 4096,
+ "lote": 8,
+ "n": 30,
+ "exactas": 0,
+ "acc": 0.0,
+ "parcial": 0.067,
+ "por_grupo": {
+  "multiplicado": {
+   "n": 10,
+   "exactas": 0,
+   "acc": 0.0,
+   "parcial": 0.0
+  },
+  "prof2": {
+   "n": 10,
+   "exactas": 0,
+   "acc": 0.0,
+   "parcial": 0.2
+  },
+  "prof3mas": {
+   "n": 10,
+   "exactas": 0,
+   "acc": 0.0,
+   "parcial": 0.0
+  }
+ },
+ "sin_respuesta": 4,
+ "truncadas": 4,
+ "tokens_prom": 888,
+ "tok_s_lote": 10.4,
+ "vram_pico_mb": 4587,
+ "carga_s": 5.6,
+ "gen_s": 2566
+}

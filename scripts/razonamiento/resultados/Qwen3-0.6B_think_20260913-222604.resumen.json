@@ -1,0 +1,38 @@
+{
+ "modelo": "Qwen/Qwen3-0.6B",
+ "dtype": "float16",
+ "pensar": true,
+ "max_tokens": 2048,
+ "lote": 8,
+ "n": 30,
+ "exactas": 0,
+ "acc": 0.0,
+ "parcial": 0.0,
+ "por_grupo": {
+  "multiplicado": {
+   "n": 10,
+   "exactas": 0,
+   "acc": 0.0,
+   "parcial": 0.0
+  },
+  "prof2": {
+   "n": 10,
+   "exactas": 0,
+   "acc": 0.0,
+   "parcial": 0.0
+  },
+  "prof3mas": {
+   "n": 10,
+   "exactas": 0,
+   "acc": 0.0,
+   "parcial": 0.0
+  }
+ },
+ "sin_respuesta": 11,
+ "truncadas": 11,
+ "tokens_prom": 1587,
+ "tok_s_lote": 35.5,
+ "vram_pico_mb": 3389,
+ "carga_s": 5.2,
+ "gen_s": 1340
+}
