@@ -738,6 +738,55 @@ if (req.url?.startsWith('/api/cloud/teacher-pool/status/') && req.method === 'GE
     }
   }
 
+  // [PiolaBrain G1, 14/9] Frases de la fabrica de Lucy (lucy_frases_jobs) para el laboratorio local. La base solo
+  // se ve por la red interna de Railway, asi que el laboratorio las baja por aca, con token. Sin LUCY_EXPORT_TOKEN
+  // la ruta no existe (404), y con un token equivocado tampoco: no se confirma ni que esta.
+  if (req.url?.startsWith('/api/lucy/frases') && req.method === 'GET') {
+    const token = process.env.LUCY_EXPORT_TOKEN;
+    const auth = String(req.headers['authorization'] || '');
+    if (!token || token.length < 32 || auth !== `Bearer ${token}`) {
+      return res.writeHead(404).end();
+    }
+    res.setHeader('Content-Type', 'application/x-ndjson; charset=utf-8');
+    try {
+      const pool = getPgPool();
+      if (!pool) return res.writeHead(503).end('#ERROR sin base\n');
+      const urlObj = new URL(req.url, 'http://localhost');
+      const desde = Math.max(0, parseInt(urlObj.searchParams.get('desde') || '0', 10) || 0);
+      const max = Math.min(20000, Math.max(1, parseInt(urlObj.searchParams.get('max') || '5000', 10) || 5000));
+      const { rows } = await pool.query(
+        `SELECT id, semilla, dicho_json, frases_json, descartadas, version_semillas, model, usage_json
+         FROM lucy_frases_jobs WHERE status='completed' AND id > $1 ORDER BY id ASC LIMIT $2`,
+        [desde, max]
+      );
+      let hasta = desde;
+      const lineas: string[] = [];
+      for (const r of rows) {
+        hasta = Math.max(hasta, Number(r.id));
+        let tokens: number | null = null;
+        try {
+          tokens = r.usage_json ? JSON.parse(r.usage_json).total_tokens ?? null : null;
+        } catch {}
+        lineas.push(JSON.stringify({
+          id: Number(r.id),
+          semilla: r.semilla,
+          dicho: JSON.parse(r.dicho_json),
+          frases: JSON.parse(r.frases_json || '[]'),
+          descartadas: r.descartadas,
+          version: r.version_semillas,
+          modelo: r.model,
+          tokens,
+        }));
+      }
+      const cuentas = await pool.query('SELECT status, count(*)::int AS n FROM lucy_frases_jobs GROUP BY status ORDER BY status');
+      const estado = Object.fromEntries(cuentas.rows.map((x: any) => [x.status, x.n]));
+      lineas.push(`#FIN hasta=${hasta} n=${rows.length} estado=${JSON.stringify(estado)}`);
+      return res.writeHead(200).end(lineas.join('\n') + '\n');
+    } catch (err: any) {
+      return res.writeHead(500).end(`#ERROR ${String(err?.message ?? err).slice(0, 200)}\n`);
+    }
+  }
+
   // Exportar Pares Cosechados (para sincronización con cliente local)
   if (req.url?.startsWith('/api/cloud/harvester/export-samples') && req.method === 'GET') {
     res.setHeader('Content-Type', 'application/json');
