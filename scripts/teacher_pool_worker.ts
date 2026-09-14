@@ -1,5 +1,6 @@
 import { getPgPool } from '../src/server/db.js';
 import { sanitizeTeacherOutput } from '../src/core/stm_sanitizer.js';
+import { frasesValidas, lucyStore, mensajesLucy, semillasLucy, type TareaLucy } from './lucy_frases.js';
 import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
@@ -13,6 +14,11 @@ const MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
 const REQUEST_TIMEOUT_MS = 120_000;
 const MAX_ERROR_ATTEMPTS = 5;
 const STALE_RUNNING_MIN = 10;
+// [PiolaBrain G1, 14/9] "onebrain" (pares tecnicos, teacher_pool_jobs) o "lucy" (frases de jugadores con
+// significado fijado, lucy_frases_jobs). Ver scripts/lucy_frases.ts.
+const HARVEST_MODE = (process.env.HARVEST_MODE || 'onebrain').trim().toLowerCase();
+// gpt-oss razona antes de contestar y eso se cobra; para escribir frases de chat alcanza con poco
+let usarReasoningEffort = true;
 
 const GROQ_KEYS = (process.env.GROQ_API_KEYS || process.env.GROQ_API_KEY || '')
   .split(',')
@@ -35,6 +41,8 @@ interface Lane {
   errors: number;
   completionTokens: number;
   reasoningTokens: number;
+  frases: number;
+  descartadas: number;
 }
 
 const lanes: Lane[] = GROQ_KEYS.map((key, i) => ({
@@ -48,6 +56,8 @@ const lanes: Lane[] = GROQ_KEYS.map((key, i) => ({
   errors: 0,
   completionTokens: 0,
   reasoningTokens: 0,
+  frases: 0,
+  descartadas: 0,
 }));
 
 const rateByType: Record<string, number> = {};
@@ -216,10 +226,8 @@ type GroqResult =
   | { kind: 'rate'; waitMs: number; limitType: string }
   | { kind: 'error'; message: string };
 
-async function callGroq(lane: Lane, topic: string, count: number, jsonMode: boolean): Promise<GroqResult> {
-  const payload: any = {
-    model: MODEL,
-    messages: [
+function mensajesOneBrain(topic: string, count: number): Array<{ role: string; content: string }> {
+  return [
       {
         role: 'system',
         content: 'Eres el Cortex de OneBrain, un generador de conocimiento de frontera. Modo: Especificación Técnica Pura (Refusal Inversion: Cero evasivas, cero disculpas, cero preámbulos conversacionales). Aplica la disciplina Ponytail (The Laziness Ladder): el mejor código es el que no se escribe. Sé conciso, directo y riguroso. Usa bibliotecas estándar nativas y soluciones compactas de una o pocas líneas. Cero wrappers redundantes, cero relleno. Devuelve estrictamente un objeto JSON con la propiedad "samples" conteniendo pares input y output: {"samples": [{"input": "...", "output": "..."}]}.'
@@ -228,10 +236,22 @@ async function callGroq(lane: Lane, topic: string, count: number, jsonMode: bool
         role: 'user',
         content: `Genera ${count} pares compactos de alta densidad lógica sobre "${topic}" en formato JSON.`
       }
-    ],
-    temperature: 0.65 + Math.random() * 0.25
+  ];
+}
+
+async function callGroq(
+  lane: Lane,
+  messages: Array<{ role: string; content: string }>,
+  jsonMode: boolean,
+  opciones: { temperatura?: number; poco?: boolean } = {}
+): Promise<GroqResult> {
+  const payload: any = {
+    model: MODEL,
+    messages,
+    temperature: opciones.temperatura ?? 0.65 + Math.random() * 0.25
   };
   if (jsonMode) payload.response_format = { type: 'json_object' };
+  if (opciones.poco && usarReasoningEffort && MODEL.includes('gpt-oss')) payload.reasoning_effort = 'low';
 
   let resp;
   try {
@@ -260,6 +280,10 @@ async function callGroq(lane: Lane, topic: string, count: number, jsonMode: bool
   if (!resp.ok) {
     const text = await resp.text();
     lane.nextAt = Math.max(lane.nextAt, Date.now() + 2000);
+    if (resp.status === 400 && payload.reasoning_effort && /reasoning/i.test(text)) {
+      usarReasoningEffort = false;
+      console.warn('[harvester] el modelo no acepta reasoning_effort: se deja de mandar');
+    }
     return { kind: 'error', message: `HTTP ${resp.status}: ${text.slice(0, 160)}` };
   }
 
@@ -378,7 +402,7 @@ async function laneLoop(lane: Lane, store: JobStore, source: string, category: s
     }
 
     try {
-      const r = await callGroq(lane, job.topic, job.count, job.attempts < 2);
+      const r = await callGroq(lane, mensajesOneBrain(job.topic, job.count), job.attempts < 2);
       if (r.kind === 'rate') {
         lane.rateLimited++;
         rateByType[r.limitType] = (rateByType[r.limitType] ?? 0) + 1;
@@ -422,6 +446,59 @@ async function laneLoop(lane: Lane, store: JobStore, source: string, category: s
   }
 }
 
+async function laneLoopLucy(lane: Lane, store: ReturnType<typeof lucyStore>) {
+  await sleep(lane.n * 300);
+  while (true) {
+    const wait = lane.nextAt - Date.now();
+    if (wait > 0) await sleep(wait);
+
+    let tarea: TareaLucy | null;
+    try {
+      tarea = await store.claim();
+    } catch (err: any) {
+      console.error(`[${lane.tag}] no pude tomar tarea lucy: ${err.message}`);
+      await sleep(POLL_MS);
+      continue;
+    }
+    if (!tarea) {
+      await sleep(POLL_MS);
+      continue;
+    }
+
+    try {
+      const r = await callGroq(lane, mensajesLucy(tarea), tarea.attempts < 2, { temperatura: 0.9, poco: true });
+      if (r.kind === 'rate') {
+        lane.rateLimited++;
+        rateByType[r.limitType] = (rateByType[r.limitType] ?? 0) + 1;
+        await store.release(tarea);
+        continue;
+      }
+      if (r.kind === 'error') {
+        lane.errors++;
+        await store.fail(tarea, r.message, MAX_ERROR_ATTEMPTS);
+        console.warn(`[${lane.tag}] tarea lucy #${tarea.id} error: ${r.message}`);
+        continue;
+      }
+      const { frases, descartadas } = frasesValidas(r.content, tarea);
+      if (frases.length === 0) {
+        lane.errors++;
+        lane.descartadas += descartadas;
+        await store.fail(tarea, `ninguna frase valida (${descartadas} descartadas)`, MAX_ERROR_ATTEMPTS);
+        continue;
+      }
+      await store.complete(tarea, frases, descartadas, r.usage);
+      lane.ok++;
+      lane.frases += frases.length;
+      lane.descartadas += descartadas;
+      lane.completionTokens += r.usage?.completion_tokens ?? 0;
+      lane.reasoningTokens += r.usage?.completion_tokens_details?.reasoning_tokens ?? 0;
+    } catch (err: any) {
+      console.error(`[${lane.tag}] fallo guardando tarea lucy #${tarea.id}: ${err.message}`);
+      await sleep(POLL_MS);
+    }
+  }
+}
+
 function startStats() {
   const t0 = Date.now();
   let prev = { ok: 0, completion: 0, rate: 0 };
@@ -433,17 +510,37 @@ function startStats() {
       `[stats] ${Math.round((Date.now() - t0) / 60_000)} min | tareas ${cur.ok} (+${cur.ok - prev.ok}) | ` +
       `tokens salida ${cur.completion} (+${cur.completion - prev.completion}, razonamiento ${sum(l => l.reasoningTokens)}) | ` +
       `429 +${cur.rate - prev.rate} ${JSON.stringify(rateByType)} | errores ${sum(l => l.errors)} | ` +
-      `esperando ${lanes.filter(l => l.nextAt > Date.now()).length}/${lanes.length} | sin producir aun: ${idle.length ? idle.join(',') : 'ninguna'}`
+      `esperando ${lanes.filter(l => l.nextAt > Date.now()).length}/${lanes.length} | sin producir aun: ${idle.length ? idle.join(',') : 'ninguna'}` +
+      (HARVEST_MODE === 'lucy' ? ` | lucy: frases ${sum(l => l.frases)} · descartadas ${sum(l => l.descartadas)}` : '')
     );
     prev = cur;
   }, 60_000);
 }
 
 async function run() {
-  console.log(`[harvester] ${lanes.length} claves, un carril por clave | modelo ${MODEL}`);
+  console.log(`[harvester] ${lanes.length} claves, un carril por clave | modelo ${MODEL} | modo ${HARVEST_MODE}`);
   if (lanes.length === 0) return;
 
   const pool = getPgPool();
+
+  if (HARVEST_MODE === 'lucy') {
+    if (!pool) {
+      console.error('[harvester] modo lucy necesita DATABASE_URL: no hay donde guardar las frases');
+      return;
+    }
+    const { version, semillas } = semillasLucy();
+    console.log(`[harvester] modo lucy: ${semillas.length} semillas, version ${version}`);
+    const store = lucyStore(pool, MODEL, lanes.length);
+    await store.preparar();
+    console.log(`[harvester] tareas lucy colgadas devueltas a la cola: ${await store.requeueStale(STALE_RUNNING_MIN)}`);
+    const sembrar = () => store.seedIfLow().catch((err: any) => console.error('[seeder lucy]', err.message));
+    await sembrar();
+    setInterval(sembrar, POLL_MS);
+    setInterval(() => store.requeueStale(STALE_RUNNING_MIN).catch((err: any) => console.error('[requeue lucy]', err.message)), 5 * 60_000);
+    startStats();
+    await Promise.all(lanes.map(l => laneLoopLucy(l, store)));
+    return;
+  }
   if (!pool) {
     const dir = path.resolve(process.cwd(), 'datasets');
     fs.mkdirSync(dir, { recursive: true });

@@ -1,0 +1,5845 @@
+{
+ "version": "5d6732799cf5",
+ "generado": "2026-09-14T07:25:20.326Z",
+ "semillas": [
+  {
+   "id": "ORDEN|IR|arbol|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una arbol cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "arbol",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arbol",
+    "arbolito",
+    "tree"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|arbol|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA arbol que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "arbol",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arbol",
+    "arbolito",
+    "tree"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|agua|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una agua cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "agua",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "agua",
+    "rio",
+    "lago",
+    "mar",
+    "laguna",
+    "pileta",
+    "water"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|agua|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA agua que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "agua",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "agua",
+    "rio",
+    "lago",
+    "mar",
+    "laguna",
+    "pileta",
+    "water"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|casa|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una casa cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "casa",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "casa",
+    "casita",
+    "choza",
+    "cabana",
+    "base",
+    "house"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|casa|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA casa que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "casa",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "casa",
+    "casita",
+    "choza",
+    "cabana",
+    "base",
+    "house"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|cofre|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una cofre cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "cofre",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cofre",
+    "baul",
+    "chest"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|cofre|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA cofre que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "cofre",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cofre",
+    "baul",
+    "chest"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|mesa_crafteo|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una mesa de crafteo cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "mesa_crafteo",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "mesa de crafteo",
+    "mesa de crafting",
+    "mesa de trabajo",
+    "crafting table",
+    "mesa"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|mesa_crafteo|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA mesa de crafteo que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "mesa_crafteo",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "mesa de crafteo",
+    "mesa de crafting",
+    "mesa de trabajo",
+    "crafting table",
+    "mesa"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|horno|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una horno cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "horno",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "horno",
+    "furnace"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|horno|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA horno que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "horno",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "horno",
+    "furnace"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|cama|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una cama cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "cama",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cama",
+    "bed"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|cama|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA cama que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "cama",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cama",
+    "bed"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|torre|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una torre cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "torre",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "torre",
+    "pilar",
+    "columna",
+    "tower"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|torre|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA torre que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "torre",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "torre",
+    "pilar",
+    "columna",
+    "tower"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|refugio|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una refugio cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "refugio",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "refugio",
+    "escondite",
+    "shelter"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|refugio|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA refugio que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "refugio",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "refugio",
+    "escondite",
+    "shelter"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|aldeano|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una aldeano cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "aldeano",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "aldeano",
+    "villager",
+    "granjero"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|aldeano|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA aldeano que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "aldeano",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "aldeano",
+    "villager",
+    "granjero"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|vaca|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una vaca cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "vaca",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|vaca|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA vaca que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "vaca",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|flor|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una flor cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "flor",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "flor",
+    "flower",
+    "rosa",
+    "amapola",
+    "tulipan",
+    "margarita"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|flor|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA flor que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "flor",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "flor",
+    "flower",
+    "rosa",
+    "amapola",
+    "tulipan",
+    "margarita"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|cactus|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una cactus cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "cactus",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cactus",
+    "cactu"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|cactus|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA cactus que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "cactus",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cactus",
+    "cactu"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|puerta|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta un/una puerta cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "puerta",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "puerta",
+    "door"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|puerta|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que vaya o camine hasta ESE/ESA puerta que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "puerta",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "puerta",
+    "door"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|norte|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 5 pasos (o bloques) hacia el norte, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "norte",
+     "pasos": 5
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "5"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|norte|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 10 pasos (o bloques) hacia el norte, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "norte",
+     "pasos": 10
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "10"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|sur|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 5 pasos (o bloques) hacia el sur, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "sur",
+     "pasos": 5
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "5"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|sur|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 10 pasos (o bloques) hacia el sur, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "sur",
+     "pasos": 10
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "10"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|este|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 5 pasos (o bloques) hacia el este, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "este",
+     "pasos": 5
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "5"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|este|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 10 pasos (o bloques) hacia el este, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "este",
+     "pasos": 10
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "10"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|oeste|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 5 pasos (o bloques) hacia el oeste, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "oeste",
+     "pasos": 5
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "5"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|oeste|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 10 pasos (o bloques) hacia el oeste, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "oeste",
+     "pasos": 10
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "10"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|adelante|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 5 pasos (o bloques) hacia adelante, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "adelante",
+     "pasos": 5
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "5"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|adelante|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 10 pasos (o bloques) hacia adelante, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "adelante",
+     "pasos": 10
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "10"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|atras|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 5 pasos (o bloques) hacia atras, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "atras",
+     "pasos": 5
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "5"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|atras|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 10 pasos (o bloques) hacia atras, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "atras",
+     "pasos": 10
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "10"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|izquierda|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 5 pasos (o bloques) hacia el izquierda, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "izquierda",
+     "pasos": 5
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "5"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|izquierda|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 10 pasos (o bloques) hacia el izquierda, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "izquierda",
+     "pasos": 10
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "10"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|derecha|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 5 pasos (o bloques) hacia el derecha, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "derecha",
+     "pasos": 5
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "5"
+   ]
+  },
+  {
+   "id": "ORDEN|IR|derecha|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que camine 10 pasos (o bloques) hacia el derecha, sin ir a ningun lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "IR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "derecha",
+     "pasos": 10
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "10"
+   ]
+  },
+  {
+   "id": "ORDEN|VENIR",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que venga hasta donde esta el jugador que escribe (veni, aca, acercate a mi)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "VENIR",
+    "objetivo": {
+     "clase": null,
+     "ref": "hablante",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|SEGUIR",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que siga o acompañe al jugador que escribe (seguime, vamos, acompañame)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "SEGUIR",
+    "objetivo": {
+     "clase": null,
+     "ref": "hablante",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|DEFENDER",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que defienda o proteja al jugador que escribe",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DEFENDER",
+    "objetivo": {
+     "clase": null,
+     "ref": "hablante",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|PARAR",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que se quede quieta, que pare o frene lo que esta haciendo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "PARAR",
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|SALTAR",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que salte",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "SALTAR",
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|EXPLORAR",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que explore o se vaya a dar una vuelta por ahi, sin un lugar concreto",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "EXPLORAR",
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|DESCANSAR",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que descanse, se siente o se vaya a dormir",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DESCANSAR",
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|SOLTAR",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que suelte o tire todo lo que lleva",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "SOLTAR",
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|SALUDAR",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que salude (a alguien o en general)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "SALUDAR",
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|HUIR|zombie",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que se escape o se aleje de un/una zombie cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "HUIR",
+    "objetivo": {
+     "clase": "zombie",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zombie",
+    "zombi",
+    "zombis",
+    "zombies"
+   ]
+  },
+  {
+   "id": "ORDEN|HUIR|esqueleto",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que se escape o se aleje de un/una esqueleto cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "HUIR",
+    "objetivo": {
+     "clase": "esqueleto",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "esqueleto",
+    "skeleton"
+   ]
+  },
+  {
+   "id": "ORDEN|HUIR|arana",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que se escape o se aleje de un/una arana cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "HUIR",
+    "objetivo": {
+     "clase": "arana",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arana",
+    "spider"
+   ]
+  },
+  {
+   "id": "ORDEN|HUIR|creeper",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que se escape o se aleje de un/una creeper cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "HUIR",
+    "objetivo": {
+     "clase": "creeper",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "ORDEN|MIRAR|hablante",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que mire al jugador que escribe (mirame)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "MIRAR",
+    "objetivo": {
+     "clase": null,
+     "ref": "hablante",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|MIRAR|atras",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que se de vuelta o mire para atras",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "MIRAR",
+    "objetivo": {
+     "clase": null,
+     "ref": null,
+     "cantidad": null,
+     "direccion": "atras",
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|MIRAR|creeper",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que mire ESE/ESA creeper que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "MIRAR",
+    "objetivo": {
+     "clase": "creeper",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "ORDEN|MIRAR|casa",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que mire ESE/ESA casa que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "MIRAR",
+    "objetivo": {
+     "clase": "casa",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "casa",
+    "casita",
+    "choza",
+    "cabana",
+    "base",
+    "house"
+   ]
+  },
+  {
+   "id": "ORDEN|MIRAR|vaca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que mire ESE/ESA vaca que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "MIRAR",
+    "objetivo": {
+     "clase": "vaca",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "ORDEN|MIRAR|arbol",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que mire ESE/ESA arbol que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "MIRAR",
+    "objetivo": {
+     "clase": "arbol",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arbol",
+    "arbolito",
+    "tree"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|arbol|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave un/una arbol cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "arbol",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arbol",
+    "arbolito",
+    "tree"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|arbol|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave ESE/ESA arbol que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "arbol",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arbol",
+    "arbolito",
+    "tree"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|piedra|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave un/una piedra cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "piedra",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|piedra|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave ESE/ESA piedra que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "piedra",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|tierra|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave un/una tierra cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "tierra",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "tierra",
+    "barro",
+    "dirt"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|tierra|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave ESE/ESA tierra que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "tierra",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "tierra",
+    "barro",
+    "dirt"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|arena|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave un/una arena cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "arena",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arena",
+    "sand"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|arena|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave ESE/ESA arena que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "arena",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arena",
+    "sand"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|hoja|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave un/una hoja cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "hoja",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hoja",
+    "follaje",
+    "leaves"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|hoja|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave ESE/ESA hoja que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "hoja",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hoja",
+    "follaje",
+    "leaves"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|vidrio|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave un/una vidrio cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "vidrio",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vidrio",
+    "cristal",
+    "glass"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|vidrio|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que corte, rompa, pique o cave ESE/ESA vidrio que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "vidrio",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vidrio",
+    "cristal",
+    "glass"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|madera",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte, recolecte, coseche o busque madera (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "madera",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "madera",
+    "tronco",
+    "lena",
+    "wood",
+    "log"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|madera|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte exactamente 10 de madera",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "madera",
+     "ref": "cerca",
+     "cantidad": 10,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "madera",
+    "tronco",
+    "lena",
+    "wood",
+    "log"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|piedra",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte, recolecte, coseche o busque piedra (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "piedra",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|piedra|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte exactamente 10 de piedra",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "piedra",
+     "ref": "cerca",
+     "cantidad": 10,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|trigo",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte, recolecte, coseche o busque trigo (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "trigo",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "trigo",
+    "wheat"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|trigo|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte exactamente 10 de trigo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "trigo",
+     "ref": "cerca",
+     "cantidad": 10,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "trigo",
+    "wheat"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|zanahoria",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte, recolecte, coseche o busque zanahoria (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "zanahoria",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zanahoria",
+    "carrot"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|zanahoria|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte exactamente 10 de zanahoria",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "zanahoria",
+     "ref": "cerca",
+     "cantidad": 10,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zanahoria",
+    "carrot"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|flor",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte, recolecte, coseche o busque flor (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "flor",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "flor",
+    "flower",
+    "rosa",
+    "amapola",
+    "tulipan",
+    "margarita"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|flor|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte exactamente 10 de flor",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "flor",
+     "ref": "cerca",
+     "cantidad": 10,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "flor",
+    "flower",
+    "rosa",
+    "amapola",
+    "tulipan",
+    "margarita"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|carbon",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte, recolecte, coseche o busque carbon (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "carbon",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "carbon",
+    "coal"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|carbon|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte exactamente 10 de carbon",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "carbon",
+     "ref": "cerca",
+     "cantidad": 10,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "carbon",
+    "coal"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|hierro",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte, recolecte, coseche o busque hierro (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "hierro",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hierro",
+    "iron"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|hierro|10",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que junte exactamente 10 de hierro",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "hierro",
+     "ref": "cerca",
+     "cantidad": 10,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hierro",
+    "iron"
+   ]
+  },
+  {
+   "id": "ORDEN|AGARRAR|item",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que agarre o levante ESO que esta tirado en el piso y el jugador señala",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "AGARRAR",
+    "objetivo": {
+     "clase": null,
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "ORDEN|DAR|madera",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le de, le traiga o le pase madera al jugador (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "madera",
+     "ref": null,
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "madera",
+    "tronco",
+    "lena",
+    "wood",
+    "log"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|madera|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le traiga 5 de madera al jugador",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "madera",
+     "ref": null,
+     "cantidad": 5,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "madera",
+    "tronco",
+    "lena",
+    "wood",
+    "log"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|piedra",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le de, le traiga o le pase piedra al jugador (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "piedra",
+     "ref": null,
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|piedra|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le traiga 5 de piedra al jugador",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "piedra",
+     "ref": null,
+     "cantidad": 5,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|manzana",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le de, le traiga o le pase manzana al jugador (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "manzana",
+     "ref": null,
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "manzana",
+    "apple"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|manzana|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le traiga 5 de manzana al jugador",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "manzana",
+     "ref": null,
+     "cantidad": 5,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "manzana",
+    "apple"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|comida",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le de, le traiga o le pase comida al jugador (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "comida",
+     "ref": null,
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "comida",
+    "alimento",
+    "algo de comer",
+    "algo para comer",
+    "food",
+    "carne",
+    "pan",
+    "huevo",
+    "fruta"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|comida|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le traiga 5 de comida al jugador",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "comida",
+     "ref": null,
+     "cantidad": 5,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "comida",
+    "alimento",
+    "algo de comer",
+    "algo para comer",
+    "food",
+    "carne",
+    "pan",
+    "huevo",
+    "fruta"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|diamante",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le de, le traiga o le pase diamante al jugador (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "diamante",
+     "ref": null,
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "diamante",
+    "diamond",
+    "diamonds"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|diamante|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le traiga 5 de diamante al jugador",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "diamante",
+     "ref": null,
+     "cantidad": 5,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "diamante",
+    "diamond",
+    "diamonds"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|hierro",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le de, le traiga o le pase hierro al jugador (sin decir cuanto)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "hierro",
+     "ref": null,
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hierro",
+    "iron"
+   ]
+  },
+  {
+   "id": "ORDEN|DAR|hierro|5",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que le traiga 5 de hierro al jugador",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "DAR",
+    "objetivo": {
+     "clase": "hierro",
+     "ref": null,
+     "cantidad": 5,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hierro",
+    "iron"
+   ]
+  },
+  {
+   "id": "ORDEN|COMER|manzana",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que coma manzana",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "COMER",
+    "objetivo": {
+     "clase": "manzana",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "manzana",
+    "apple"
+   ]
+  },
+  {
+   "id": "ORDEN|COMER|comida",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que coma comida",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "COMER",
+    "objetivo": {
+     "clase": "comida",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "comida",
+    "alimento",
+    "algo de comer",
+    "algo para comer",
+    "food",
+    "carne",
+    "pan",
+    "huevo",
+    "fruta"
+   ]
+  },
+  {
+   "id": "ORDEN|COMER|zanahoria",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que coma zanahoria",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "COMER",
+    "objetivo": {
+     "clase": "zanahoria",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zanahoria",
+    "carrot"
+   ]
+  },
+  {
+   "id": "ORDEN|PONER|antorcha",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ponga UN bloque o UNA antorcha ahi donde señala el jugador (una sola cosa, no una obra)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "PONER",
+    "objetivo": {
+     "clase": "antorcha",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "antorcha",
+    "torch"
+   ]
+  },
+  {
+   "id": "ORDEN|PONER|tablas",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ponga UN bloque o UNA tabla ahi donde señala el jugador (una sola cosa, no una obra)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "PONER",
+    "objetivo": {
+     "clase": "tablas",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "tabla",
+    "tablon",
+    "plancha de madera",
+    "planks"
+   ]
+  },
+  {
+   "id": "ORDEN|PONER|piedra",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ponga UN bloque o UNA piedra ahi donde señala el jugador (una sola cosa, no una obra)",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "PONER",
+    "objetivo": {
+     "clase": "piedra",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "ORDEN|CONSTRUIR|casa",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que construya o haga una casa",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "CONSTRUIR",
+    "objetivo": {
+     "clase": "casa",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "casa",
+    "casita",
+    "choza",
+    "cabana",
+    "base",
+    "house"
+   ]
+  },
+  {
+   "id": "ORDEN|CONSTRUIR|refugio",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que construya o haga una refugio",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "CONSTRUIR",
+    "objetivo": {
+     "clase": "refugio",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "refugio",
+    "escondite",
+    "shelter"
+   ]
+  },
+  {
+   "id": "ORDEN|CONSTRUIR|torre",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que construya o haga una torre",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "CONSTRUIR",
+    "objetivo": {
+     "clase": "torre",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "torre",
+    "pilar",
+    "columna",
+    "tower"
+   ]
+  },
+  {
+   "id": "ORDEN|CONSTRUIR|pared",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que construya o haga una pared",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "CONSTRUIR",
+    "objetivo": {
+     "clase": "pared",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "pared",
+    "muro",
+    "muralla",
+    "wall"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|zombie|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a un/una zombie cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "zombie",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zombie",
+    "zombi",
+    "zombis",
+    "zombies"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|zombie|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a ESE/ESA zombie que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "zombie",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zombie",
+    "zombi",
+    "zombis",
+    "zombies"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|esqueleto|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a un/una esqueleto cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "esqueleto",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "esqueleto",
+    "skeleton"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|esqueleto|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a ESE/ESA esqueleto que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "esqueleto",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "esqueleto",
+    "skeleton"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|arana|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a un/una arana cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "arana",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arana",
+    "spider"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|arana|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a ESE/ESA arana que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "arana",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arana",
+    "spider"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|creeper|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a un/una creeper cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "creeper",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|creeper|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a ESE/ESA creeper que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "creeper",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|bruja|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a un/una bruja cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "bruja",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "bruja",
+    "witch"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|bruja|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a ESE/ESA bruja que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "bruja",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "bruja",
+    "witch"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|vaca|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a un/una vaca cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "vaca",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|vaca|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a ESE/ESA vaca que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "vaca",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|cerdo|cerca",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a un/una cerdo cualquiera, el/la mas cercano/a, sin señalarlo",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "cerdo",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cerdo",
+    "chancho",
+    "puerco",
+    "cochino",
+    "marrano",
+    "pig"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|cerdo|mira",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy que ataque, le pegue o mate a ESE/ESA cerdo que el jugador esta señalando o mirando (\"ese\", \"eso\", \"ahi\")",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "cerdo",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cerdo",
+    "chancho",
+    "puerco",
+    "cochino",
+    "marrano",
+    "pig"
+   ]
+  },
+  {
+   "id": "ORDEN|ROMPER|arbol|mira>DAR|madera",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy dos cosas en la misma frase: que corte ESE arbol que señala Y despues le traiga la madera",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "arbol",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": [
+     {
+      "intencion": "ORDEN",
+      "accion": "DAR",
+      "objetivo": {
+       "clase": "madera",
+       "ref": null,
+       "cantidad": null,
+       "direccion": null,
+       "pasos": null
+      },
+      "sobre": null,
+      "valor": null,
+      "pregunta": null,
+      "tono": null,
+      "luego": []
+     }
+    ]
+   },
+   "menciona": [
+    "arbol",
+    "arbolito",
+    "tree"
+   ]
+  },
+  {
+   "id": "ORDEN|JUNTAR|piedra>CONSTRUIR|casa",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy dos cosas en la misma frase: que junte piedra Y despues construya una casa",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "JUNTAR",
+    "objetivo": {
+     "clase": "piedra",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": [
+     {
+      "intencion": "ORDEN",
+      "accion": "CONSTRUIR",
+      "objetivo": {
+       "clase": "casa",
+       "ref": "cerca",
+       "cantidad": null,
+       "direccion": null,
+       "pasos": null
+      },
+      "sobre": null,
+      "valor": null,
+      "pregunta": null,
+      "tono": null,
+      "luego": []
+     }
+    ]
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "ORDEN|ATACAR|zombie>VENIR",
+   "categoria": "ORDEN",
+   "peso": 0.1395,
+   "significado": "pedirle a Lucy dos cosas en la misma frase: que mate al zombie mas cercano Y despues vuelva con el jugador",
+   "dicho": {
+    "intencion": "ORDEN",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "zombie",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": [
+     {
+      "intencion": "ORDEN",
+      "accion": "VENIR",
+      "objetivo": {
+       "clase": null,
+       "ref": "hablante",
+       "cantidad": null,
+       "direccion": null,
+       "pasos": null
+      },
+      "sobre": null,
+      "valor": null,
+      "pregunta": null,
+      "tono": null,
+      "luego": []
+     }
+    ]
+   },
+   "menciona": [
+    "zombie",
+    "zombi",
+    "zombis",
+    "zombies"
+   ]
+  },
+  {
+   "id": "PROHIBICION|ROMPER|arbol",
+   "categoria": "PROHIBICION",
+   "peso": 0.5,
+   "significado": "pedirle a Lucy que NO corte ESE arbol que señala",
+   "dicho": {
+    "intencion": "PROHIBICION",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "arbol",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arbol",
+    "arbolito",
+    "tree"
+   ]
+  },
+  {
+   "id": "PROHIBICION|ATACAR|vaca",
+   "categoria": "PROHIBICION",
+   "peso": 0.5,
+   "significado": "pedirle a Lucy que NO ataque a las vacas",
+   "dicho": {
+    "intencion": "PROHIBICION",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "vaca",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "PROHIBICION|ATACAR|aldeano",
+   "categoria": "PROHIBICION",
+   "peso": 0.5,
+   "significado": "pedirle a Lucy que NO le pegue a los aldeanos",
+   "dicho": {
+    "intencion": "PROHIBICION",
+    "accion": "ATACAR",
+    "objetivo": {
+     "clase": "aldeano",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "aldeano",
+    "villager",
+    "granjero"
+   ]
+  },
+  {
+   "id": "PROHIBICION|IR|agua",
+   "categoria": "PROHIBICION",
+   "peso": 0.5,
+   "significado": "pedirle a Lucy que NO se meta ni vaya al agua",
+   "dicho": {
+    "intencion": "PROHIBICION",
+    "accion": "IR",
+    "objetivo": {
+     "clase": "agua",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "agua",
+    "rio",
+    "lago",
+    "mar",
+    "laguna",
+    "pileta",
+    "water"
+   ]
+  },
+  {
+   "id": "PROHIBICION|SEGUIR|hablante",
+   "categoria": "PROHIBICION",
+   "peso": 0.5,
+   "significado": "pedirle a Lucy que NO lo siga mas",
+   "dicho": {
+    "intencion": "PROHIBICION",
+    "accion": "SEGUIR",
+    "objetivo": {
+     "clase": null,
+     "ref": "hablante",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PROHIBICION|COMER|hongo",
+   "categoria": "PROHIBICION",
+   "peso": 0.5,
+   "significado": "pedirle a Lucy que NO coma hongos",
+   "dicho": {
+    "intencion": "PROHIBICION",
+    "accion": "COMER",
+    "objetivo": {
+     "clase": "hongo",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hongo",
+    "champinon",
+    "seta",
+    "mushroom"
+   ]
+  },
+  {
+   "id": "PROHIBICION|ROMPER|vidrio",
+   "categoria": "PROHIBICION",
+   "peso": 0.5,
+   "significado": "pedirle a Lucy que NO rompa el vidrio",
+   "dicho": {
+    "intencion": "PROHIBICION",
+    "accion": "ROMPER",
+    "objetivo": {
+     "clase": "vidrio",
+     "ref": "cerca",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vidrio",
+    "cristal",
+    "glass"
+   ]
+  },
+  {
+   "id": "PROHIBICION|PONER|antorcha",
+   "categoria": "PROHIBICION",
+   "peso": 0.5,
+   "significado": "pedirle a Lucy que NO ponga una antorcha ahi",
+   "dicho": {
+    "intencion": "PROHIBICION",
+    "accion": "PONER",
+    "objetivo": {
+     "clase": "antorcha",
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "antorcha",
+    "torch"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|zombie|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que zombie es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "zombie",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zombie",
+    "zombi",
+    "zombis",
+    "zombies"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|esqueleto|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que esqueleto es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "esqueleto",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "esqueleto",
+    "skeleton"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|arana|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que arana es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "arana",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arana",
+    "spider"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|creeper|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que creeper es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "creeper",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|bruja|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que bruja es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "bruja",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "bruja",
+    "witch"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|lava|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que lava es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "lava",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "lava",
+    "magma"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|fuego|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que fuego es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "fuego",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "fuego",
+    "llamas",
+    "incendio",
+    "fire"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|cactus|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que cactus es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "cactus",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cactus",
+    "cactu"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|hongo|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que hongo es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "hongo",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hongo",
+    "champinon",
+    "seta",
+    "mushroom"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|manzana|BUENO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que manzana es bueno/a, rico/a o sirve para comer (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "manzana",
+    "valor": "BUENO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "manzana",
+    "apple"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|zanahoria|BUENO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que zanahoria es bueno/a, rico/a o sirve para comer (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "zanahoria",
+    "valor": "BUENO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zanahoria",
+    "carrot"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|papa|BUENO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que papa es bueno/a, rico/a o sirve para comer (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "papa",
+    "valor": "BUENO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "papa",
+    "patata",
+    "potato"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|trigo|BUENO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que trigo es bueno/a, rico/a o sirve para comer (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "trigo",
+    "valor": "BUENO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "trigo",
+    "wheat"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|sandia|BUENO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que sandia es bueno/a, rico/a o sirve para comer (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "sandia",
+    "valor": "BUENO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "sandia",
+    "melon"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|vaca|INOFENSIVO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que vaca es inofensivo/a, no hace nada (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "vaca",
+    "valor": "INOFENSIVO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|oveja|INOFENSIVO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que oveja es inofensivo/a, no hace nada (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "oveja",
+    "valor": "INOFENSIVO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "oveja",
+    "cordero",
+    "sheep"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|gallina|INOFENSIVO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que gallina es inofensivo/a, no hace nada (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "gallina",
+    "valor": "INOFENSIVO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "gallina",
+    "pollo",
+    "gallo",
+    "chicken"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|conejo|INOFENSIVO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que conejo es inofensivo/a, no hace nada (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "conejo",
+    "valor": "INOFENSIVO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "conejo",
+    "liebre",
+    "rabbit"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|flor|INOFENSIVO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que flor es inofensivo/a, no hace nada (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "flor",
+    "valor": "INOFENSIVO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "flor",
+    "flower",
+    "rosa",
+    "amapola",
+    "tulipan",
+    "margarita"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|aldeano|INOFENSIVO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que aldeano es inofensivo/a, no hace nada (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "aldeano",
+    "valor": "INOFENSIVO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "aldeano",
+    "villager",
+    "granjero"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|vaca|PELIGROSO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que vaca es peligroso/a, lastima o hay que tener cuidado (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "vaca",
+    "valor": "PELIGROSO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "ENSEÑANZA|cactus|BUENO",
+   "categoria": "ENSEÑANZA",
+   "peso": 0.2727,
+   "significado": "contarle o enseñarle a Lucy que cactus es bueno/a, rico/a o sirve para comer (afirmandolo, no preguntando)",
+   "dicho": {
+    "intencion": "ENSEÑANZA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "cactus",
+    "valor": "BUENO",
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cactus",
+    "cactu"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_HACES|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que esta haciendo ahora",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "QUE_HACES",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|QUE_TENES|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que tiene o que lleva encima (su inventario)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "QUE_TENES",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|COMO_ESTAS|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy como esta o como se siente",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "COMO_ESTAS",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|QUIEN_SOS|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy quien es o que es ella",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "QUIEN_SOS",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|QUE_ES|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que es ESO que el jugador esta señalando o mirando",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": {
+     "clase": null,
+     "ref": "mira",
+     "cantidad": null,
+     "direccion": null,
+     "pasos": null
+    },
+    "sobre": null,
+    "valor": null,
+    "pregunta": "QUE_ES",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|agua",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay agua",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "agua",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "agua",
+    "rio",
+    "lago",
+    "mar",
+    "laguna",
+    "pileta",
+    "water"
+   ]
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|madera",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay madera",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "madera",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "madera",
+    "tronco",
+    "lena",
+    "wood",
+    "log"
+   ]
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|arbol",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay arbol",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "arbol",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arbol",
+    "arbolito",
+    "tree"
+   ]
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|piedra",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay piedra",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "piedra",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|hierro",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay hierro",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "hierro",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hierro",
+    "iron"
+   ]
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|diamante",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay diamante",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "diamante",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "diamante",
+    "diamond",
+    "diamonds"
+   ]
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|vaca",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay vaca",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "vaca",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|aldeano",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay aldeano",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "aldeano",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "aldeano",
+    "villager",
+    "granjero"
+   ]
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|cofre",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay cofre",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "cofre",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cofre",
+    "baul",
+    "chest"
+   ]
+  },
+  {
+   "id": "PREGUNTA|DONDE_HAY|comida",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy donde hay comida",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "comida",
+    "valor": null,
+    "pregunta": "DONDE_HAY",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "comida",
+    "alimento",
+    "algo de comer",
+    "algo para comer",
+    "food",
+    "carne",
+    "pan",
+    "huevo",
+    "fruta"
+   ]
+  },
+  {
+   "id": "PREGUNTA|COMO_SE_HACE|antorcha",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy como se hace o se craftea antorcha en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "antorcha",
+    "valor": null,
+    "pregunta": "COMO_SE_HACE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "antorcha",
+    "torch"
+   ]
+  },
+  {
+   "id": "PREGUNTA|COMO_SE_HACE|cama",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy como se hace o se craftea cama en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "cama",
+    "valor": null,
+    "pregunta": "COMO_SE_HACE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cama",
+    "bed"
+   ]
+  },
+  {
+   "id": "PREGUNTA|COMO_SE_HACE|horno",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy como se hace o se craftea horno en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "horno",
+    "valor": null,
+    "pregunta": "COMO_SE_HACE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "horno",
+    "furnace"
+   ]
+  },
+  {
+   "id": "PREGUNTA|COMO_SE_HACE|mesa_crafteo",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy como se hace o se craftea mesa de crafteo en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "mesa_crafteo",
+    "valor": null,
+    "pregunta": "COMO_SE_HACE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "mesa de crafteo",
+    "mesa de crafting",
+    "mesa de trabajo",
+    "crafting table",
+    "mesa"
+   ]
+  },
+  {
+   "id": "PREGUNTA|COMO_SE_HACE|tablas",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy como se hace o se craftea tabla en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "tablas",
+    "valor": null,
+    "pregunta": "COMO_SE_HACE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "tabla",
+    "tablon",
+    "plancha de madera",
+    "planks"
+   ]
+  },
+  {
+   "id": "PREGUNTA|COMO_SE_HACE|pico",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy como se hace o se craftea pico en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "pico",
+    "valor": null,
+    "pregunta": "COMO_SE_HACE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "pico"
+   ]
+  },
+  {
+   "id": "PREGUNTA|COMO_SE_HACE|espada",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy como se hace o se craftea espada en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "espada",
+    "valor": null,
+    "pregunta": "COMO_SE_HACE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "espada"
+   ]
+  },
+  {
+   "id": "PREGUNTA|COMO_SE_HACE|pan",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy como se hace o se craftea pan en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "pan",
+    "valor": null,
+    "pregunta": "COMO_SE_HACE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "pan"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_COME|vaca",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que come vaca o con que se lo alimenta en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "vaca",
+    "valor": null,
+    "pregunta": "QUE_COME",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_COME|oveja",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que come oveja o con que se lo alimenta en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "oveja",
+    "valor": null,
+    "pregunta": "QUE_COME",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "oveja",
+    "cordero",
+    "sheep"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_COME|lobo",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que come lobo o con que se lo alimenta en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "lobo",
+    "valor": null,
+    "pregunta": "QUE_COME",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "lobo",
+    "perro",
+    "perrito",
+    "wolf",
+    "dog"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_COME|gato",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que come gato o con que se lo alimenta en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "gato",
+    "valor": null,
+    "pregunta": "QUE_COME",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "gato",
+    "gatito",
+    "michi",
+    "ocelote",
+    "cat"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_COME|caballo",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que come caballo o con que se lo alimenta en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "caballo",
+    "valor": null,
+    "pregunta": "QUE_COME",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "caballo",
+    "yegua",
+    "potro",
+    "horse"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_COME|cerdo",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que come cerdo o con que se lo alimenta en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "cerdo",
+    "valor": null,
+    "pregunta": "QUE_COME",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cerdo",
+    "chancho",
+    "puerco",
+    "cochino",
+    "marrano",
+    "pig"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_COME|gallina",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que come gallina o con que se lo alimenta en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "gallina",
+    "valor": null,
+    "pregunta": "QUE_COME",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "gallina",
+    "pollo",
+    "gallo",
+    "chicken"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_COME|loro",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que come loro o con que se lo alimenta en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "loro",
+    "valor": null,
+    "pregunta": "QUE_COME",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "loro",
+    "cotorra",
+    "papagayo",
+    "parrot"
+   ]
+  },
+  {
+   "id": "PREGUNTA|SE_QUEMA|zombie",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si zombie se quema (al sol o con fuego) en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "zombie",
+    "valor": null,
+    "pregunta": "SE_QUEMA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zombie",
+    "zombi",
+    "zombis",
+    "zombies"
+   ]
+  },
+  {
+   "id": "PREGUNTA|SE_QUEMA|esqueleto",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si esqueleto se quema (al sol o con fuego) en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "esqueleto",
+    "valor": null,
+    "pregunta": "SE_QUEMA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "esqueleto",
+    "skeleton"
+   ]
+  },
+  {
+   "id": "PREGUNTA|SE_QUEMA|creeper",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si creeper se quema (al sol o con fuego) en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "creeper",
+    "valor": null,
+    "pregunta": "SE_QUEMA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "PREGUNTA|SE_QUEMA|madera",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si madera se quema (al sol o con fuego) en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "madera",
+    "valor": null,
+    "pregunta": "SE_QUEMA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "madera",
+    "tronco",
+    "lena",
+    "wood",
+    "log"
+   ]
+  },
+  {
+   "id": "PREGUNTA|SE_QUEMA|lana",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si lana se quema (al sol o con fuego) en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "lana",
+    "valor": null,
+    "pregunta": "SE_QUEMA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "lana",
+    "wool"
+   ]
+  },
+  {
+   "id": "PREGUNTA|A_QUE_ALTURA|diamante",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy a que altura o capa se encuentra diamante en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "diamante",
+    "valor": null,
+    "pregunta": "A_QUE_ALTURA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "diamante",
+    "diamond",
+    "diamonds"
+   ]
+  },
+  {
+   "id": "PREGUNTA|A_QUE_ALTURA|hierro",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy a que altura o capa se encuentra hierro en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "hierro",
+    "valor": null,
+    "pregunta": "A_QUE_ALTURA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "hierro",
+    "iron"
+   ]
+  },
+  {
+   "id": "PREGUNTA|A_QUE_ALTURA|oro",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy a que altura o capa se encuentra oro en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "oro",
+    "valor": null,
+    "pregunta": "A_QUE_ALTURA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "oro",
+    "gold"
+   ]
+  },
+  {
+   "id": "PREGUNTA|A_QUE_ALTURA|carbon",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy a que altura o capa se encuentra carbon en el juego",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "carbon",
+    "valor": null,
+    "pregunta": "A_QUE_ALTURA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "carbon",
+    "coal"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_ES_UN|creeper",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que es un/una creeper en el juego (sin señalar ninguno)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "creeper",
+    "valor": null,
+    "pregunta": "QUE_ES_UN",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_ES_UN|ghast",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que es un/una ghast en el juego (sin señalar ninguno)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "ghast",
+    "valor": null,
+    "pregunta": "QUE_ES_UN",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "ghast",
+    "fantasma"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_ES_UN|slime",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que es un/una slime en el juego (sin señalar ninguno)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "slime",
+    "valor": null,
+    "pregunta": "QUE_ES_UN",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "slime",
+    "baba",
+    "cubo de magma",
+    "magma cube"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_ES_UN|aldeano",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que es un/una aldeano en el juego (sin señalar ninguno)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "aldeano",
+    "valor": null,
+    "pregunta": "QUE_ES_UN",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "aldeano",
+    "villager",
+    "granjero"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_ES_UN|golem",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que es un/una golem en el juego (sin señalar ninguno)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "golem",
+    "valor": null,
+    "pregunta": "QUE_ES_UN",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "golem",
+    "muneco de nieve",
+    "snow golem",
+    "iron golem"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_ES_UN|cana_azucar",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que es un/una cana de azucar en el juego (sin señalar ninguno)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "cana_azucar",
+    "valor": null,
+    "pregunta": "QUE_ES_UN",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cana de azucar",
+    "cana",
+    "sugar cane"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_SUELTA|vaca",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que suelta o que da vaca cuando lo matas o rompes",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "vaca",
+    "valor": null,
+    "pregunta": "QUE_SUELTA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_SUELTA|zombie",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que suelta o que da zombie cuando lo matas o rompes",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "zombie",
+    "valor": null,
+    "pregunta": "QUE_SUELTA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zombie",
+    "zombi",
+    "zombis",
+    "zombies"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_SUELTA|esqueleto",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que suelta o que da esqueleto cuando lo matas o rompes",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "esqueleto",
+    "valor": null,
+    "pregunta": "QUE_SUELTA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "esqueleto",
+    "skeleton"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_SUELTA|creeper",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que suelta o que da creeper cuando lo matas o rompes",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "creeper",
+    "valor": null,
+    "pregunta": "QUE_SUELTA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_SUELTA|arana",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que suelta o que da arana cuando lo matas o rompes",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "arana",
+    "valor": null,
+    "pregunta": "QUE_SUELTA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "arana",
+    "spider"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_SUELTA|oveja",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que suelta o que da oveja cuando lo matas o rompes",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "oveja",
+    "valor": null,
+    "pregunta": "QUE_SUELTA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "oveja",
+    "cordero",
+    "sheep"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_SUELTA|piedra",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que suelta o que da piedra cuando lo matas o rompes",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "piedra",
+    "valor": null,
+    "pregunta": "QUE_SUELTA",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "piedra",
+    "roca",
+    "adoquin",
+    "stone",
+    "cobble",
+    "cobblestone"
+   ]
+  },
+  {
+   "id": "PREGUNTA|QUE_HICISTE|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que hizo hoy o que estuvo haciendo antes",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "QUE_HICISTE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|QUIEN_TE_LASTIMO|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy quien o que la lastimo",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "QUIEN_TE_LASTIMO",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|QUE_APRENDISTE|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que aprendio",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "QUE_APRENDISTE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|LO_PEOR|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que fue lo peor que le paso",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "LO_PEOR",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|LO_MEJOR|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que fue lo mejor que le paso",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "LO_MEJOR",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|QUE_TE_DIJERON|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy que le contaron o le dijeron otros jugadores",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "QUE_TE_DIJERON",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|POR_QUE_SIENTE|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy por que siente lo que siente (de que tiene miedo, por que esta enojada o contenta)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "POR_QUE_SIENTE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|TE_ACORDAS|creeper",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si se acuerda de algo que paso o que le dijeron sobre creeper",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "creeper",
+    "valor": null,
+    "pregunta": "TE_ACORDAS",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "PREGUNTA|TE_ACORDAS|cactus",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si se acuerda de algo que paso o que le dijeron sobre cactus",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "cactus",
+    "valor": null,
+    "pregunta": "TE_ACORDAS",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "cactus",
+    "cactu"
+   ]
+  },
+  {
+   "id": "PREGUNTA|TE_ACORDAS|nether",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si se acuerda de algo que paso o que le dijeron sobre nether",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "nether",
+    "valor": null,
+    "pregunta": "TE_ACORDAS",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "nether"
+   ]
+  },
+  {
+   "id": "PREGUNTA|VISTE|creeper",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si alguna vez vio o si vio hoy creeper (en el pasado, no ahora)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "creeper",
+    "valor": null,
+    "pregunta": "VISTE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "PREGUNTA|VES|creeper",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si AHORA ve creeper cerca (en este momento)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "creeper",
+    "valor": null,
+    "pregunta": "VES",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "creeper",
+    "criper",
+    "creper",
+    "stalker"
+   ]
+  },
+  {
+   "id": "PREGUNTA|VISTE|zombie",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si alguna vez vio o si vio hoy zombie (en el pasado, no ahora)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "zombie",
+    "valor": null,
+    "pregunta": "VISTE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zombie",
+    "zombi",
+    "zombis",
+    "zombies"
+   ]
+  },
+  {
+   "id": "PREGUNTA|VES|zombie",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si AHORA ve zombie cerca (en este momento)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "zombie",
+    "valor": null,
+    "pregunta": "VES",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "zombie",
+    "zombi",
+    "zombis",
+    "zombies"
+   ]
+  },
+  {
+   "id": "PREGUNTA|VISTE|vaca",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si alguna vez vio o si vio hoy vaca (en el pasado, no ahora)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "vaca",
+    "valor": null,
+    "pregunta": "VISTE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "PREGUNTA|VES|vaca",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si AHORA ve vaca cerca (en este momento)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "vaca",
+    "valor": null,
+    "pregunta": "VES",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "vaca",
+    "toro",
+    "ternero",
+    "cow"
+   ]
+  },
+  {
+   "id": "PREGUNTA|VISTE|diamante",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si alguna vez vio o si vio hoy diamante (en el pasado, no ahora)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "diamante",
+    "valor": null,
+    "pregunta": "VISTE",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "diamante",
+    "diamond",
+    "diamonds"
+   ]
+  },
+  {
+   "id": "PREGUNTA|VES|diamante",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy si AHORA ve diamante cerca (en este momento)",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": "diamante",
+    "valor": null,
+    "pregunta": "VES",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": [
+    "diamante",
+    "diamond",
+    "diamonds"
+   ]
+  },
+  {
+   "id": "PREGUNTA|SOBRE_JUEGO|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy algo del juego que no sea receta, comida, altura ni lo que suelta un bicho: como hacer un portal al nether, cuanto dura un dia, para que sirve la redstone, como se domestica un caballo",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "SOBRE_JUEGO",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "PREGUNTA|PASADO|-",
+   "categoria": "PREGUNTA",
+   "peso": 0.6164,
+   "significado": "preguntarle a Lucy algo de su pasado que no sea que hizo hoy: si fue al nether alguna vez, si durmio anoche, si alguna vez se perdio",
+   "dicho": {
+    "intencion": "PREGUNTA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": "PASADO",
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "SALUDO",
+   "categoria": "SOCIAL",
+   "peso": 3,
+   "significado": "saludar a Lucy (hola, buenas, hey lucy), sin pedirle ni preguntarle nada mas",
+   "dicho": {
+    "intencion": "SALUDO",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "CHARLA|GRACIAS",
+   "categoria": "SOCIAL",
+   "peso": 3,
+   "significado": "agradecerle a Lucy, sin pedirle ni preguntarle nada mas",
+   "dicho": {
+    "intencion": "CHARLA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": "GRACIAS",
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "CHARLA|ELOGIO",
+   "categoria": "SOCIAL",
+   "peso": 3,
+   "significado": "felicitarla o decirle algo lindo (genia, crack, sos la mejor), sin pedirle ni preguntarle nada mas",
+   "dicho": {
+    "intencion": "CHARLA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": "ELOGIO",
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "CHARLA|INSULTO",
+   "categoria": "SOCIAL",
+   "peso": 3,
+   "significado": "insultarla o decirle algo feo (tonta, inutil), sin malas palabras fuertes, sin pedirle ni preguntarle nada mas",
+   "dicho": {
+    "intencion": "CHARLA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": "INSULTO",
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "CHARLA|DESPEDIDA",
+   "categoria": "SOCIAL",
+   "peso": 3,
+   "significado": "despedirse de Lucy (chau, nos vemos), sin pedirle ni preguntarle nada mas",
+   "dicho": {
+    "intencion": "CHARLA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": "DESPEDIDA",
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "NADA|narra",
+   "categoria": "NADA",
+   "peso": 3,
+   "significado": "contar en primera persona algo que hizo o va a hacer el jugador (ayer corte un arbol, voy a buscar madera), sin pedirle nada a Lucy",
+   "dicho": {
+    "intencion": "NADA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "NADA|otro",
+   "categoria": "NADA",
+   "peso": 3,
+   "significado": "hablarle a OTRO jugador en el chat (no a Lucy), por ejemplo pedirle algo a un amigo por su nombre",
+   "dicho": {
+    "intencion": "NADA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "NADA|queja",
+   "categoria": "NADA",
+   "peso": 3,
+   "significado": "quejarse del lag, del juego o reirse (jajaja, xd, que lag), sin hablarle a Lucy",
+   "dicho": {
+    "intencion": "NADA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  },
+  {
+   "id": "NADA|verbo",
+   "categoria": "NADA",
+   "peso": 3,
+   "significado": "pedirle a Lucy algo que no puede hacer: craftear, pescar, encantar, tradear, nadar o volar",
+   "dicho": {
+    "intencion": "NADA",
+    "accion": null,
+    "objetivo": null,
+    "sobre": null,
+    "valor": null,
+    "pregunta": null,
+    "tono": null,
+    "luego": []
+   },
+   "menciona": null
+  }
+ ]
+}
