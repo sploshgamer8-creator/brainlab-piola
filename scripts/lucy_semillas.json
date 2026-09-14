@@ -1,6 +1,6 @@
 {
- "version": "5d6732799cf5",
- "generado": "2026-09-14T07:25:20.326Z",
+ "version": "3f7e74074148",
+ "generado": "2026-09-14T08:09:06.338Z",
  "semillas": [
   {
    "id": "ORDEN|IR|arbol|cerca",
@@ -4179,7 +4179,7 @@
   {
    "id": "PREGUNTA|QUE_HACES|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que esta haciendo ahora",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4196,7 +4196,7 @@
   {
    "id": "PREGUNTA|QUE_TENES|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que tiene o que lleva encima (su inventario)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4213,7 +4213,7 @@
   {
    "id": "PREGUNTA|COMO_ESTAS|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy como esta o como se siente",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4230,7 +4230,7 @@
   {
    "id": "PREGUNTA|QUIEN_SOS|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy quien es o que es ella",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4247,7 +4247,7 @@
   {
    "id": "PREGUNTA|QUE_ES|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que es ESO que el jugador esta señalando o mirando",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4270,7 +4270,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|agua",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay agua",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4295,7 +4295,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|madera",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay madera",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4318,7 +4318,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|arbol",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay arbol",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4339,7 +4339,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|piedra",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay piedra",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4363,7 +4363,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|hierro",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay hierro",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4383,7 +4383,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|diamante",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay diamante",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4404,7 +4404,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|vaca",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay vaca",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4426,7 +4426,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|aldeano",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay aldeano",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4447,7 +4447,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|cofre",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay cofre",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4468,7 +4468,7 @@
   {
    "id": "PREGUNTA|DONDE_HAY|comida",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy donde hay comida",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4495,7 +4495,7 @@
   {
    "id": "PREGUNTA|COMO_SE_HACE|antorcha",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy como se hace o se craftea antorcha en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4515,7 +4515,7 @@
   {
    "id": "PREGUNTA|COMO_SE_HACE|cama",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy como se hace o se craftea cama en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4535,7 +4535,7 @@
   {
    "id": "PREGUNTA|COMO_SE_HACE|horno",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy como se hace o se craftea horno en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4555,7 +4555,7 @@
   {
    "id": "PREGUNTA|COMO_SE_HACE|mesa_crafteo",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy como se hace o se craftea mesa de crafteo en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4578,7 +4578,7 @@
   {
    "id": "PREGUNTA|COMO_SE_HACE|tablas",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy como se hace o se craftea tabla en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4600,7 +4600,7 @@
   {
    "id": "PREGUNTA|COMO_SE_HACE|pico",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy como se hace o se craftea pico en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4619,7 +4619,7 @@
   {
    "id": "PREGUNTA|COMO_SE_HACE|espada",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy como se hace o se craftea espada en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4638,7 +4638,7 @@
   {
    "id": "PREGUNTA|COMO_SE_HACE|pan",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy como se hace o se craftea pan en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4657,7 +4657,7 @@
   {
    "id": "PREGUNTA|QUE_COME|vaca",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que come vaca o con que se lo alimenta en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4679,7 +4679,7 @@
   {
    "id": "PREGUNTA|QUE_COME|oveja",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que come oveja o con que se lo alimenta en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4700,7 +4700,7 @@
   {
    "id": "PREGUNTA|QUE_COME|lobo",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que come lobo o con que se lo alimenta en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4723,7 +4723,7 @@
   {
    "id": "PREGUNTA|QUE_COME|gato",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que come gato o con que se lo alimenta en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4746,7 +4746,7 @@
   {
    "id": "PREGUNTA|QUE_COME|caballo",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que come caballo o con que se lo alimenta en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4768,7 +4768,7 @@
   {
    "id": "PREGUNTA|QUE_COME|cerdo",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que come cerdo o con que se lo alimenta en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4792,7 +4792,7 @@
   {
    "id": "PREGUNTA|QUE_COME|gallina",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que come gallina o con que se lo alimenta en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4814,7 +4814,7 @@
   {
    "id": "PREGUNTA|QUE_COME|loro",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que come loro o con que se lo alimenta en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4836,7 +4836,7 @@
   {
    "id": "PREGUNTA|SE_QUEMA|zombie",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si zombie se quema (al sol o con fuego) en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4858,7 +4858,7 @@
   {
    "id": "PREGUNTA|SE_QUEMA|esqueleto",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si esqueleto se quema (al sol o con fuego) en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4878,7 +4878,7 @@
   {
    "id": "PREGUNTA|SE_QUEMA|creeper",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si creeper se quema (al sol o con fuego) en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4900,7 +4900,7 @@
   {
    "id": "PREGUNTA|SE_QUEMA|madera",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si madera se quema (al sol o con fuego) en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4923,7 +4923,7 @@
   {
    "id": "PREGUNTA|SE_QUEMA|lana",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si lana se quema (al sol o con fuego) en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4943,7 +4943,7 @@
   {
    "id": "PREGUNTA|A_QUE_ALTURA|diamante",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy a que altura o capa se encuentra diamante en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4964,7 +4964,7 @@
   {
    "id": "PREGUNTA|A_QUE_ALTURA|hierro",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy a que altura o capa se encuentra hierro en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -4984,7 +4984,7 @@
   {
    "id": "PREGUNTA|A_QUE_ALTURA|oro",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy a que altura o capa se encuentra oro en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5004,7 +5004,7 @@
   {
    "id": "PREGUNTA|A_QUE_ALTURA|carbon",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy a que altura o capa se encuentra carbon en el juego",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5024,7 +5024,7 @@
   {
    "id": "PREGUNTA|QUE_ES_UN|creeper",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que es un/una creeper en el juego (sin señalar ninguno)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5046,7 +5046,7 @@
   {
    "id": "PREGUNTA|QUE_ES_UN|ghast",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que es un/una ghast en el juego (sin señalar ninguno)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5066,7 +5066,7 @@
   {
    "id": "PREGUNTA|QUE_ES_UN|slime",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que es un/una slime en el juego (sin señalar ninguno)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5088,7 +5088,7 @@
   {
    "id": "PREGUNTA|QUE_ES_UN|aldeano",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que es un/una aldeano en el juego (sin señalar ninguno)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5109,7 +5109,7 @@
   {
    "id": "PREGUNTA|QUE_ES_UN|golem",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que es un/una golem en el juego (sin señalar ninguno)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5131,7 +5131,7 @@
   {
    "id": "PREGUNTA|QUE_ES_UN|cana_azucar",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que es un/una cana de azucar en el juego (sin señalar ninguno)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5152,7 +5152,7 @@
   {
    "id": "PREGUNTA|QUE_SUELTA|vaca",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que suelta o que da vaca cuando lo matas o rompes",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5174,7 +5174,7 @@
   {
    "id": "PREGUNTA|QUE_SUELTA|zombie",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que suelta o que da zombie cuando lo matas o rompes",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5196,7 +5196,7 @@
   {
    "id": "PREGUNTA|QUE_SUELTA|esqueleto",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que suelta o que da esqueleto cuando lo matas o rompes",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5216,7 +5216,7 @@
   {
    "id": "PREGUNTA|QUE_SUELTA|creeper",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que suelta o que da creeper cuando lo matas o rompes",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5238,7 +5238,7 @@
   {
    "id": "PREGUNTA|QUE_SUELTA|arana",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que suelta o que da arana cuando lo matas o rompes",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5258,7 +5258,7 @@
   {
    "id": "PREGUNTA|QUE_SUELTA|oveja",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que suelta o que da oveja cuando lo matas o rompes",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5279,7 +5279,7 @@
   {
    "id": "PREGUNTA|QUE_SUELTA|piedra",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que suelta o que da piedra cuando lo matas o rompes",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5303,7 +5303,7 @@
   {
    "id": "PREGUNTA|QUE_HICISTE|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que hizo hoy o que estuvo haciendo antes",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5320,7 +5320,7 @@
   {
    "id": "PREGUNTA|QUIEN_TE_LASTIMO|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy quien o que la lastimo",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5337,7 +5337,7 @@
   {
    "id": "PREGUNTA|QUE_APRENDISTE|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que aprendio",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5354,7 +5354,7 @@
   {
    "id": "PREGUNTA|LO_PEOR|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que fue lo peor que le paso",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5371,7 +5371,7 @@
   {
    "id": "PREGUNTA|LO_MEJOR|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que fue lo mejor que le paso",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5388,7 +5388,7 @@
   {
    "id": "PREGUNTA|QUE_TE_DIJERON|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy que le contaron o le dijeron otros jugadores",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5405,7 +5405,7 @@
   {
    "id": "PREGUNTA|POR_QUE_SIENTE|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy por que siente lo que siente (de que tiene miedo, por que esta enojada o contenta)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5422,7 +5422,7 @@
   {
    "id": "PREGUNTA|TE_ACORDAS|creeper",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si se acuerda de algo que paso o que le dijeron sobre creeper",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5444,7 +5444,7 @@
   {
    "id": "PREGUNTA|TE_ACORDAS|cactus",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si se acuerda de algo que paso o que le dijeron sobre cactus",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5464,7 +5464,7 @@
   {
    "id": "PREGUNTA|TE_ACORDAS|nether",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si se acuerda de algo que paso o que le dijeron sobre nether",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5483,7 +5483,7 @@
   {
    "id": "PREGUNTA|VISTE|creeper",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si alguna vez vio o si vio hoy creeper (en el pasado, no ahora)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5505,7 +5505,7 @@
   {
    "id": "PREGUNTA|VES|creeper",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si AHORA ve creeper cerca (en este momento)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5527,7 +5527,7 @@
   {
    "id": "PREGUNTA|VISTE|zombie",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si alguna vez vio o si vio hoy zombie (en el pasado, no ahora)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5549,7 +5549,7 @@
   {
    "id": "PREGUNTA|VES|zombie",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si AHORA ve zombie cerca (en este momento)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5571,7 +5571,7 @@
   {
    "id": "PREGUNTA|VISTE|vaca",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si alguna vez vio o si vio hoy vaca (en el pasado, no ahora)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5593,7 +5593,7 @@
   {
    "id": "PREGUNTA|VES|vaca",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si AHORA ve vaca cerca (en este momento)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5615,7 +5615,7 @@
   {
    "id": "PREGUNTA|VISTE|diamante",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si alguna vez vio o si vio hoy diamante (en el pasado, no ahora)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5636,7 +5636,7 @@
   {
    "id": "PREGUNTA|VES|diamante",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy si AHORA ve diamante cerca (en este momento)",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5657,7 +5657,7 @@
   {
    "id": "PREGUNTA|SOBRE_JUEGO|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy algo del juego que no sea receta, comida, altura ni lo que suelta un bicho: como hacer un portal al nether, cuanto dura un dia, para que sirve la redstone, como se domestica un caballo",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5674,7 +5674,7 @@
   {
    "id": "PREGUNTA|PASADO|-",
    "categoria": "PREGUNTA",
-   "peso": 0.6164,
+   "peso": 0.7123,
    "significado": "preguntarle a Lucy algo de su pasado que no sea que hizo hoy: si fue al nether alguna vez, si durmio anoche, si alguna vez se perdio",
    "dicho": {
     "intencion": "PREGUNTA",
@@ -5691,7 +5691,7 @@
   {
    "id": "SALUDO",
    "categoria": "SOCIAL",
-   "peso": 3,
+   "peso": 1,
    "significado": "saludar a Lucy (hola, buenas, hey lucy), sin pedirle ni preguntarle nada mas",
    "dicho": {
     "intencion": "SALUDO",
@@ -5708,7 +5708,7 @@
   {
    "id": "CHARLA|GRACIAS",
    "categoria": "SOCIAL",
-   "peso": 3,
+   "peso": 1,
    "significado": "agradecerle a Lucy, sin pedirle ni preguntarle nada mas",
    "dicho": {
     "intencion": "CHARLA",
@@ -5725,7 +5725,7 @@
   {
    "id": "CHARLA|ELOGIO",
    "categoria": "SOCIAL",
-   "peso": 3,
+   "peso": 1,
    "significado": "felicitarla o decirle algo lindo (genia, crack, sos la mejor), sin pedirle ni preguntarle nada mas",
    "dicho": {
     "intencion": "CHARLA",
@@ -5742,7 +5742,7 @@
   {
    "id": "CHARLA|INSULTO",
    "categoria": "SOCIAL",
-   "peso": 3,
+   "peso": 1,
    "significado": "insultarla o decirle algo feo (tonta, inutil), sin malas palabras fuertes, sin pedirle ni preguntarle nada mas",
    "dicho": {
     "intencion": "CHARLA",
@@ -5759,7 +5759,7 @@
   {
    "id": "CHARLA|DESPEDIDA",
    "categoria": "SOCIAL",
-   "peso": 3,
+   "peso": 1,
    "significado": "despedirse de Lucy (chau, nos vemos), sin pedirle ni preguntarle nada mas",
    "dicho": {
     "intencion": "CHARLA",
@@ -5776,7 +5776,7 @@
   {
    "id": "NADA|narra",
    "categoria": "NADA",
-   "peso": 3,
+   "peso": 3.75,
    "significado": "contar en primera persona algo que hizo o va a hacer el jugador (ayer corte un arbol, voy a buscar madera), sin pedirle nada a Lucy",
    "dicho": {
     "intencion": "NADA",
@@ -5793,7 +5793,7 @@
   {
    "id": "NADA|otro",
    "categoria": "NADA",
-   "peso": 3,
+   "peso": 3.75,
    "significado": "hablarle a OTRO jugador en el chat (no a Lucy), por ejemplo pedirle algo a un amigo por su nombre",
    "dicho": {
     "intencion": "NADA",
@@ -5810,7 +5810,7 @@
   {
    "id": "NADA|queja",
    "categoria": "NADA",
-   "peso": 3,
+   "peso": 3.75,
    "significado": "quejarse del lag, del juego o reirse (jajaja, xd, que lag), sin hablarle a Lucy",
    "dicho": {
     "intencion": "NADA",
@@ -5827,7 +5827,7 @@
   {
    "id": "NADA|verbo",
    "categoria": "NADA",
-   "peso": 3,
+   "peso": 3.75,
    "significado": "pedirle a Lucy algo que no puede hacer: craftear, pescar, encantar, tradear, nadar o volar",
    "dicho": {
     "intencion": "NADA",
